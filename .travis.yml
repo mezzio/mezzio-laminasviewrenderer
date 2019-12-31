@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 cache:
@@ -19,26 +17,17 @@ matrix:
         - DEPS=lowest
     - php: 5.6
       env:
-        - DEPS=locked
-    - php: 5.6
-      env:
         - DEPS=latest
     - php: 7
       env:
         - DEPS=lowest
     - php: 7
       env:
-        - DEPS=locked
-        - CHECK_CS=true
-    - php: 7
-      env:
         - DEPS=latest
+        - CS_CHECK=true
     - php: 7.1
       env:
         - DEPS=lowest
-    - php: 7.1
-      env:
-        - DEPS=locked
     - php: 7.1
       env:
         - DEPS=latest
@@ -65,8 +54,8 @@ install:
 
 script:
   - composer test
-  - if [[ $CHECK_CS == 'true' ]]; then composer cs ; fi
-  - if [[ $CHECK_CS == 'true' ]]; then composer license-check ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
 
 notifications:
   email: true
