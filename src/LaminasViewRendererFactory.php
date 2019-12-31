@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-zendviewrenderer for the canonical source repository
- * @copyright Copyright (c) 2015-2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-zendviewrenderer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\ZendView;
+namespace Mezzio\LaminasView;
 
 use Interop\Container\ContainerInterface as InteropContainerInterface;
+use Laminas\View\HelperPluginManager;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver;
+use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
+use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Zend\Expressive\Helper\UrlHelper as BaseUrlHelper;
-use Zend\View\HelperPluginManager;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
 
 use function get_class;
 use function is_array;
@@ -23,12 +24,12 @@ use function is_numeric;
 use function sprintf;
 
 /**
- * Create and return a ZendView template instance.
+ * Create and return a LaminasView template instance.
  *
- * Requires the Zend\Expressive\Router\RouterInterface service (for creating
+ * Requires the Mezzio\Router\RouterInterface service (for creating
  * the UrlHelper instance).
  *
- * Optionally requires the Zend\View\HelperPluginManager service; if present,
+ * Optionally requires the Laminas\View\HelperPluginManager service; if present,
  * will use the service to inject the PhpRenderer instance.
  *
  * Optionally uses the service 'config', which should return an array. This
@@ -50,12 +51,12 @@ use function sprintf;
  * ]
  * </code>
  *
- * Injects the HelperPluginManager used by the PhpRenderer with zend-expressive
+ * Injects the HelperPluginManager used by the PhpRenderer with mezzio
  * overrides of the url and serverurl helpers.
  */
-class ZendViewRendererFactory
+class LaminasViewRendererFactory
 {
-    public function __invoke(ContainerInterface $container) : ZendViewRenderer
+    public function __invoke(ContainerInterface $container) : LaminasViewRenderer
     {
         $config   = $container->has('config') ? $container->get('config') : [];
         $config   = $config['templates'] ?? [];
@@ -71,7 +72,9 @@ class ZendViewRendererFactory
         // Create or retrieve the renderer from the container
         $renderer = $container->has(PhpRenderer::class)
             ? $container->get(PhpRenderer::class)
-            : new PhpRenderer();
+            : ($container->has(\Zend\View\Renderer\PhpRenderer::class)
+                ? $container->get(\Zend\View\Renderer\PhpRenderer::class)
+                : new PhpRenderer());
         $renderer->setResolver($resolver);
 
         // Inject helpers
@@ -79,7 +82,7 @@ class ZendViewRendererFactory
 
         $defaultSuffix = $config['extension'] ?? $config['default_suffix'] ?? null;
         // Inject renderer
-        $view = new ZendViewRenderer($renderer, $config['layout'] ?? null, $defaultSuffix);
+        $view = new LaminasViewRenderer($renderer, $config['layout'] ?? null, $defaultSuffix);
 
         // Add template paths
         $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];
@@ -111,26 +114,30 @@ class ZendViewRendererFactory
         $helpers->setAlias('url', BaseUrlHelper::class);
         $helpers->setAlias('Url', BaseUrlHelper::class);
         $helpers->setFactory(BaseUrlHelper::class, function () use ($container) {
-            if (! $container->has(BaseUrlHelper::class)) {
+            if (! $container->has(BaseUrlHelper::class)
+                && ! $container->has(\Zend\Expressive\Helper\UrlHelper::class)
+            ) {
                 throw new Exception\MissingHelperException(sprintf(
                     'An instance of %s is required in order to create the "url" view helper; not found',
                     BaseUrlHelper::class
                 ));
             }
-            return new UrlHelper($container->get(BaseUrlHelper::class));
+            return new UrlHelper($container->has(BaseUrlHelper::class) ? $container->get(BaseUrlHelper::class) : $container->get(\Zend\Expressive\Helper\UrlHelper::class));
         });
 
         $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
         $helpers->setAlias('serverUrl', BaseServerUrlHelper::class);
         $helpers->setAlias('ServerUrl', BaseServerUrlHelper::class);
         $helpers->setFactory(BaseServerUrlHelper::class, function () use ($container) {
-            if (! $container->has(BaseServerUrlHelper::class)) {
+            if (! $container->has(BaseServerUrlHelper::class)
+                && ! $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)
+            ) {
                 throw new Exception\MissingHelperException(sprintf(
                     'An instance of %s is required in order to create the "url" view helper; not found',
                     BaseServerUrlHelper::class
                 ));
             }
-            return new ServerUrlHelper($container->get(BaseServerUrlHelper::class));
+            return new ServerUrlHelper($container->has(BaseServerUrlHelper::class) ? $container->get(BaseServerUrlHelper::class) : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class));
         });
 
         $renderer->setHelperPluginManager($helpers);
@@ -146,12 +153,16 @@ class ZendViewRendererFactory
             return $container->get(HelperPluginManager::class);
         }
 
+        if ($container->has(\Zend\View\HelperPluginManager::class)) {
+            return $container->get(\Zend\View\HelperPluginManager::class);
+        }
+
         if (! $container instanceof InteropContainerInterface) {
             throw new Exception\InvalidContainerException(sprintf(
                 '%s expects a %s instance to its constructor; however, your service'
                 . ' container is an instance of %s, which does not implement that'
-                . ' interface. Consider switching to zend-servicemanager for your'
-                . ' container implementation if you wish to use the zend-view renderer.',
+                . ' interface. Consider switching to laminas-servicemanager for your'
+                . ' container implementation if you wish to use the laminas-view renderer.',
                 HelperPluginManager::class,
                 InteropContainerInterface::class,
                 get_class($container)
