@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-zendviewrenderer for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-zendviewrenderer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\ZendView;
+namespace Mezzio\LaminasView;
 
+use Laminas\View\Helper\AbstractHelper;
+use Mezzio\Helper\ServerUrlHelper as BaseHelper;
 use Psr\Http\Message\UriInterface;
-use Zend\Expressive\Helper\ServerUrlHelper as BaseHelper;
-use Zend\View\Helper\AbstractHelper;
 
 /**
- * Alternate ServerUrl helper for use in Expressive.
+ * Alternate ServerUrl helper for use in Mezzio.
  */
 class ServerUrlHelper extends AbstractHelper
 {
@@ -32,7 +33,7 @@ class ServerUrlHelper extends AbstractHelper
     /**
      * Return a path relative to the current request URI.
      *
-     * Proxies to `Zend\Expressive\Helper\ServerUrlHelper::generate()`.
+     * Proxies to `Mezzio\Helper\ServerUrlHelper::generate()`.
      *
      * @param null|string $path
      * @return string
@@ -43,7 +44,7 @@ class ServerUrlHelper extends AbstractHelper
     }
 
     /**
-     * Proxies to `Zend\Expressive\Helper\ServerUrlHelper::setUri()`
+     * Proxies to `Mezzio\Helper\ServerUrlHelper::setUri()`
      * @param UriInterface $uri
      */
     public function setUri(UriInterface $uri)

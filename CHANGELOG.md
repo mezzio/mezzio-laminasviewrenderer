@@ -6,13 +6,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
-  adds support for zend-expressive-router 2.0.
+- [zendframework/zend-expressive-zendviewrenderer#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
+  adds support for mezzio-router 2.0.
 
-- [#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
-  adds support for zend-expressive-helpers 2.2 and 3.0.
+- [zendframework/zend-expressive-zendviewrenderer#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
+  adds support for mezzio-helpers 2.2 and 3.0.
 
-- [#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
+- [zendframework/zend-expressive-zendviewrenderer#30](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/30)
   adds new arguments to the `url()` helper:
 
   ```php
@@ -28,14 +28,14 @@ All notable changes to this project will be documented in this file, in reverse 
   );
   ```
 
-  If using zend-expressive-router versions prior to 2.0 and/or
-  zend-expressive-helpers versions prior to 3.0, arguments after `$routeParams`
+  If using mezzio-router versions prior to 2.0 and/or
+  mezzio-helpers versions prior to 3.0, arguments after `$routeParams`
   will be ignored.
 
 ### Changed
 
-- [#26](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/26)
-  updated the zend-view dependency to 2.8.1+.
+- [zendframework/zend-expressive-zendviewrenderer#26](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/26)
+  updated the laminas-view dependency to 2.8.1+.
 
 ### Deprecated
 
@@ -43,15 +43,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#26](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/26)
-  removes the dependencies for the zend-i18n and zend-filter packages, as they
-  are no longer required by the minimum version of zend-view supported.
+- [zendframework/zend-expressive-zendviewrenderer#26](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/26)
+  removes the dependencies for the laminas-i18n and laminas-filter packages, as they
+  are no longer required by the minimum version of laminas-view supported.
 
   If you depended on features of these, you may need to re-add them to your
   application:
 
   ```bash
-  $ composer require zendframework/zend-filter zendframework/zend-i18n
+  $ composer require laminas/laminas-filter zendframework/zend-i18n
   ```
 
 - This release removes support for PHP 5.5.
@@ -64,8 +64,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#22](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/22)
-  adds support for the zend-eventmanager and zend-servicemanager v3 releases.
+- [zendframework/zend-expressive-zendviewrenderer#22](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/22)
+  adds support for the laminas-eventmanager and laminas-servicemanager v3 releases.
 
 ### Deprecated
 
@@ -95,8 +95,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#19](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/19)
-  updates the zend-expressive-helpers dependency to `^1.1 || ^2.0`, allowing it
+- [zendframework/zend-expressive-zendviewrenderer#19](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/19)
+  updates the mezzio-helpers dependency to `^1.1 || ^2.0`, allowing it
   to work with either version.
 
 ## 1.0.0 - 2015-12-07
@@ -135,19 +135,19 @@ First stable release.
 
 ### Fixed
 
-- [#14](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/14)
-  updates the zend-expressive-helpers dependency to `^1.1`, allowing removal of
-  the zend-expressive development dependency.
+- [zendframework/zend-expressive-zendviewrenderer#14](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/14)
+  updates the mezzio-helpers dependency to `^1.1`, allowing removal of
+  the mezzio development dependency.
 
 ## 0.4.0 - 2015-12-04
 
 ### Added
 
-- [#11](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/11)
+- [zendframework/zend-expressive-zendviewrenderer#11](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/11)
   adds a factory for providing the `HelperPluginManager`, and support in the
-  `ZendViewRendererFactory` for injecting the `HelperPluginManager` service
+  `LaminasViewRendererFactory` for injecting the `HelperPluginManager` service
   (using its FQCN) instead of instantiating one directly. 
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
   adds `zendframework/zend-expressive-helpers` as a dependency, in order to
   consume its `UrlHelper` and `ServerUrlHelper` implementations.
 
@@ -157,22 +157,22 @@ First stable release.
 
 ### Removed
 
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
   removes the `UrlHelperFactory`.
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
-  removes the `Zend\Expressive\ZendView\ApplicationUrlDelegatorFactory`. This
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+  removes the `Mezzio\LaminasView\ApplicationUrlDelegatorFactory`. This
   functionality is obsolete due to the changes made to the `UrlHelper` in this
   release.
 
 ### Fixed
 
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
-  updates the `UrlHelper` to be a proxy to `Zend\Expressive\Helper\UrlHelper`.
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
-  updates the `ServerUrlHelper` to be a proxy to `Zend\Expressive\Helper\ServerUrlHelper`.
-- [#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+  updates the `UrlHelper` to be a proxy to `Mezzio\Helper\UrlHelper`.
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
+  updates the `ServerUrlHelper` to be a proxy to `Mezzio\Helper\ServerUrlHelper`.
+- [zendframework/zend-expressive-zendviewrenderer#13](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/13)
   modifies the logic for injecting the `url` and `serverurl` helpers to pull the
-  `Zend\Expressive\Helper\UrlHelper` and `Zend\Expressive\Helper\ServerUrlHelper`
+  `Mezzio\Helper\UrlHelper` and `Mezzio\Helper\ServerUrlHelper`
   instances, respectively, to inject into the package's own `UrlHelper` and
   `ServerUrlHelper` instances.
 
@@ -192,32 +192,32 @@ First stable release.
 
 ### Fixed
 
-- [#12](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/12)
-  updates the `UrlHelper` to implement the `Zend\Expressive\RouteResultObserverInterface`
-  from the zendframework/zend-expressive package, instead of
-  `Zend\Expressive\Router\RouteResultObserverInterface` from the
-  zendframework/zend-expressive-router package (as it is now
+- [zendframework/zend-expressive-zendviewrenderer#12](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/12)
+  updates the `UrlHelper` to implement the `Mezzio\RouteResultObserverInterface`
+  from the mezzio/mezzio package, instead of
+  `Mezzio\Router\RouteResultObserverInterface` from the
+  mezzio/mezzio-router package (as it is now
   [deprecated](https://github.com/zendframework/zend-expressive-router/pull/3).
 
 ## 0.3.0 - 2015-12-02
 
 ### Added
 
-- [#4](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/4)
+- [zendframework/zend-expressive-zendviewrenderer#4](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/4)
   Allow rendering view models via render
-- [#9](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/9)
-  updates `UrlHelper` to implement `Zend\Expressive\Template\RouteResultObserverInterface`,
+- [zendframework/zend-expressive-zendviewrenderer#9](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/9)
+  updates `UrlHelper` to implement `Mezzio\Template\RouteResultObserverInterface`,
   and the `update()` method it defines. This allows it to observer the
   application for the `RouteResult` and store it for later URI generation.
   To accomplish this, the following additional changes were made:
-  - `Zend\Expressive\ZendView\UrlHelperFactory`  was added, for creating the
+  - `Mezzio\LaminasView\UrlHelperFactory`  was added, for creating the
     `UrlHelper` instance. This should be registered with the application service
     container.
-  - `Zend\Expressive\ZendView\ZendViewRendererFactory` was updated to look for
-    the `Zend\Expressive\ZendView\UrlHelper` service in the application service
+  - `Mezzio\LaminasView\LaminasViewRendererFactory` was updated to look for
+    the `Mezzio\LaminasView\UrlHelper` service in the application service
     container, and use it to seed the `HelperManager` when available.
-  - `Zend\Expressive\ZendView\ApplicationUrlDelegatorFactory` was created; when
-    registered as a delegator factory with the `Zend\Expressive\Application`
+  - `Mezzio\LaminasView\ApplicationUrlDelegatorFactory` was created; when
+    registered as a delegator factory with the `Mezzio\Application`
     service, it will pull the `UrlHelper` and attach it as a route result
     observer to the `Application` instance. Documentation was also provided for
     creating a Pimple extension for accomplishing this.
@@ -232,11 +232,11 @@ First stable release.
 
 ### Fixed
 
-- [#6](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/6)
+- [zendframework/zend-expressive-zendviewrenderer#6](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/6)
   Merge route result params with those provided
-- [#10](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/10)
-  updates the code to depend on [zendframework/zend-expressive-template](https://github.com/zendframework/zend-expressive-template)
-  and [zendframework/zend-expressive-router](https://github.com/zendframework/zend-expressive-router)
+- [zendframework/zend-expressive-zendviewrenderer#10](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/10)
+  updates the code to depend on [mezzio/mezzio-template](https://github.com/mezzio/mezzio-template)
+  and [mezzio/mezzio-router](https://github.com/mezzio/mezzio-router)
   instead of zendframework/zend-expressive.
 
 ## 0.2.0 - 2015-10-20
@@ -274,8 +274,8 @@ First stable release.
 
 ### Fixed
 
-- [#1](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/1)
-  adds a dependency on zendframework/zend-i18n, as it's required for use of the
+- [zendframework/zend-expressive-zendviewrenderer#1](https://github.com/zendframework/zend-expressive-zendviewrenderer/pull/1)
+  adds a dependency on laminas/laminas-i18n, as it's required for use of the
   PhpRenderer.
 
 ## 0.1.1 - 2015-10-10
@@ -296,7 +296,7 @@ Initial release.
 
 ### Fixed
 
-- Updated to zend-expressive `^0.5`
+- Updated to mezzio `^0.5`
 
 ## 0.1.0 - 2015-10-10
 
