@@ -1,17 +1,18 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-zendviewrenderer for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-zendviewrenderer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\ZendView;
+namespace MezzioTest\LaminasView;
 
+use Mezzio\Helper\ServerUrlHelper as BaseHelper;
+use Mezzio\LaminasView\ServerUrlHelper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Http\Message\UriInterface;
-use Zend\Expressive\Helper\ServerUrlHelper as BaseHelper;
-use Zend\Expressive\ZendView\ServerUrlHelper;
 
 class ServerUrlHelperTest extends TestCase
 {
