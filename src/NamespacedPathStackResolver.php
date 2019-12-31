@@ -1,20 +1,21 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-zendviewrenderer for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-zendviewrenderer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\ZendView;
+namespace Mezzio\LaminasView;
 
+use Laminas\View\Exception as ViewException;
+use Laminas\View\Renderer\RendererInterface;
+use Laminas\View\Resolver\TemplatePathStack;
 use SplFileInfo;
 use SplStack;
 use Traversable;
-use Zend\View\Exception as ViewException;
-use Zend\View\Renderer\RendererInterface;
-use Zend\View\Resolver\TemplatePathStack;
 
 use function array_key_exists;
 use function count;
@@ -66,8 +67,8 @@ class NamespacedPathStackResolver extends TemplatePathStack
     {
         $this->useViewStream = (bool) ini_get('short_open_tag');
         if ($this->useViewStream) {
-            if (! in_array('zend.view', stream_get_wrappers())) {
-                stream_wrapper_register('zend.view', 'Zend\View\Stream');
+            if (! in_array('laminas.view', stream_get_wrappers())) {
+                stream_wrapper_register('laminas.view', 'Laminas\View\Stream');
             }
         }
 
@@ -228,7 +229,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
 
                 if ($this->useStreamWrapper()) {
                     // If using a stream wrapper, prepend the spec to the path
-                    $filePath = 'zend.view://' . $filePath;
+                    $filePath = 'laminas.view://' . $filePath;
                 }
                 return $filePath;
             }

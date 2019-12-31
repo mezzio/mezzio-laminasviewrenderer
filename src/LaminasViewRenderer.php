@@ -1,25 +1,26 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-zendviewrenderer for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-zendviewrenderer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\ZendView;
+namespace Mezzio\LaminasView;
 
-use Zend\Expressive\Template\ArrayParametersTrait;
-use Zend\Expressive\Template\DefaultParamsTrait;
-use Zend\Expressive\Template\Exception;
-use Zend\Expressive\Template\TemplatePath;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\View\Helper;
-use Zend\View\Model\ModelInterface;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Renderer\RendererInterface;
-use Zend\View\Resolver\AggregateResolver;
+use Laminas\View\Helper;
+use Laminas\View\Model\ModelInterface;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Renderer\RendererInterface;
+use Laminas\View\Resolver\AggregateResolver;
+use Mezzio\Template\ArrayParametersTrait;
+use Mezzio\Template\DefaultParamsTrait;
+use Mezzio\Template\Exception;
+use Mezzio\Template\TemplatePath;
+use Mezzio\Template\TemplateRendererInterface;
 
 use function get_class;
 use function gettype;
@@ -29,7 +30,7 @@ use function is_string;
 use function sprintf;
 
 /**
- * Template implementation bridging zendframework/zend-view.
+ * Template implementation bridging laminas/laminas-view.
  *
  * This implementation provides additional capabilities.
  *
@@ -38,7 +39,7 @@ use function sprintf;
  * registers a NamespacedPathStackResolver at priority 0 (lower than
  * default) in the Aggregate to ensure we can add and resolve namespaced paths.
  */
-class ZendViewRenderer implements TemplateRendererInterface
+class LaminasViewRenderer implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
     use DefaultParamsTrait;
@@ -61,7 +62,7 @@ class ZendViewRenderer implements TemplateRendererInterface
     /**
      * Constructor
      *
-     * Allows specifying the renderer to use (any zend-view renderer is
+     * Allows specifying the renderer to use (any laminas-view renderer is
      * allowed), and optionally also the layout.
      *
      * The layout may be:
@@ -124,7 +125,7 @@ class ZendViewRenderer implements TemplateRendererInterface
      * parameter/variable, using either:
      *
      * - a string layout template name
-     * - a Zend\View\Model\ModelInterface instance
+     * - a Laminas\View\Model\ModelInterface instance
      *
      * Layouts specified with $params take precedence over layouts passed to
      * the constructor.
