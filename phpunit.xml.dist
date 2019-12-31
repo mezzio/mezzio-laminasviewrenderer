@@ -1,6 +1,6 @@
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="Zend\\Expressive zend-view PhpRenderer Tests">
+        <testsuite name="Mezzio laminas-view PhpRenderer Tests">
             <directory>./test</directory>
         </testsuite>
     </testsuites>
