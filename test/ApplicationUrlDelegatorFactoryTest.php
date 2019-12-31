@@ -1,19 +1,18 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\ZendView;
+namespace MezzioTest\LaminasView;
 
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Mezzio\Application;
+use Mezzio\LaminasView\ApplicationUrlDelegatorFactory;
+use Mezzio\LaminasView\UrlHelper;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Application;
-use Zend\Expressive\ZendView\ApplicationUrlDelegatorFactory;
-use Zend\Expressive\ZendView\UrlHelper;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ApplicationUrlDelegatorFactoryTest extends TestCase
 {

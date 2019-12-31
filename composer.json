@@ -1,16 +1,27 @@
 {
-    "name": "zendframework/zend-expressive-zendviewrenderer",
-    "description": "zend-view PhpRenderer integration for Expressive",
-    "type": "library",
+    "name": "mezzio/mezzio-laminasviewrenderer",
+    "description": "laminas-view PhpRenderer integration for Mezzio",
     "license": "BSD-3-Clause",
     "keywords": [
-        "expressive",
+        "laminas",
+        "mezzio",
         "http",
         "middleware",
         "psr",
-        "psr-7",
-        "zf2"
+        "psr-7"
     ],
+    "homepage": "https://mezzio.dev",
+    "support": {
+        "docs": "https://docs.mezzio.dev/mezzio-laminasviewrenderer/",
+        "issues": "https://github.com/mezzio/mezzio-laminasviewrenderer/issues",
+        "source": "https://github.com/mezzio/mezzio-laminasviewrenderer",
+        "rss": "https://github.com/mezzio/mezzio-laminasviewrenderer/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
+    },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
@@ -19,34 +30,35 @@
     "require": {
         "php": ">=5.5",
         "container-interop/container-interop": "^1.1",
-        "psr/http-message": "^1.0",
-        "zendframework/zend-expressive-router": "^1.0",
-        "zendframework/zend-expressive-template": "^1.0.1",
-        "zendframework/zend-filter": "^2.5",
-        "zendframework/zend-i18n": "^2.5",
-        "zendframework/zend-servicemanager": "^2.5",
-        "zendframework/zend-view": "^2.5"
+        "laminas/laminas-filter": "^2.5",
+        "laminas/laminas-i18n": "^2.5",
+        "laminas/laminas-servicemanager": "^2.5",
+        "laminas/laminas-view": "^2.5",
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "mezzio/mezzio-router": "^1.0",
+        "mezzio/mezzio-template": "^1.0.1",
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
+        "laminas/laminas-diactoros": "^1.2",
+        "mezzio/mezzio": "~1.0.0-dev@dev",
         "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-diactoros": "^1.2",
-        "zendframework/zend-expressive": "~1.0.0-dev@dev"
-    },
-    "autoload": {
-      "psr-4": {
-        "Zend\\Expressive\\ZendView\\": "src/"
-      }
-    },
-    "autoload-dev": {
-      "psr-4": {
-        "ZendTest\\Expressive\\ZendView\\": "test/"
-      }
+        "squizlabs/php_codesniffer": "^2.3"
     },
     "suggest": {
-        "mouf/pimple-interop": "^1.0 to use Pimple for dependency injection",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
-        "zendframework/zend-expressive": "^1.0 if you wish to use the ApplicationUrlDelegatorFactory"
+        "mezzio/mezzio": "^1.0 if you wish to use the ApplicationUrlDelegatorFactory",
+        "mouf/pimple-interop": "^1.0 to use Pimple for dependency injection"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mezzio\\LaminasView\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MezzioTest\\LaminasView\\": "test/"
+        }
     },
     "scripts": {
         "check": [
@@ -56,5 +68,8 @@
         "cs": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit"
+    },
+    "replace": {
+        "zendframework/zend-expressive-zendviewrenderer": "self.version"
     }
 }
