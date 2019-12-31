@@ -1,37 +1,37 @@
-# zend-view PhpRenderer Integration for Expressive
+# laminas-view PhpRenderer Integration for Mezzio
 
-[![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-zendviewrenderer.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-zendviewrenderer)
-[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-zendviewrenderer/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-zendviewrenderer?branch=master)
+[![Build Status](https://travis-ci.org/mezzio/mezzio-laminasviewrenderer.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-laminasviewrenderer)
+[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-laminasviewrenderer/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-laminasviewrenderer?branch=master)
 
-[zend-view PhpRenderer](https://github.com/zendframework/zend-view) integration
-for [Expressive](https://github.com/zendframework/zend-expressive).
+[laminas-view PhpRenderer](https://github.com/laminas/laminas-view) integration
+for [Mezzio](https://github.com/mezzio/mezzio).
 
 ## Installation
 
 Install this library using composer:
 
 ```bash
-$ composer require zendframework/zend-expressive-zendviewrenderer
+$ composer require mezzio/mezzio-laminasviewrenderer
 ```
 
 We recommend using [PSR-11](https://www.php-fig.org/psr/psr-11/) compatible
 dependency injection container. We can recommend the following implementations:
 
-- [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
-  `composer require zendframework/zend-servicemanager`
+- [laminas-servicemanager](https://github.com/laminas/laminas-servicemanager):
+  `composer require laminas/laminas-servicemanager`
 - [Pimple](https://github.com/silexphp/Pimple):
-  `composer require zendframework/zend-pimple-config`
+  `composer require laminas/laminas-pimple-config`
 - [Aura.Di](https://github.com/auraphp/Aura.Di):
-  `composer require zendframework/zend-auradi-config`
+  `composer require laminas/laminas-auradi-config`
 
 ## View Helpers
 
-To use view helpers, the `ZendViewRendererFactory`:
+To use view helpers, the `LaminasViewRendererFactory`:
 
 - requires a `config` service; with
 - a `view_helpers` sub-key; which
-- follows standard zend-servicemanager configuration.
+- follows standard laminas-servicemanager configuration.
 
 ## Documentation
 
-Browse online at https://docs.zendframework.com/zend-expressive/features/template/zend-view/.
+Browse online at https://docs.mezzio.dev/mezzio/features/template/laminas-view/.
