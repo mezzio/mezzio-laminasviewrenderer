@@ -1,8 +1,8 @@
 <?php
 
-namespace ZendTest\Expressive\ZendView\TestAsset;
+namespace MezzioTest\LaminasView\TestAsset;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 
 class TestHelper extends AbstractHelper
 {
