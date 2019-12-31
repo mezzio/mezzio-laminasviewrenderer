@@ -1,20 +1,19 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\ZendView;
+namespace MezzioTest\LaminasView;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\HelperPluginManager;
+use Mezzio\LaminasView\HelperPluginManagerFactory;
+use MezzioTest\LaminasView\TestAsset\TestHelper;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\ZendView\HelperPluginManagerFactory;
-use Zend\ServiceManager\ServiceManager;
-use Zend\View\HelperPluginManager;
-use ZendTest\Expressive\ZendView\TestAsset\TestHelper;
 
 class HelperPluginManagerFactoryTest extends TestCase
 {
