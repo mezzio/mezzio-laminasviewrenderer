@@ -12,7 +12,7 @@
     ],
     "homepage": "https://mezzio.dev",
     "support": {
-        "docs": "https://docs.mezzio.dev/mezzio-laminasviewrenderer/",
+        "docs": "https://docs.mezzio.dev/mezzio/features/template/laminas-view/",
         "issues": "https://github.com/mezzio/mezzio-laminasviewrenderer/issues",
         "source": "https://github.com/mezzio/mezzio-laminasviewrenderer",
         "rss": "https://github.com/mezzio/mezzio-laminasviewrenderer/releases.atom",
