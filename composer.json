@@ -73,6 +73,6 @@
         "license-check": "docheader check src/ test/"
     },
     "replace": {
-        "zendframework/zend-expressive-zendviewrenderer": "self.version"
+        "zendframework/zend-expressive-zendviewrenderer": "^2.2.0"
     }
 }
