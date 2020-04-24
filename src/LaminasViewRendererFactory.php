@@ -122,7 +122,11 @@ class LaminasViewRendererFactory
                     BaseUrlHelper::class
                 ));
             }
-            return new UrlHelper($container->has(BaseUrlHelper::class) ? $container->get(BaseUrlHelper::class) : $container->get(\Zend\Expressive\Helper\UrlHelper::class));
+            return new UrlHelper(
+                $container->has(BaseUrlHelper::class)
+                    ? $container->get(BaseUrlHelper::class)
+                    : $container->get(\Zend\Expressive\Helper\UrlHelper::class)
+            );
         });
 
         $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
@@ -137,7 +141,11 @@ class LaminasViewRendererFactory
                     BaseServerUrlHelper::class
                 ));
             }
-            return new ServerUrlHelper($container->has(BaseServerUrlHelper::class) ? $container->get(BaseServerUrlHelper::class) : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class));
+            return new ServerUrlHelper(
+                $container->has(BaseServerUrlHelper::class)
+                    ? $container->get(BaseServerUrlHelper::class)
+                    : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class)
+            );
         });
 
         $renderer->setHelperPluginManager($helpers);
