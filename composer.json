@@ -23,10 +23,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "2.2.x-dev",
-            "dev-develop": "3.0.x-dev"
-        },
         "laminas": {
             "config-provider": "Mezzio\\LaminasView\\ConfigProvider"
         }
