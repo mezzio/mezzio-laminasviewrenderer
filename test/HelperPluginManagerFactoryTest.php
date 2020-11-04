@@ -15,16 +15,19 @@ use Laminas\View\HelperPluginManager;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
 use MezzioTest\LaminasView\TestAsset\TestHelper;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 
 class HelperPluginManagerFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ServiceManager|ProphecyInterface
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = $this->prophesize(ServiceManager::class);
     }

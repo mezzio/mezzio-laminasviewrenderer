@@ -13,17 +13,20 @@ namespace MezzioTest\LaminasView;
 use Mezzio\Helper\ServerUrlHelper as BaseHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Http\Message\UriInterface;
 
 class ServerUrlHelperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var BaseHelper|ProphecyInterface
      */
     private $baseHelper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->baseHelper = $this->prophesize(BaseHelper::class);
     }

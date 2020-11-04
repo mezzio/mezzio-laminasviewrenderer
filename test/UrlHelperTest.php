@@ -13,16 +13,19 @@ namespace MezzioTest\LaminasView;
 use Mezzio\Helper\UrlHelper as BaseHelper;
 use Mezzio\LaminasView\UrlHelper;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 
 class UrlHelperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var BaseHelper|ProphecyInterface
      */
     private $baseHelper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->baseHelper = $this->prophesize(BaseHelper::class);
     }
