@@ -41,7 +41,7 @@ class LaminasViewRendererTest extends TestCase
      */
     private $render;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resolver = new TemplatePathStack();
         $this->render = new PhpRenderer();

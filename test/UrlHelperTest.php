@@ -22,7 +22,7 @@ class UrlHelperTest extends TestCase
      */
     private $baseHelper;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->baseHelper = $this->prophesize(BaseHelper::class);
     }
