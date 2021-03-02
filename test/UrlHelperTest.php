@@ -12,65 +12,65 @@ namespace MezzioTest\LaminasView;
 
 use Mezzio\Helper\UrlHelper as BaseHelper;
 use Mezzio\LaminasView\UrlHelper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ProphecyInterface;
 
 class UrlHelperTest extends TestCase
 {
-    /**
-     * @var BaseHelper|ProphecyInterface
-     */
+    /** @var BaseHelper|MockObject */
     private $baseHelper;
+    /** @var UrlHelper */
+    private $helper;
 
     protected function setUp(): void
     {
-        $this->baseHelper = $this->prophesize(BaseHelper::class);
+        $this->baseHelper = $this->createMock(BaseHelper::class);
+        $this->helper = new UrlHelper($this->baseHelper);
     }
 
-    public function createHelper()
+    public function testInvocationProxiesToBaseHelper(): void
     {
-        return new UrlHelper($this->baseHelper->reveal());
+        $this->baseHelper
+            ->expects(self::once())
+            ->method('generate')
+            ->with('resource', ['id' => 'sha1'], [], null, [])
+            ->willReturn('/resource/sha1');
+        $this->assertEquals('/resource/sha1', ($this->helper)('resource', ['id' => 'sha1']));
     }
 
-    public function testInvocationProxiesToBaseHelper()
+    public function testUrlHelperAcceptsQueryParametersFragmentAndOptions(): void
     {
-        $this->baseHelper->generate('resource', ['id' => 'sha1'], [], null, [])->willReturn('/resource/sha1');
-        $helper = $this->createHelper();
-        $this->assertEquals('/resource/sha1', $helper('resource', ['id' => 'sha1']));
-    }
+        $this->baseHelper
+            ->expects(self::once())
+            ->method('generate')
+            ->with(
+                'resource',
+                ['id' => 'sha1'],
+                ['foo' => 'bar'],
+                'fragment',
+                ['reuse_result_params' => true]
+            )->willReturn('PATH');
 
-    public function testUrlHelperAcceptsQueryParametersFragmentAndOptions()
-    {
-        $this->baseHelper->generate(
-            'resource',
-            ['id' => 'sha1'],
-            ['foo' => 'bar'],
-            'fragment',
-            ['reuse_result_params' => true]
-        )->willReturn('PATH');
-        $helper = $this->createHelper();
         $this->assertEquals(
             'PATH',
-            $helper('resource', ['id' => 'sha1'], ['foo' => 'bar'], 'fragment', ['reuse_result_params' => true])
+            ($this->helper)('resource', ['id' => 'sha1'], ['foo' => 'bar'], 'fragment', ['reuse_result_params' => true])
         );
     }
 
     /**
      * In particular, the fragment identifier needs to be null.
      */
-    public function testUrlHelperPassesExpectedDefaultsToBaseHelper()
+    public function testUrlHelperPassesExpectedDefaultsToBaseHelper(): void
     {
-        $this->baseHelper->generate(
-            null,
-            [],
-            [],
-            null,
-            []
-        )->willReturn('PATH');
-        $helper = $this->createHelper();
+        $this->baseHelper
+            ->expects(self::once())
+            ->method('generate')
+            ->with(null, [], [], null, [])
+            ->willReturn('PATH');
+
         $this->assertEquals(
             'PATH',
-            $helper()
+            ($this->helper)()
         );
     }
 }

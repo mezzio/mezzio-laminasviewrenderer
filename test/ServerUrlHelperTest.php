@@ -12,39 +12,44 @@ namespace MezzioTest\LaminasView;
 
 use Mezzio\Helper\ServerUrlHelper as BaseHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Http\Message\UriInterface;
+
+use function PHPUnit\Framework\identicalTo;
 
 class ServerUrlHelperTest extends TestCase
 {
-    /**
-     * @var BaseHelper|ProphecyInterface
-     */
+    /** @var ServerUrlHelper */
+    private $helper;
+    /** @var BaseHelper|MockObject */
     private $baseHelper;
 
     protected function setUp(): void
     {
-        $this->baseHelper = $this->prophesize(BaseHelper::class);
+        $this->baseHelper = $this->createMock(BaseHelper::class);
+        $this->helper = new ServerUrlHelper($this->baseHelper);
     }
 
-    public function createHelper()
+    public function testInvocationProxiesToBaseHelper(): void
     {
-        return new ServerUrlHelper($this->baseHelper->reveal());
+        $this->baseHelper
+            ->expects(self::once())
+            ->method('generate')
+            ->with('/foo')
+            ->willReturn('https://example.com/foo');
+
+        $this->assertEquals('https://example.com/foo', ($this->helper)('/foo'));
     }
 
-    public function testInvocationProxiesToBaseHelper()
+    public function testSetUriProxiesToBaseHelper(): void
     {
-        $this->baseHelper->generate('/foo')->willReturn('https://example.com/foo');
-        $helper = $this->createHelper();
-        $this->assertEquals('https://example.com/foo', $helper('/foo'));
-    }
+        $uri = $this->createMock(UriInterface::class);
+        $this->baseHelper
+            ->expects(self::once())
+            ->method('setUri')
+            ->with(identicalTo($uri));
 
-    public function testSetUriProxiesToBaseHelper()
-    {
-        $uri = $this->prophesize(UriInterface::class);
-        $this->baseHelper->setUri($uri->reveal())->shouldBeCalled();
-        $helper = $this->createHelper();
-        $helper->setUri($uri->reveal());
+        $this->helper->setUri($uri);
     }
 }
