@@ -39,7 +39,7 @@
         "psr/http-message": "^1.0.1"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~1.0.0",
+        "laminas/laminas-coding-standard": "~2.1.4",
         "malukenho/docheader": "^0.1.5",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.5"
