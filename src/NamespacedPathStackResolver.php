@@ -13,6 +13,7 @@ namespace Mezzio\LaminasView;
 use Laminas\View\Exception as ViewException;
 use Laminas\View\Renderer\RendererInterface;
 use Laminas\View\Resolver\TemplatePathStack;
+use Laminas\View\Stream;
 use SplFileInfo;
 use SplStack;
 use Traversable;
@@ -52,9 +53,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
 {
     public const DEFAULT_NAMESPACE = '__DEFAULT__';
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $paths = [];
 
     /**
@@ -63,12 +62,12 @@ class NamespacedPathStackResolver extends TemplatePathStack
      * Overrides parent constructor to allow specifying paths as an associative
      * array.
      */
-    public function __construct(iterable $options = null)
+    public function __construct(?iterable $options = null)
     {
         $this->useViewStream = (bool) ini_get('short_open_tag');
         if ($this->useViewStream) {
             if (! in_array('laminas.view', stream_get_wrappers())) {
-                stream_wrapper_register('laminas.view', 'Laminas\View\Stream');
+                stream_wrapper_register('laminas.view', Stream::class);
             }
         }
 
@@ -81,10 +80,10 @@ class NamespacedPathStackResolver extends TemplatePathStack
      * Add a path to the stack with the given namespace.
      *
      * @param string $path
-     * @throws ViewException\InvalidArgumentException for an invalid path
-     * @throws ViewException\InvalidArgumentException for an invalid namespace
+     * @throws ViewException\InvalidArgumentException For an invalid path.
+     * @throws ViewException\InvalidArgumentException For an invalid namespace.
      */
-    public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE) : void
+    public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE): void
     {
         if (! is_string($path)) {
             throw new ViewException\InvalidArgumentException(sprintf(
@@ -113,7 +112,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
     /**
      * Add many paths to the stack at once.
      */
-    public function addPaths(array $paths) : void
+    public function addPaths(array $paths): void
     {
         foreach ($paths as $namespace => $path) {
             if (! is_string($namespace)) {
@@ -128,9 +127,9 @@ class NamespacedPathStackResolver extends TemplatePathStack
      * Overwrite all existing paths with the provided paths.
      *
      * @param  SplStack|array $paths
-     * @throws ViewException\InvalidArgumentException for invalid path types.
+     * @throws ViewException\InvalidArgumentException For invalid path types.
      */
-    public function setPaths($paths) : void
+    public function setPaths($paths): void
     {
         if ($paths instanceof Traversable) {
             $paths = iterator_to_array($paths);
@@ -139,7 +138,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         if (! is_array($paths)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid paths provided; must be an array or Traversable, received %s',
-                (is_object($paths) ? get_class($paths) : gettype($paths))
+                is_object($paths) ? get_class($paths) : gettype($paths)
             ));
         }
 
@@ -150,7 +149,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
     /**
      * Clear all paths.
      */
-    public function clearPaths() : void
+    public function clearPaths(): void
     {
         $this->paths = [];
     }
@@ -161,7 +160,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
      * @param string $name
      * @throws ViewException\DomainException
      */
-    public function resolve($name, RendererInterface $renderer = null) : ?string
+    public function resolve($name, ?RendererInterface $renderer = null): ?string
     {
         $namespace = self::DEFAULT_NAMESPACE;
         $template  = $name;
@@ -185,7 +184,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
 
         // Ensure we have the expected file extension
         $defaultSuffix = $this->getDefaultSuffix();
-        if (pathinfo($template, PATHINFO_EXTENSION) == '') {
+        if (pathinfo($template, PATHINFO_EXTENSION) === '') {
             $template .= '.' . $defaultSuffix;
         }
 
@@ -209,7 +208,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
      *
      * @return null|string String path on success; null on failure
      */
-    private function getPathFromNamespace(string $template, string $namespace) : ?string
+    private function getPathFromNamespace(string $template, string $namespace): ?string
     {
         if (! array_key_exists($namespace, $this->paths)) {
             return null;

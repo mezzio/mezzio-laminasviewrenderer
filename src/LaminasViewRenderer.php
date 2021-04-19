@@ -44,19 +44,13 @@ class LaminasViewRenderer implements TemplateRendererInterface
     use ArrayParametersTrait;
     use DefaultParamsTrait;
 
-    /**
-     * @var ViewModel
-     */
+    /** @var ViewModel */
     private $layout;
 
-    /**
-     * @var RendererInterface
-     */
+    /** @var RendererInterface */
     private $renderer;
 
-    /**
-     * @var NamespacedPathStackResolver
-     */
+    /** @var NamespacedPathStackResolver */
     private $resolver;
 
     /**
@@ -74,12 +68,11 @@ class LaminasViewRenderer implements TemplateRendererInterface
      * omitting the layout indicates no layout should be used by default when
      * rendering.
      *
-     * @param null|RendererInterface $renderer
      * @param null|string|ModelInterface $layout
      * @param null|string $defaultSuffix The default template file suffix, if any
-     * @throws Exception\InvalidArgumentException for invalid $layout types
+     * @throws Exception\InvalidArgumentException For invalid $layout types.
      */
-    public function __construct(RendererInterface $renderer = null, $layout = null, string $defaultSuffix = null)
+    public function __construct(?RendererInterface $renderer = null, $layout = null, ?string $defaultSuffix = null)
     {
         if (null === $renderer) {
             $renderer = $this->createRenderer();
@@ -105,7 +98,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Layout must be a string layout template name or a %s instance; received %s',
                 ModelInterface::class,
-                (is_object($layout) ? get_class($layout) : gettype($layout))
+                is_object($layout) ? get_class($layout) : gettype($layout)
             ));
         }
 
@@ -114,7 +107,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
         if (null !== $defaultSuffix) {
             $this->resolver->setDefaultSuffix($defaultSuffix);
         }
-        $this->layout   = $layout;
+        $this->layout = $layout;
     }
 
     /**
@@ -128,11 +121,10 @@ class LaminasViewRenderer implements TemplateRendererInterface
      * - a Laminas\View\Model\ModelInterface instance
      *
      * Layouts specified with $params take precedence over layouts passed to
-     * the constructor.
      *
      * @param array|ModelInterface|object $params
      */
-    public function render(string $name, $params = []) : string
+    public function render(string $name, $params = []): string
     {
         $viewModel = $params instanceof ModelInterface
             ? $this->mergeViewModel($name, $params)
@@ -149,7 +141,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
     /**
      * Add a path for templates.
      */
-    public function addPath(string $path, string $namespace = null) : void
+    public function addPath(string $path, ?string $namespace = null): void
     {
         $this->resolver->addPath($path, $namespace);
     }
@@ -159,12 +151,13 @@ class LaminasViewRenderer implements TemplateRendererInterface
      *
      * @return TemplatePath[]
      */
-    public function getPaths() : array
+    public function getPaths(): array
     {
         $paths = [];
 
         foreach ($this->resolver->getPaths() as $namespace => $namespacedPaths) {
-            if ($namespace === NamespacedPathStackResolver::DEFAULT_NAMESPACE
+            if (
+                $namespace === NamespacedPathStackResolver::DEFAULT_NAMESPACE
                 || empty($namespace)
                 || is_int($namespace)
             ) {
@@ -197,13 +190,13 @@ class LaminasViewRenderer implements TemplateRendererInterface
     /**
      * Do a recursive, depth-first rendering of a view model.
      *
-     * @throws Exception\RenderingException if it encounters a terminal child.
+     * @throws Exception\RenderingException If it encounters a terminal child.
      */
     private function renderModel(
         ModelInterface $model,
         RendererInterface $renderer,
-        ModelInterface $root = null
-    ) : string {
+        ?ModelInterface $root = null
+    ): string {
         if (! $root) {
             $root = $model;
         }
@@ -218,7 +211,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
                 continue;
             }
 
-            $child  = $this->mergeViewModel($child->getTemplate(), $child);
+            $child = $this->mergeViewModel($child->getTemplate(), $child);
 
             if ($child !== $root) {
                 $viewModelHelper = $renderer->plugin(Helper\ViewModel::class);
@@ -242,7 +235,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
     /**
      * Returns a PhpRenderer object
      */
-    private function createRenderer() : PhpRenderer
+    private function createRenderer(): PhpRenderer
     {
         $renderer = new PhpRenderer();
         $renderer->setResolver($this->getDefaultResolver());
@@ -252,7 +245,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
     /**
      * Get the default resolver
      */
-    private function getDefaultResolver() : AggregateResolver
+    private function getDefaultResolver(): AggregateResolver
     {
         $resolver = new AggregateResolver();
         $this->injectNamespacedResolver($resolver);
@@ -264,12 +257,12 @@ class LaminasViewRenderer implements TemplateRendererInterface
      *
      * A priority of 0 is used, to ensure it is the last queried.
      */
-    private function injectNamespacedResolver(AggregateResolver $aggregate) : void
+    private function injectNamespacedResolver(AggregateResolver $aggregate): void
     {
         $aggregate->attach(new NamespacedPathStackResolver(), 0);
     }
 
-    private function hasNamespacedResolver(AggregateResolver $aggregate) : bool
+    private function hasNamespacedResolver(AggregateResolver $aggregate): bool
     {
         foreach ($aggregate as $resolver) {
             if ($resolver instanceof NamespacedPathStackResolver) {
@@ -280,7 +273,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
         return false;
     }
 
-    private function getNamespacedResolver(AggregateResolver $aggregate) : ?NamespacedPathStackResolver
+    private function getNamespacedResolver(AggregateResolver $aggregate): ?NamespacedPathStackResolver
     {
         foreach ($aggregate as $resolver) {
             if ($resolver instanceof NamespacedPathStackResolver) {
@@ -296,7 +289,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
      *
      * @param string $name Template name.
      */
-    private function mergeViewModel(string $name, ModelInterface $model) : ModelInterface
+    private function mergeViewModel(string $name, ModelInterface $model): ModelInterface
     {
         $params = $this->mergeParams(
             $name,
@@ -325,7 +318,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
      * otherwise, a view model representing the layout, with the provided
      * view model as a child, is returned.
      */
-    private function prepareLayout(ModelInterface $viewModel) : ModelInterface
+    private function prepareLayout(ModelInterface $viewModel): ModelInterface
     {
         $providedLayout = $viewModel->getVariable('layout', null);
         if (is_string($providedLayout) && ! empty($providedLayout)) {

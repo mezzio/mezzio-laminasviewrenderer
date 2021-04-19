@@ -28,7 +28,7 @@ class ServerUrlHelperTest extends TestCase
     protected function setUp(): void
     {
         $this->baseHelper = $this->createMock(BaseHelper::class);
-        $this->helper = new ServerUrlHelper($this->baseHelper);
+        $this->helper     = new ServerUrlHelper($this->baseHelper);
     }
 
     public function testInvocationProxiesToBaseHelper(): void

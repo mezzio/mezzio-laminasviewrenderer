@@ -12,27 +12,28 @@ namespace Mezzio\LaminasView;
 
 use Laminas\View\HelperPluginManager;
 use Mezzio\Template\TemplateRendererInterface;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 
 class ConfigProvider
 {
-    public function __invoke() : array
+    public function __invoke(): array
     {
         return [
             'dependencies' => $this->getDependencies(),
-            'templates' => $this->getTemplates(),
+            'templates'    => $this->getTemplates(),
         ];
     }
 
-    public function getDependencies() : array
+    public function getDependencies(): array
     {
         return [
-            'aliases' => [
+            'aliases'   => [
                 TemplateRendererInterface::class => LaminasViewRenderer::class,
 
                 // Legacy Zend Framework aliases
                 \Zend\Expressive\Template\TemplateRendererInterface::class => TemplateRendererInterface::class,
-                \Zend\View\HelperPluginManager::class => HelperPluginManager::class,
-                \Zend\Expressive\ZendView\ZendViewRenderer::class => LaminasViewRenderer::class,
+                \Zend\View\HelperPluginManager::class                      => HelperPluginManager::class,
+                ZendViewRenderer::class                                    => LaminasViewRenderer::class,
             ],
             'factories' => [
                 HelperPluginManager::class => HelperPluginManagerFactory::class,
@@ -41,12 +42,12 @@ class ConfigProvider
         ];
     }
 
-    public function getTemplates() : array
+    public function getTemplates(): array
     {
         return [
             'extension' => 'phtml',
-            'layout' => 'layout::default',
-            'paths' => [],
+            'layout'    => 'layout::default',
+            'paths'     => [],
         ];
     }
 }

@@ -42,7 +42,9 @@ class HelperPluginManagerFactoryTest extends TestCase
         return $factory($this->container);
     }
 
-    /** @param array<array-key, mixed> */
+    /**
+     * @psalm-param array<array-key, mixed> $configuration
+     */
     private function containerWillHaveConfiguration(array $configuration): void
     {
         $this->container
