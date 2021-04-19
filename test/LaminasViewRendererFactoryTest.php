@@ -25,6 +25,7 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Template\TemplatePath;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
@@ -36,12 +37,14 @@ use const DIRECTORY_SEPARATOR;
 
 class LaminasViewRendererFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ContainerInterface|ProphecyInterface
     */
     private $container;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }
@@ -154,7 +157,7 @@ class LaminasViewRendererFactoryTest extends TestCase
     public function testUnconfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view)
     {
         $paths = $view->getPaths();
-        $this->assertInternalType('array', $paths);
+        $this->assertIsArray($paths);
         $this->assertEmpty($paths);
     }
 
