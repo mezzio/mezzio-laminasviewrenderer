@@ -14,44 +14,64 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
 use MezzioTest\LaminasView\TestAsset\TestHelper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ProphecyInterface;
 
 class HelperPluginManagerFactoryTest extends TestCase
 {
-    /**
-     * @var ServiceManager|ProphecyInterface
-     */
+    /** @var ServiceManager|MockObject */
     private $container;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->container = $this->prophesize(ServiceManager::class);
+        $this->container = $this->createMock(ServiceManager::class);
     }
 
-    public function testCallingFactoryWithNoConfigReturnsHelperPluginManagerInstance()
+    public function testCallingFactoryWithNoConfigReturnsHelperPluginManagerInstance(): HelperPluginManager
     {
-        $this->container->has('config')->willReturn(false);
+        $this->container
+            ->expects(self::once())
+            ->method('has')
+            ->with('config')
+            ->willReturn(false);
+
+        $this->container->expects(self::never())->method('get');
+
         $factory = new HelperPluginManagerFactory();
-        $manager = $factory($this->container->reveal());
-        $this->assertInstanceOf(HelperPluginManager::class, $manager);
-        return $manager;
+
+        return $factory($this->container);
     }
 
-    public function testCallingFactoryWithNoViewHelperConfigReturnsHelperPluginManagerInstance()
+    /**
+     * @psalm-param array<array-key, mixed> $configuration
+     */
+    private function containerWillHaveConfiguration(array $configuration): void
     {
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn([]);
+        $this->container
+            ->expects(self::once())
+            ->method('has')
+            ->with('config')
+            ->willReturn(true);
+
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($configuration);
+    }
+
+    public function testCallingFactoryWithNoViewHelperConfigReturnsHelperPluginManagerInstance(): HelperPluginManager
+    {
+        $this->containerWillHaveConfiguration([]);
+
         $factory = new HelperPluginManagerFactory();
-        $manager = $factory($this->container->reveal());
-        $this->assertInstanceOf(HelperPluginManager::class, $manager);
-        return $manager;
+
+        return $factory($this->container);
     }
 
-    public function testCallingFactoryWithConfigAllowsAddingHelpers()
+    public function testCallingFactoryWithConfigAllowsAddingHelpers(): void
     {
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn(
+        $this->containerWillHaveConfiguration(
             [
                 'view_helpers' => [
                     'invokables' => [
@@ -60,11 +80,11 @@ class HelperPluginManagerFactoryTest extends TestCase
                 ],
             ]
         );
+
         $factory = new HelperPluginManagerFactory();
-        $manager = $factory($this->container->reveal());
-        $this->assertInstanceOf(HelperPluginManager::class, $manager);
+        $manager = $factory($this->container);
+
         $this->assertTrue($manager->has('testHelper'));
         $this->assertInstanceOf(TestHelper::class, $manager->get('testHelper'));
-        return $manager;
     }
 }

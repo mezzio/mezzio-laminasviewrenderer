@@ -16,7 +16,7 @@ use Psr\Container\ContainerInterface;
 
 class HelperPluginManagerFactory
 {
-    public function __invoke(ContainerInterface $container) : HelperPluginManager
+    public function __invoke(ContainerInterface $container): HelperPluginManager
     {
         $manager = new HelperPluginManager($container);
 
