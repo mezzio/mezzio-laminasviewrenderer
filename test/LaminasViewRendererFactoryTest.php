@@ -23,45 +23,53 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Template\TemplatePath;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
 use function sprintf;
+use function var_export;
 
 use const DIRECTORY_SEPARATOR;
 
 class LaminasViewRendererFactoryTest extends TestCase
 {
-    /**
-     * @var ContainerInterface|ProphecyInterface
-    */
+    use ProphecyTrait;
+
+    /** @var ContainerInterface|ProphecyInterface */
     private $container;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function getConfigurationPaths()
+    /**
+     * @psalm-return array<array-key, string|string[]>
+     */
+    public function getConfigurationPaths(): array
     {
         return [
             'foo' => __DIR__ . '/TestAsset/bar',
-            1 => __DIR__ . '/TestAsset/one',
+            1     => __DIR__ . '/TestAsset/one',
             'bar' => [
                 __DIR__ . '/TestAsset/baz',
                 __DIR__ . '/TestAsset/bat',
             ],
-            0 => [
+            0     => [
                 __DIR__ . '/TestAsset/two',
                 __DIR__ . '/TestAsset/three',
             ],
         ];
     }
 
-    public function assertPathsHasNamespace($namespace, array $paths, $message = null)
-    {
+    public function assertPathsHasNamespace(
+        ?string $namespace,
+        array $paths,
+        ?string $message = null
+    ): void {
         $message = $message ?: sprintf('Paths do not contain namespace %s', $namespace ?: 'null');
 
         $found = false;
@@ -75,8 +83,12 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertTrue($found, $message);
     }
 
-    public function assertPathNamespaceCount($expected, $namespace, array $paths, $message = null)
-    {
+    public function assertPathNamespaceCount(
+        int $expected,
+        ?string $namespace,
+        array $paths,
+        ?string $message = null
+    ): void {
         $message = $message ?: sprintf('Did not find %d paths with namespace %s', $expected, $namespace ?: 'null');
 
         $count = 0;
@@ -89,8 +101,15 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertSame($expected, $count, $message);
     }
 
-    public function assertPathNamespaceContains($expected, $namespace, array $paths, $message = null)
-    {
+    /**
+     * @param mixed $expected
+     */
+    public function assertPathNamespaceContains(
+        $expected,
+        ?string $namespace,
+        array $paths,
+        ?string $message = null
+    ): void {
         $message = $message ?: sprintf('Did not find path %s in namespace %s', $expected, $namespace ?: null);
 
         $found = [];
@@ -103,6 +122,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertContains($expected, $found, $message);
     }
 
+    /**
+     * @return mixed
+     */
     public function fetchPhpRenderer(LaminasViewRenderer $view)
     {
         $r = new ReflectionProperty($view, 'renderer');
@@ -110,7 +132,10 @@ class LaminasViewRendererFactoryTest extends TestCase
         return $r->getValue($view);
     }
 
-    public function injectContainerService($name, $service)
+    /**
+     * @param mixed $service Service to return from container
+     */
+    public function injectContainerService(string $name, $service): void
     {
         $this->container->has($name)->willReturn(true);
         $this->container->get($name)->willReturn(
@@ -130,7 +155,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         );
     }
 
-    public function testCallingFactoryWithNoConfigReturnsLaminasViewInstance()
+    public function testCallingFactoryWithNoConfigReturnsLaminasViewInstance(): LaminasViewRenderer
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
@@ -146,13 +171,11 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     /**
      * @depends testCallingFactoryWithNoConfigReturnsLaminasViewInstance
-     *
-     * @param LaminasViewRenderer $view
      */
     public function testUnconfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view)
     {
         $paths = $view->getPaths();
-        $this->assertInternalType('array', $paths);
+        $this->assertIsArray($paths);
         $this->assertEmpty($paths);
     }
 
@@ -171,7 +194,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'layout');
         $r->setAccessible(true);
@@ -195,7 +218,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $paths = $view->getPaths();
         $this->assertPathsHasNamespace('foo', $paths);
@@ -239,7 +262,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'renderer');
         $r->setAccessible(true);
@@ -275,11 +298,11 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
 
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'resolver');
         $r->setAccessible(true);
-        $resolver  = $r->getValue($view);
+        $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(
             NamespacedPathStackResolver::class,
@@ -305,11 +328,11 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
 
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'resolver');
         $r->setAccessible(true);
-        $resolver  = $r->getValue($view);
+        $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(
             NamespacedPathStackResolver::class,
@@ -340,7 +363,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('serverurl'));
     }
 
-    public function testWillUseHelperManagerFromContainer()
+    public function testWillUseHelperManagerFromContainer(): HelperPluginManager
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
@@ -361,8 +384,6 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     /**
      * @depends testWillUseHelperManagerFromContainer
-     *
-     * @param HelperPluginManager $helpers
      */
     public function testInjectsCustomHelpersIntoHelperManagerFromContainer(HelperPluginManager $helpers)
     {
@@ -374,14 +395,14 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testWillUseRendererFromContainer()
     {
-        $engine = new PhpRenderer;
+        $engine = new PhpRenderer();
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
         $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
         $this->injectContainerService(PhpRenderer::class, $engine);
 
         $factory = new LaminasViewRendererFactory();
-        $view = $factory($this->container->reveal());
+        $view    = $factory($this->container->reveal());
 
         $composed = $this->fetchPhpRenderer($view);
         $this->assertSame($engine, $composed);

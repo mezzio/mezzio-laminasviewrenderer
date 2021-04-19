@@ -1,7 +1,6 @@
 # laminas-view PhpRenderer Integration for Mezzio
 
-[![Build Status](https://travis-ci.com/mezzio/mezzio-laminasviewrenderer.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-laminasviewrenderer)
-[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-laminasviewrenderer/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-laminasviewrenderer?branch=master)
+[![Build Status](https://github.com/mezzio/mezzio-laminasviewrenderer/workflows/Continuous%20Integration/badge.svg)](https://github.com/mezzio/mezzio-laminasviewrenderer/actions?query=workflow%3A"Continuous+Integration")
 
 [laminas-view PhpRenderer](https://github.com/laminas/laminas-view) integration
 for [Mezzio](https://github.com/mezzio/mezzio).

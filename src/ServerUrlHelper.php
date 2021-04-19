@@ -19,9 +19,7 @@ use Psr\Http\Message\UriInterface;
  */
 class ServerUrlHelper extends AbstractHelper
 {
-    /**
-     * @var BaseHelper
-     */
+    /** @var BaseHelper */
     private $helper;
 
     public function __construct(BaseHelper $helper)
@@ -34,7 +32,7 @@ class ServerUrlHelper extends AbstractHelper
      *
      * Proxies to `Mezzio\Helper\ServerUrlHelper::generate()`.
      */
-    public function __invoke(string $path = null) : string
+    public function __invoke(?string $path = null): string
     {
         return $this->helper->generate($path);
     }
@@ -42,7 +40,7 @@ class ServerUrlHelper extends AbstractHelper
     /**
      * Proxies to `Mezzio\Helper\ServerUrlHelper::setUri()`
      */
-    public function setUri(UriInterface $uri) : void
+    public function setUri(UriInterface $uri): void
     {
         $this->helper->setUri($uri);
     }

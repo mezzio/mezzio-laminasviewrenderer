@@ -15,14 +15,9 @@ use Mezzio\Helper\UrlHelper as BaseHelper;
 
 class UrlHelper extends AbstractHelper
 {
-    /**
-     * @var BaseHelper
-     */
+    /** @var BaseHelper */
     private $helper;
 
-    /**
-     * @param BaseHelper $helper
-     */
     public function __construct(BaseHelper $helper)
     {
         $this->helper = $helper;
@@ -38,10 +33,10 @@ class UrlHelper extends AbstractHelper
      * @return string
      */
     public function __invoke(
-        string $routeName = null,
+        ?string $routeName = null,
         array $routeParams = [],
         array $queryParams = [],
-        string $fragmentIdentifier = null,
+        ?string $fragmentIdentifier = null,
         array $options = []
     ) {
         return $this->helper->generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options);
