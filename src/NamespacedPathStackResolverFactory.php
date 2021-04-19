@@ -14,10 +14,10 @@ use Psr\Container\ContainerInterface;
 
 class NamespacedPathStackResolverFactory
 {
-    public function __invoke(ContainerInterface $container) : NamespacedPathStackResolver
+    public function __invoke(ContainerInterface $container): NamespacedPathStackResolver
     {
-        $config   = $container->has('config') ? $container->get('config') : [];
-        $config   = $config['templates'] ?? [];
+        $config = $container->has('config') ? $container->get('config') : [];
+        $config = $config['templates'] ?? [];
 
         $resolver = new NamespacedPathStackResolver();
         if (! empty($config['default_suffix'])) {

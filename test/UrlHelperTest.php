@@ -25,7 +25,7 @@ class UrlHelperTest extends TestCase
     protected function setUp(): void
     {
         $this->baseHelper = $this->createMock(BaseHelper::class);
-        $this->helper = new UrlHelper($this->baseHelper);
+        $this->helper     = new UrlHelper($this->baseHelper);
     }
 
     public function testInvocationProxiesToBaseHelper(): void

@@ -56,11 +56,10 @@ use function sprintf;
  */
 class LaminasViewRendererFactory
 {
-    public function __invoke(ContainerInterface $container) : LaminasViewRenderer
+    public function __invoke(ContainerInterface $container): LaminasViewRenderer
     {
-        $config   = $container->has('config') ? $container->get('config') : [];
-        $config   = $config['templates'] ?? [];
-
+        $config = $container->has('config') ? $container->get('config') : [];
+        $config = $config['templates'] ?? [];
 
         // Configuration
         $resolver = new Resolver\AggregateResolver();
@@ -104,17 +103,18 @@ class LaminasViewRendererFactory
      *
      * In each case, injects with the custom url/serverurl implementations.
      *
-     * @throws Exception\InvalidContainerException if the $container argument
+     * @throws Exception\InvalidContainerException If the $container argument
      *     does not implement InteropContainerInterface.
      * @throws Exception\MissingHelperException
      */
-    private function injectHelpers(PhpRenderer $renderer, ContainerInterface $container) : void
+    private function injectHelpers(PhpRenderer $renderer, ContainerInterface $container): void
     {
         $helpers = $this->retrieveHelperManager($container);
         $helpers->setAlias('url', BaseUrlHelper::class);
         $helpers->setAlias('Url', BaseUrlHelper::class);
         $helpers->setFactory(BaseUrlHelper::class, function () use ($container) {
-            if (! $container->has(BaseUrlHelper::class)
+            if (
+                ! $container->has(BaseUrlHelper::class)
                 && ! $container->has(\Zend\Expressive\Helper\UrlHelper::class)
             ) {
                 throw new Exception\MissingHelperException(sprintf(
@@ -133,7 +133,8 @@ class LaminasViewRendererFactory
         $helpers->setAlias('serverUrl', BaseServerUrlHelper::class);
         $helpers->setAlias('ServerUrl', BaseServerUrlHelper::class);
         $helpers->setFactory(BaseServerUrlHelper::class, function () use ($container) {
-            if (! $container->has(BaseServerUrlHelper::class)
+            if (
+                ! $container->has(BaseServerUrlHelper::class)
                 && ! $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)
             ) {
                 throw new Exception\MissingHelperException(sprintf(
@@ -152,10 +153,10 @@ class LaminasViewRendererFactory
     }
 
     /**
-     * @throws Exception\InvalidContainerException if the $container argument
+     * @throws Exception\InvalidContainerException If the $container argument
      *     does not implement InteropContainerInterface.
      */
-    private function retrieveHelperManager(ContainerInterface $container) : HelperPluginManager
+    private function retrieveHelperManager(ContainerInterface $container): HelperPluginManager
     {
         if ($container->has(HelperPluginManager::class)) {
             return $container->get(HelperPluginManager::class);
