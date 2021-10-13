@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class HelperPluginManagerFactoryTest extends TestCase
 {
-    /** @var ServiceManager|MockObject */
+    /** @var ServiceManager&MockObject */
     private $container;
 
     protected function setUp(): void

@@ -176,111 +176,76 @@
       <code>strrpos(ExceptionInterface::class, '\\')</code>
     </PossiblyFalseOperand>
   </file>
-  <file src="test/HelperPluginManagerFactoryTest.php">
-    <MixedMethodCall occurrences="10">
-      <code>method</code>
-      <code>method</code>
-      <code>method</code>
-      <code>method</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>with</code>
-      <code>with</code>
-      <code>with</code>
-    </MixedMethodCall>
-    <PossiblyInvalidArgument occurrences="3">
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-    </PossiblyInvalidArgument>
-    <PossiblyUndefinedMethod occurrences="4">
-      <code>expects</code>
-      <code>expects</code>
-      <code>expects</code>
-      <code>expects</code>
-    </PossiblyUndefinedMethod>
-  </file>
   <file src="test/LaminasViewRendererFactoryTest.php">
-    <MissingReturnType occurrences="11">
-      <code>injectBaseHelpers</code>
-      <code>testConfiguresCustomDefaultSuffix</code>
-      <code>testConfiguresDeprecatedDefaultSuffix</code>
-      <code>testConfiguresLayout</code>
-      <code>testConfiguresPaths</code>
-      <code>testConfiguresTemplateMap</code>
-      <code>testInjectsCustomHelpersIntoHelperManager</code>
-      <code>testInjectsCustomHelpersIntoHelperManagerFromContainer</code>
-      <code>testUnconfiguredLaminasViewInstanceContainsNoPaths</code>
-      <code>testWillRaiseExceptionIfContainerDoesNotImplementInteropContainerInterface</code>
-      <code>testWillUseRendererFromContainer</code>
-    </MissingReturnType>
-    <MixedArgument occurrences="11">
+    <ArgumentTypeCoercion occurrences="10">
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+    </ArgumentTypeCoercion>
+    <InvalidMethodCall occurrences="43">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </InvalidMethodCall>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;prophesize(ContainerInterface::class)</code>
+    </InvalidPropertyAssignmentValue>
+    <MixedArgument occurrences="1">
       <code>$expected</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
-      <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <MixedAssignment occurrences="4">
-      <code>$renderer</code>
-      <code>$renderer</code>
+    <MixedAssignment occurrences="2">
       <code>$renderer</code>
       <code>$resolver</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="53">
-      <code>getHelperPluginManager</code>
-      <code>getHelperPluginManager</code>
+    <MixedMethodCall occurrences="8">
       <code>resolver</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
@@ -292,68 +257,6 @@
     <PossiblyNullArgument occurrences="1">
       <code>$namespace ?: null</code>
     </PossiblyNullArgument>
-    <PossiblyUndefinedMethod occurrences="60">
-      <code>get</code>
-      <code>get</code>
-      <code>get</code>
-      <code>get</code>
-      <code>get</code>
-      <code>get</code>
-      <code>get</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>has</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <RedundantCondition occurrences="1">
       <code>assertIsArray</code>
     </RedundantCondition>
@@ -362,79 +265,12 @@
     <InvalidArgument occurrences="1">
       <code>[]</code>
     </InvalidArgument>
-    <MissingReturnType occurrences="22">
-      <code>testAddParameterToOneTemplate</code>
-      <code>testAddSharedParameters</code>
-      <code>testCanPassViewModelForLayoutParameterWhenRendering</code>
-      <code>testCanPassViewModelForLayoutToConstructor</code>
-      <code>testCanRenderWithChildViewModel</code>
-      <code>testCanRenderWithCustomDefaultSuffix</code>
-      <code>testChangeLayoutInTemplate</code>
-      <code>testDisableLayoutOnRender</code>
-      <code>testDisableLayoutViaDefaultParameter</code>
-      <code>testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor</code>
-      <code>testLayoutTemplateDefaultParameterIsAvailableInLayout</code>
-      <code>testOverrideSharedParametersAtRender</code>
-      <code>testOverrideSharedParametersPerTemplate</code>
-      <code>testProperlyResolvesNamespacedTemplate</code>
-      <code>testRenderChildWithDefaultParameter</code>
-      <code>testSharedParameterIsAvailableInLayout</code>
-      <code>testTemplateDefaultParameterIsAvailableInLayoutProvidedWithViewModel</code>
-      <code>testTemplateDefaultParameterIsNotAvailableInLayout</code>
-      <code>testVariableInProvidedLayoutViewModelOverridesTemplateDefaultParameter</code>
-      <code>testWillRenderAViewModel</code>
-      <code>testWillRenderContentInLayoutPassedDuringRendering</code>
-      <code>testWillRenderContentInLayoutPassedToConstructor</code>
-    </MissingReturnType>
-    <MixedArgument occurrences="1">
-      <code>$params</code>
-    </MixedArgument>
-    <MixedInferredReturnType occurrences="1">
-      <code>PhpRenderer</code>
-    </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="1">
-      <code>$property-&gt;getValue($laminasViewRenderer)</code>
-    </MixedReturnStatement>
     <NullArgument occurrences="1">
       <code>null</code>
     </NullArgument>
-    <PossiblyInvalidArgument occurrences="1">
-      <code>testCanRenderWithParameterObjects</code>
-    </PossiblyInvalidArgument>
     <RedundantCondition occurrences="2">
       <code>assertIsArray</code>
       <code>assertIsArray</code>
     </RedundantCondition>
-  </file>
-  <file src="test/ServerUrlHelperTest.php">
-    <MixedMethodCall occurrences="5">
-      <code>method</code>
-      <code>method</code>
-      <code>willReturn</code>
-      <code>with</code>
-      <code>with</code>
-    </MixedMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>expects</code>
-      <code>expects</code>
-    </PossiblyUndefinedMethod>
-  </file>
-  <file src="test/UrlHelperTest.php">
-    <MixedMethodCall occurrences="9">
-      <code>method</code>
-      <code>method</code>
-      <code>method</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>with</code>
-      <code>with</code>
-      <code>with</code>
-    </MixedMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>expects</code>
-      <code>expects</code>
-      <code>expects</code>
-    </PossiblyUndefinedMethod>
   </file>
 </files>

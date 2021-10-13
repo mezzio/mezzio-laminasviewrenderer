@@ -16,7 +16,7 @@ class ServerUrlHelperTest extends TestCase
 {
     /** @var ServerUrlHelper */
     private $helper;
-    /** @var BaseHelper|MockObject */
+    /** @var BaseHelper&MockObject */
     private $baseHelper;
 
     protected function setUp(): void
