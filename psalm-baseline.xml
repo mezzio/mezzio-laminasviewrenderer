@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.10.0@916b098b008f6de4543892b1e0651c1c3b92cbfa">
+  <file src="src/HelperPluginManagerFactory.php">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$container</code>
+    </ArgumentTypeCoercion>
+    <MixedArgument occurrences="1">
+      <code>$config</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="1">
+      <code>$config['view_helpers']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="2">
+      <code>$config</code>
+      <code>$config</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/LaminasViewRenderer.php">
+    <DocblockTypeContradiction occurrences="4">
+      <code>$namespace === NamespacedPathStackResolver::DEFAULT_NAMESPACE</code>
+      <code>$namespace === NamespacedPathStackResolver::DEFAULT_NAMESPACE</code>
+      <code>is_object($layout)</code>
+      <code>null</code>
+    </DocblockTypeContradiction>
+    <InvalidArgument occurrences="1">
+      <code>$resolver</code>
+    </InvalidArgument>
+    <MixedArgument occurrences="7">
+      <code>$capture</code>
+      <code>$capture</code>
+      <code>$child</code>
+      <code>$child-&gt;getTemplate()</code>
+      <code>$layout</code>
+      <code>$path</code>
+      <code>$resolver</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="10">
+      <code>$capture</code>
+      <code>$child</code>
+      <code>$namespacedPaths</code>
+      <code>$oldResult</code>
+      <code>$path</code>
+      <code>$providedLayout</code>
+      <code>$resolver</code>
+      <code>$resolver</code>
+      <code>$resolver</code>
+      <code>$viewModelHelper</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="4">
+      <code>captureTo</code>
+      <code>getTemplate</code>
+      <code>setRoot</code>
+      <code>terminate</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="1">
+      <code>$oldResult</code>
+    </MixedOperand>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;getNamespacedResolver($resolver)</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <PossiblyNullReference occurrences="1">
+      <code>setDefaultSuffix</code>
+    </PossiblyNullReference>
+    <PropertyTypeCoercion occurrences="1">
+      <code>$layout</code>
+    </PropertyTypeCoercion>
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>$this-&gt;layout</code>
+      <code>gettype($layout)</code>
+      <code>is_int($namespace)</code>
+    </RedundantConditionGivenDocblockType>
+    <UndefinedInterfaceMethod occurrences="2">
+      <code>plugin</code>
+      <code>resolver</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/LaminasViewRendererFactory.php">
+    <MixedArgument occurrences="8">
+      <code>$config['layout'] ?? null</code>
+      <code>$config['map'] ?? []</code>
+      <code>$defaultSuffix</code>
+      <code>$namespace</code>
+      <code>$path</code>
+      <code>$renderer</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="5">
+      <code>$config['default_suffix']</code>
+      <code>$config['extension']</code>
+      <code>$config['layout']</code>
+      <code>$config['map']</code>
+      <code>$config['templates']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="9">
+      <code>$allPaths</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$defaultSuffix</code>
+      <code>$namespace</code>
+      <code>$namespace</code>
+      <code>$path</code>
+      <code>$paths</code>
+      <code>$renderer</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="1">
+      <code>HelperPluginManager</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="1">
+      <code>setResolver</code>
+    </MixedMethodCall>
+    <MixedReturnStatement occurrences="2">
+      <code>$container-&gt;get(HelperPluginManager::class)</code>
+      <code>$container-&gt;get(\Zend\View\HelperPluginManager::class)</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/NamespacedPathStackResolver.php">
+    <DocblockTypeContradiction occurrences="2">
+      <code>is_array($paths)</code>
+      <code>is_string($path)</code>
+    </DocblockTypeContradiction>
+    <ImplementedReturnTypeMismatch occurrences="3">
+      <code>?string</code>
+      <code>void</code>
+      <code>void</code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidArgument occurrences="1">
+      <code>$options</code>
+    </InvalidArgument>
+    <MixedArgument occurrences="2">
+      <code>$path</code>
+      <code>$path</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="4">
+      <code>$path</code>
+      <code>$path</code>
+      <code>$this-&gt;lastLookupFailure</code>
+      <code>$this-&gt;lastLookupFailure</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>push</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="1">
+      <code>$path</code>
+    </MixedOperand>
+    <NonInvariantDocblockPropertyType occurrences="1">
+      <code>$paths</code>
+    </NonInvariantDocblockPropertyType>
+    <TypeDoesNotContainType occurrences="1">
+      <code>! is_string($namespace)</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="src/NamespacedPathStackResolverFactory.php">
+    <MixedArgument occurrences="1">
+      <code>$config['default_suffix']</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="1">
+      <code>$config['templates']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="2">
+      <code>$config</code>
+      <code>$config</code>
+    </MixedAssignment>
+  </file>
+  <file src="test/ConfigProviderTest.php">
+    <RedundantCondition occurrences="1">
+      <code>assertIsArray</code>
+    </RedundantCondition>
+  </file>
+  <file src="test/ExceptionTest.php">
+    <InvalidLiteralArgument occurrences="1">
+      <code>ExceptionInterface::class</code>
+    </InvalidLiteralArgument>
+    <MixedInferredReturnType occurrences="1">
+      <code>Generator</code>
+    </MixedInferredReturnType>
+    <PossiblyFalseOperand occurrences="1">
+      <code>strrpos(ExceptionInterface::class, '\\')</code>
+    </PossiblyFalseOperand>
+  </file>
+  <file src="test/LaminasViewRendererFactoryTest.php">
+    <ArgumentTypeCoercion occurrences="10">
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+    </ArgumentTypeCoercion>
+    <InvalidMethodCall occurrences="43">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </InvalidMethodCall>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;prophesize(ContainerInterface::class)</code>
+    </InvalidPropertyAssignmentValue>
+    <MixedArgument occurrences="1">
+      <code>$expected</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="2">
+      <code>$renderer</code>
+      <code>$resolver</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="8">
+      <code>resolver</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyNullArgument occurrences="1">
+      <code>$namespace ?: null</code>
+    </PossiblyNullArgument>
+    <RedundantCondition occurrences="1">
+      <code>assertIsArray</code>
+    </RedundantCondition>
+  </file>
+  <file src="test/LaminasViewRendererTest.php">
+    <InvalidArgument occurrences="1">
+      <code>[]</code>
+    </InvalidArgument>
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+    <RedundantCondition occurrences="2">
+      <code>assertIsArray</code>
+      <code>assertIsArray</code>
+    </RedundantCondition>
+  </file>
+</files>
