@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
@@ -21,6 +15,7 @@ use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
+use function assert;
 use function file_get_contents;
 use function sprintf;
 use function str_replace;
@@ -93,7 +88,10 @@ class LaminasViewRendererTest extends TestCase
         $property = new ReflectionProperty(LaminasViewRenderer::class, 'renderer');
         $property->setAccessible(true);
 
-        return $property->getValue($laminasViewRenderer);
+        $renderer = $property->getValue($laminasViewRenderer);
+        assert($renderer instanceof PhpRenderer);
+
+        return $renderer;
     }
 
     public function testCanPassRendererToConstructor(): void
@@ -177,6 +175,7 @@ class LaminasViewRendererTest extends TestCase
         $renderer = new LaminasViewRenderer();
         $this->expectException(InvalidArgumentException::class);
 
+        /** @psalm-suppress MixedArgument */
         $renderer->render('foo', $params);
     }
 
@@ -189,12 +188,12 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    /** @return array<array-key, mixed[]> */
+    /** @return array<string, array{0: object, 1: string}> */
     public function objectParameterValues(): array
     {
         $names = [
-            'stdClass'    => uniqid(),
-            'ArrayObject' => uniqid(),
+            'stdClass'    => uniqid('', false),
+            'ArrayObject' => uniqid('', false),
         ];
 
         return [
@@ -220,7 +219,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testWillRenderContentInLayoutPassedToConstructor()
+    public function testWillRenderContentInLayoutPassedToConstructor(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -233,7 +232,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
     }
 
-    public function testSharedParameterIsAvailableInLayout()
+    public function testSharedParameterIsAvailableInLayout(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -252,7 +251,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
     }
 
-    public function testTemplateDefaultParameterIsNotAvailableInLayout()
+    public function testTemplateDefaultParameterIsNotAvailableInLayout(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -271,7 +270,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
     }
 
-    public function testLayoutTemplateDefaultParameterIsAvailableInLayout()
+    public function testLayoutTemplateDefaultParameterIsAvailableInLayout(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -293,7 +292,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
     }
 
-    public function testVariableInProvidedLayoutViewModelOverridesTemplateDefaultParameter()
+    public function testVariableInProvidedLayoutViewModelOverridesTemplateDefaultParameter(): void
     {
         $renderer = new LaminasViewRenderer(null);
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -319,7 +318,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
     }
 
-    public function testTemplateDefaultParameterIsAvailableInLayoutProvidedWithViewModel()
+    public function testTemplateDefaultParameterIsAvailableInLayoutProvidedWithViewModel(): void
     {
         $renderer = new LaminasViewRenderer(null);
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -347,7 +346,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testWillRenderContentInLayoutPassedDuringRendering()
+    public function testWillRenderContentInLayoutPassedDuringRendering(): void
     {
         $renderer = new LaminasViewRenderer(null);
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -364,7 +363,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor()
+    public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -381,7 +380,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testCanPassViewModelForLayoutToConstructor()
+    public function testCanPassViewModelForLayoutToConstructor(): void
     {
         $layout = new ViewModel();
         $layout->setTemplate('laminasview-layout');
@@ -400,7 +399,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testCanPassViewModelForLayoutParameterWhenRendering()
+    public function testCanPassViewModelForLayoutParameterWhenRendering(): void
     {
         $layout = new ViewModel();
         $layout->setTemplate('laminasview-layout2');
@@ -419,7 +418,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testDisableLayoutOnRender()
+    public function testDisableLayoutOnRender(): void
     {
         $layout = new ViewModel();
         $layout->setTemplate('laminasview-layout');
@@ -442,7 +441,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group layout
      */
-    public function testDisableLayoutViaDefaultParameter()
+    public function testDisableLayoutViaDefaultParameter(): void
     {
         $layout = new ViewModel();
         $layout->setTemplate('laminasview-layout');
@@ -463,7 +462,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @group namespacing
      */
-    public function testProperlyResolvesNamespacedTemplate()
+    public function testProperlyResolvesNamespacedTemplate(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset/test', 'test');
@@ -474,7 +473,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertSame($expected, $test);
     }
 
-    public function testAddParameterToOneTemplate()
+    public function testAddParameterToOneTemplate(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -487,7 +486,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testAddSharedParameters()
+    public function testAddSharedParameters(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -504,7 +503,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testOverrideSharedParametersPerTemplate()
+    public function testOverrideSharedParametersPerTemplate(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -536,9 +535,8 @@ class LaminasViewRendererTest extends TestCase
 
     /**
      * @dataProvider useArrayOrViewModel
-     * @param bool $viewAsModel
      */
-    public function testOverrideSharedParametersAtRender($viewAsModel)
+    public function testOverrideSharedParametersAtRender(bool $viewAsModel): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -555,7 +553,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testWillRenderAViewModel()
+    public function testWillRenderAViewModel(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
@@ -568,7 +566,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testCanRenderWithChildViewModel()
+    public function testCanRenderWithChildViewModel(): void
     {
         $path     = __DIR__ . '/TestAsset';
         $renderer = new LaminasViewRenderer();
@@ -596,7 +594,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testRenderChildWithDefaultParameter()
+    public function testRenderChildWithDefaultParameter(): void
     {
         $name2 = 'Foo';
 
@@ -621,7 +619,7 @@ class LaminasViewRendererTest extends TestCase
         static::assertEquals($content, $result);
     }
 
-    public function testCanRenderWithCustomDefaultSuffix()
+    public function testCanRenderWithCustomDefaultSuffix(): void
     {
         $name     = 'laminas-custom-suffix';
         $suffix   = 'pht';
@@ -633,7 +631,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testChangeLayoutInTemplate()
+    public function testChangeLayoutInTemplate(): void
     {
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');

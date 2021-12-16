@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
@@ -29,6 +23,7 @@ use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
+use function assert;
 use function sprintf;
 use function var_export;
 
@@ -38,7 +33,7 @@ class LaminasViewRendererFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var ContainerInterface|ProphecyInterface */
+    /** @var ContainerInterface&ProphecyInterface */
     private $container;
 
     protected function setUp(): void
@@ -122,14 +117,14 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertContains($expected, $found, $message);
     }
 
-    /**
-     * @return mixed
-     */
-    public function fetchPhpRenderer(LaminasViewRenderer $view)
+    public function fetchPhpRenderer(LaminasViewRenderer $view): PhpRenderer
     {
         $r = new ReflectionProperty($view, 'renderer');
         $r->setAccessible(true);
-        return $r->getValue($view);
+        $renderer = $r->getValue($view);
+        assert($renderer instanceof PhpRenderer);
+
+        return $renderer;
     }
 
     /**
@@ -143,7 +138,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         );
     }
 
-    public function injectBaseHelpers()
+    public function injectBaseHelpers(): void
     {
         $this->injectContainerService(
             Helper\UrlHelper::class,
@@ -172,14 +167,14 @@ class LaminasViewRendererFactoryTest extends TestCase
     /**
      * @depends testCallingFactoryWithNoConfigReturnsLaminasViewInstance
      */
-    public function testUnconfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view)
+    public function testUnconfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view): void
     {
         $paths = $view->getPaths();
         $this->assertIsArray($paths);
         $this->assertEmpty($paths);
     }
 
-    public function testConfiguresLayout()
+    public function testConfiguresLayout(): void
     {
         $config = [
             'templates' => [
@@ -203,7 +198,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertSame($config['templates']['layout'], $layout->getTemplate());
     }
 
-    public function testConfiguresPaths()
+    public function testConfiguresPaths(): void
     {
         $config = [
             'templates' => [
@@ -244,7 +239,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertPathNamespaceContains(__DIR__ . '/TestAsset/three' . $dirSlash, null, $paths);
     }
 
-    public function testConfiguresTemplateMap()
+    public function testConfiguresTemplateMap(): void
     {
         $config = [
             'templates' => [
@@ -282,7 +277,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertEquals('baz', $resolver->get('bar'));
     }
 
-    public function testConfiguresCustomDefaultSuffix()
+    public function testConfiguresCustomDefaultSuffix(): void
     {
         $config = [
             'templates' => [
@@ -312,7 +307,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertEquals('php', $resolver->getDefaultSuffix());
     }
 
-    public function testConfiguresDeprecatedDefaultSuffix()
+    public function testConfiguresDeprecatedDefaultSuffix(): void
     {
         $config = [
             'templates' => [
@@ -342,7 +337,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertEquals('php', $resolver->getDefaultSuffix());
     }
 
-    public function testInjectsCustomHelpersIntoHelperManager()
+    public function testInjectsCustomHelpersIntoHelperManager(): void
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
@@ -385,7 +380,7 @@ class LaminasViewRendererFactoryTest extends TestCase
     /**
      * @depends testWillUseHelperManagerFromContainer
      */
-    public function testInjectsCustomHelpersIntoHelperManagerFromContainer(HelperPluginManager $helpers)
+    public function testInjectsCustomHelpersIntoHelperManagerFromContainer(HelperPluginManager $helpers): void
     {
         $this->assertTrue($helpers->has('url'));
         $this->assertTrue($helpers->has('serverurl'));
@@ -393,7 +388,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('serverurl'));
     }
 
-    public function testWillUseRendererFromContainer()
+    public function testWillUseRendererFromContainer(): void
     {
         $engine = new PhpRenderer();
         $this->container->has('config')->willReturn(false);
