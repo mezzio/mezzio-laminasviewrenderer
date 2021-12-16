@@ -154,6 +154,11 @@ class LaminasViewRendererFactory
             return $container->get(\Zend\View\HelperPluginManager::class);
         }
 
+        /**
+         * @psalm-suppress ArgumentTypeCoercion HelperPluginManager expects an Interop container according to its
+         *                                      docblock. This suppression can be removed once laminas-view accepts a
+         *                                      Psr Container.
+         */
         return new HelperPluginManager($container);
     }
 }
