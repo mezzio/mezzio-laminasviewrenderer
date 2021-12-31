@@ -38,7 +38,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
     use ArrayParametersTrait;
     use DefaultParamsTrait;
 
-    /** @var ViewModel */
+    /** @var ModelInterface|null */
     private $layout;
 
     /** @var RendererInterface */
