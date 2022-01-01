@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
@@ -44,7 +38,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
     use ArrayParametersTrait;
     use DefaultParamsTrait;
 
-    /** @var ViewModel */
+    /** @var ModelInterface|null */
     private $layout;
 
     /** @var RendererInterface */

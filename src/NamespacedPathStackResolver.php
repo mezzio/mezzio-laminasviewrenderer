@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-laminasviewrenderer for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-laminasviewrenderer/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
@@ -67,6 +61,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         $this->useViewStream = (bool) ini_get('short_open_tag');
         if ($this->useViewStream) {
             if (! in_array('laminas.view', stream_get_wrappers())) {
+                /** @psalm-suppress DeprecatedClass */
                 stream_wrapper_register('laminas.view', Stream::class);
             }
         }
@@ -226,6 +221,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
                     }
                 }
 
+                /** @psalm-suppress DeprecatedMethod */
                 if ($this->useStreamWrapper()) {
                     // If using a stream wrapper, prepend the spec to the path
                     $filePath = 'laminas.view://' . $filePath;
