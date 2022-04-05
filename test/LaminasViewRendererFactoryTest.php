@@ -156,9 +156,9 @@ class LaminasViewRendererFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -186,9 +186,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -210,9 +210,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -254,9 +254,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -290,9 +290,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
 
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -320,9 +320,9 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
 
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -343,9 +343,9 @@ class LaminasViewRendererFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container->reveal());
@@ -364,7 +364,7 @@ class LaminasViewRendererFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $this->injectBaseHelpers();
 
         $helpers = new HelperPluginManager($this->container->reveal());
@@ -395,7 +395,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $engine = new PhpRenderer();
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
         $this->injectContainerService(PhpRenderer::class, $engine);
 
         $factory = new LaminasViewRendererFactory();
@@ -411,11 +411,11 @@ class LaminasViewRendererFactoryTest extends TestCase
         $container->has('config')->willReturn(false);
         $container->get('config')->shouldNotBeCalled();
         $container->has(PhpRenderer::class)->willReturn(false);
-        $container->has(\Zend\View\Renderer\PhpRenderer::class)->willReturn(false);
+        $container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
         $container->get(PhpRenderer::class)->shouldNotBeCalled();
-        $container->get(\Zend\View\Renderer\PhpRenderer::class)->shouldNotBeCalled();
+        $container->get('Zend\View\Renderer\PhpRenderer')->shouldNotBeCalled();
         $container->has(HelperPluginManager::class)->willReturn(false);
-        $container->has(\Zend\View\HelperPluginManager::class)->willReturn(false);
+        $container->has('Zend\View\HelperPluginManager')->willReturn(false);
 
         $factory = new LaminasViewRendererFactory();
 

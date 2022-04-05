@@ -42,12 +42,20 @@ use const PATHINFO_EXTENSION;
  *
  * Namespaces are specified with a `namespace::` prefix when specifying the
  * template.
+ *
+ * Stream wrappers are deprecated and will be removed in 3.0
+ *
+ * @psalm-suppress DeprecatedClass,DeprecatedMethod
+ * @psalm-import-type PathStack from TemplatePathStack
  */
 class NamespacedPathStackResolver extends TemplatePathStack
 {
     public const DEFAULT_NAMESPACE = '__DEFAULT__';
 
-    /** @var array */
+    /**
+     * @var array<string, PathStack>
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     */
     protected $paths = [];
 
     /**
@@ -55,6 +63,8 @@ class NamespacedPathStackResolver extends TemplatePathStack
      *
      * Overrides parent constructor to allow specifying paths as an associative
      * array.
+     *
+     * @param iterable<string, mixed>|null $options
      */
     public function __construct(?iterable $options = null)
     {
@@ -79,6 +89,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
      */
     public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE): void
     {
+        /** @psalm-suppress DocblockTypeContradiction */
         if (! is_string($path)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid path provided; expected a string, received %s',
@@ -90,14 +101,16 @@ class NamespacedPathStackResolver extends TemplatePathStack
             $namespace = self::DEFAULT_NAMESPACE;
         }
 
-        if (! is_string($namespace) || empty($namespace)) {
+        if ($namespace === '') {
             throw new ViewException\InvalidArgumentException(
                 'Invalid namespace provided; must be a non-empty string'
             );
         }
 
         if (! array_key_exists($namespace, $this->paths)) {
-            $this->paths[$namespace] = new SplStack();
+            /** @psalm-var PathStack $splStack */
+            $splStack                = new SplStack();
+            $this->paths[$namespace] = $splStack;
         }
 
         $this->paths[$namespace]->push(static::normalizePath($path));
@@ -105,10 +118,14 @@ class NamespacedPathStackResolver extends TemplatePathStack
 
     /**
      * Add many paths to the stack at once.
+     *
+     * @param array<string, string> $paths
+     * @psalm-suppress ImplementedParamTypeMismatch, ImplementedReturnTypeMismatch
      */
     public function addPaths(array $paths): void
     {
         foreach ($paths as $namespace => $path) {
+            /** @psalm-suppress DocblockTypeContradiction */
             if (! is_string($namespace)) {
                 $namespace = self::DEFAULT_NAMESPACE;
             }
@@ -120,21 +137,28 @@ class NamespacedPathStackResolver extends TemplatePathStack
     /**
      * Overwrite all existing paths with the provided paths.
      *
-     * @param  SplStack|array $paths
+     * This method should return $this to match parent class but it does not.
+     *
+     * @param  SplStack|array<string, string> $paths
+     * @psalm-param PathStack|array<string, string> $paths
+     * @psalm-suppress ImplementedParamTypeMismatch, ImplementedReturnTypeMismatch
      * @throws ViewException\InvalidArgumentException For invalid path types.
      */
     public function setPaths($paths): void
     {
         if ($paths instanceof Traversable) {
-            $paths = iterator_to_array($paths);
+            $paths = iterator_to_array($paths, true);
         }
 
+        /** @psalm-suppress DocblockTypeContradiction */
         if (! is_array($paths)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid paths provided; must be an array or Traversable, received %s',
                 is_object($paths) ? get_class($paths) : gettype($paths)
             ));
         }
+
+        /** @psalm-var array<string, string> $paths */
 
         $this->clearPaths();
         $this->addPaths($paths);
@@ -172,7 +196,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         }
 
         if (! count($this->paths)) {
-            $this->lastLookupFailure = static::FAILURE_NO_PATHS;
+            $this->lastLookupFailure = TemplatePathStack::FAILURE_NO_PATHS;
             return null;
         }
 
@@ -193,7 +217,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
             return $path;
         }
 
-        $this->lastLookupFailure = static::FAILURE_NOT_FOUND;
+        $this->lastLookupFailure = TemplatePathStack::FAILURE_NOT_FOUND;
         return null;
     }
 
