@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
 
-use Interop\Container\ContainerInterface;
 use Laminas\View\HelperPluginManager;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\AggregateResolver;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Mezzio\Helper;
-use Mezzio\LaminasView\Exception\InvalidContainerException;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
 use Mezzio\LaminasView\NamespacedPathStackResolver;
@@ -22,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
 use function assert;
@@ -403,23 +401,5 @@ class LaminasViewRendererFactoryTest extends TestCase
 
         $composed = $this->fetchPhpRenderer($view);
         $this->assertSame($engine, $composed);
-    }
-
-    public function testWillRaiseExceptionIfContainerDoesNotImplementInteropContainerInterface(): void
-    {
-        $container = $this->prophesize(PsrContainerInterface::class);
-        $container->has('config')->willReturn(false);
-        $container->get('config')->shouldNotBeCalled();
-        $container->has(PhpRenderer::class)->willReturn(false);
-        $container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $container->get(PhpRenderer::class)->shouldNotBeCalled();
-        $container->get('Zend\View\Renderer\PhpRenderer')->shouldNotBeCalled();
-        $container->has(HelperPluginManager::class)->willReturn(false);
-        $container->has('Zend\View\HelperPluginManager')->willReturn(false);
-
-        $factory = new LaminasViewRendererFactory();
-
-        $this->expectException(InvalidContainerException::class);
-        $factory($container->reveal());
     }
 }

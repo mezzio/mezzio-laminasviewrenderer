@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
-use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
@@ -12,7 +11,6 @@ use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Psr\Container\ContainerInterface;
 
-use function get_class;
 use function is_array;
 use function is_numeric;
 use function sprintf;
@@ -97,8 +95,6 @@ class LaminasViewRendererFactory
      *
      * In each case, injects with the custom url/serverurl implementations.
      *
-     * @throws Exception\InvalidContainerException If the $container argument
-     *     does not implement InteropContainerInterface.
      * @throws Exception\MissingHelperException
      */
     private function injectHelpers(PhpRenderer $renderer, ContainerInterface $container): void
@@ -146,10 +142,6 @@ class LaminasViewRendererFactory
         $renderer->setHelperPluginManager($helpers);
     }
 
-    /**
-     * @throws Exception\InvalidContainerException If the $container argument
-     *     does not implement InteropContainerInterface.
-     */
     private function retrieveHelperManager(ContainerInterface $container): HelperPluginManager
     {
         if ($container->has(HelperPluginManager::class)) {
@@ -158,18 +150,6 @@ class LaminasViewRendererFactory
 
         if ($container->has('Zend\View\HelperPluginManager')) {
             return $container->get('Zend\View\HelperPluginManager');
-        }
-
-        if (! $container instanceof InteropContainerInterface) {
-            throw new Exception\InvalidContainerException(sprintf(
-                '%s expects a %s instance to its constructor; however, your service'
-                . ' container is an instance of %s, which does not implement that'
-                . ' interface. Consider switching to laminas-servicemanager for your'
-                . ' container implementation if you wish to use the laminas-view renderer.',
-                HelperPluginManager::class,
-                InteropContainerInterface::class,
-                get_class($container)
-            ));
         }
 
         return new HelperPluginManager($container);
