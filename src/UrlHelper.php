@@ -5,10 +5,16 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use Laminas\View\Helper\AbstractHelper;
+use Laminas\View\Helper\DeprecatedAbstractHelperHierarchyTrait;
 use Mezzio\Helper\UrlHelper as BaseHelper;
 
+/**
+ * @final
+ */
 class UrlHelper extends AbstractHelper
 {
+    use DeprecatedAbstractHelperHierarchyTrait;
+
     /** @var BaseHelper */
     private $helper;
 

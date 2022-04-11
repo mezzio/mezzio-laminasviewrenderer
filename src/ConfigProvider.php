@@ -6,7 +6,6 @@ namespace Mezzio\LaminasView;
 
 use Laminas\View\HelperPluginManager;
 use Mezzio\Template\TemplateRendererInterface;
-use Zend\Expressive\ZendView\ZendViewRenderer;
 
 class ConfigProvider
 {
@@ -25,9 +24,9 @@ class ConfigProvider
                 TemplateRendererInterface::class => LaminasViewRenderer::class,
 
                 // Legacy Zend Framework aliases
-                \Zend\Expressive\Template\TemplateRendererInterface::class => TemplateRendererInterface::class,
-                \Zend\View\HelperPluginManager::class                      => HelperPluginManager::class,
-                ZendViewRenderer::class                                    => LaminasViewRenderer::class,
+                'Zend\Expressive\Template\TemplateRendererInterface' => TemplateRendererInterface::class,
+                'Zend\View\HelperPluginManager'                      => HelperPluginManager::class,
+                'Zend\Expressive\ZendView\ZendViewRenderer'          => LaminasViewRenderer::class,
             ],
             'factories' => [
                 HelperPluginManager::class => HelperPluginManagerFactory::class,
