@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
+use Laminas\Stdlib\SplStack;
 use Laminas\View\Helper;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
@@ -149,7 +150,12 @@ class LaminasViewRenderer implements TemplateRendererInterface
     {
         $paths = [];
 
-        foreach ($this->resolver->getPaths() as $namespace => $namespacedPaths) {
+        /**
+         * @var array<string, SplStack<string>> $pathStack
+         * @psalm-suppress DocblockTypeContradiction
+         */
+        $pathStack = $this->resolver->getPaths();
+        foreach ($pathStack as $namespace => $namespacedPaths) {
             if (
                 $namespace === NamespacedPathStackResolver::DEFAULT_NAMESPACE
                 || empty($namespace)
