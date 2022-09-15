@@ -1,6 +1,7 @@
 # laminas-view PhpRenderer Integration for Mezzio
 
 [![Build Status](https://github.com/mezzio/mezzio-laminasviewrenderer/workflows/Continuous%20Integration/badge.svg)](https://github.com/mezzio/mezzio-laminasviewrenderer/actions?query=workflow%3A"Continuous+Integration")
+[![Type Coverage](https://shepherd.dev/github/mezzio/mezzio-laminasviewrenderer/coverage.svg)](https://shepherd.dev/github/mezzio/mezzio-laminasviewrenderer)
 
 [laminas-view PhpRenderer](https://github.com/laminas/laminas-view) integration
 for [Mezzio](https://github.com/mezzio/mezzio).
