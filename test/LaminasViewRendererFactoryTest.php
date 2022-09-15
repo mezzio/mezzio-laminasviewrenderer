@@ -16,14 +16,13 @@ use Mezzio\LaminasView\NamespacedPathStackResolver;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Template\TemplatePath;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Prophecy\Prophecy\ProphecyInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
 use function assert;
+use function PHPUnit\Framework\never;
 use function sprintf;
 use function var_export;
 
@@ -31,20 +30,18 @@ use const DIRECTORY_SEPARATOR;
 
 class LaminasViewRendererFactoryTest extends TestCase
 {
-    use ProphecyTrait;
-
-    /** @var ContainerInterface&ProphecyInterface */
-    private $container;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
     protected function setUp(): void
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
+        $this->container = $this->createMock(ContainerInterface::class);
     }
 
     /**
      * @psalm-return array<array-key, string|string[]>
      */
-    public function getConfigurationPaths(): array
+    private function getConfigurationPaths(): array
     {
         return [
             'foo' => __DIR__ . '/TestAsset/bar',
@@ -60,7 +57,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         ];
     }
 
-    public function assertPathsHasNamespace(
+    private function assertPathsHasNamespace(
         ?string $namespace,
         array $paths,
         ?string $message = null
@@ -78,7 +75,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertTrue($found, $message);
     }
 
-    public function assertPathNamespaceCount(
+    private function assertPathNamespaceCount(
         int $expected,
         ?string $namespace,
         array $paths,
@@ -99,7 +96,7 @@ class LaminasViewRendererFactoryTest extends TestCase
     /**
      * @param mixed $expected
      */
-    public function assertPathNamespaceContains(
+    private function assertPathNamespaceContains(
         $expected,
         ?string $namespace,
         array $paths,
@@ -117,7 +114,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertContains($expected, $found, $message);
     }
 
-    public function fetchPhpRenderer(LaminasViewRenderer $view): PhpRenderer
+    private function fetchPhpRenderer(LaminasViewRenderer $view): PhpRenderer
     {
         $r = new ReflectionProperty($view, 'renderer');
         $r->setAccessible(true);
@@ -127,39 +124,23 @@ class LaminasViewRendererFactoryTest extends TestCase
         return $renderer;
     }
 
-    /**
-     * @param mixed $service Service to return from container
-     */
-    public function injectContainerService(string $name, $service): void
-    {
-        $this->container->has($name)->willReturn(true);
-        $this->container->get($name)->willReturn(
-            $service instanceof ObjectProphecy ? $service->reveal() : $service
-        );
-    }
-
-    public function injectBaseHelpers(): void
-    {
-        $this->injectContainerService(
-            Helper\UrlHelper::class,
-            $this->prophesize(Helper\UrlHelper::class)
-        );
-        $this->injectContainerService(
-            Helper\ServerUrlHelper::class,
-            $this->prophesize(Helper\ServerUrlHelper::class)
-        );
-    }
-
     public function testCallingFactoryWithNoConfigReturnsLaminasViewInstance(): LaminasViewRenderer
     {
-        $this->container->has('config')->willReturn(false);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', false],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(never())
+            ->method('get');
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
         $this->assertInstanceOf(LaminasViewRenderer::class, $view);
         return $view;
     }
@@ -167,10 +148,9 @@ class LaminasViewRendererFactoryTest extends TestCase
     /**
      * @depends testCallingFactoryWithNoConfigReturnsLaminasViewInstance
      */
-    public function testUnconfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view): void
+    public function testUnConfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view): void
     {
         $paths = $view->getPaths();
-        $this->assertIsArray($paths);
         $this->assertEmpty($paths);
     }
 
@@ -181,15 +161,24 @@ class LaminasViewRendererFactoryTest extends TestCase
                 'layout' => 'layout/layout',
             ],
         ];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', true],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($config);
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $r = new ReflectionProperty($view, 'layout');
         $r->setAccessible(true);
@@ -205,15 +194,24 @@ class LaminasViewRendererFactoryTest extends TestCase
                 'paths' => $this->getConfigurationPaths(),
             ],
         ];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', true],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($config);
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $paths = $view->getPaths();
         $this->assertPathsHasNamespace('foo', $paths);
@@ -249,19 +247,29 @@ class LaminasViewRendererFactoryTest extends TestCase
                 ],
             ],
         ];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', true],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($config);
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $r = new ReflectionProperty($view, 'renderer');
         $r->setAccessible(true);
-        $renderer  = $r->getValue($view);
+        $renderer = $r->getValue($view);
+        assert($renderer instanceof PhpRenderer);
         $aggregate = $renderer->resolver();
         $this->assertInstanceOf(AggregateResolver::class, $aggregate);
         $resolver = false;
@@ -285,15 +293,23 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', true],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($config);
 
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $r = new ReflectionProperty($view, 'resolver');
         $r->setAccessible(true);
@@ -315,15 +331,23 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
+        $this->container->expects(self::exactly(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', true],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
+
+        $this->container->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn($config);
 
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $r = new ReflectionProperty($view, 'resolver');
         $r->setAccessible(true);
@@ -339,14 +363,27 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testInjectsCustomHelpersIntoHelperManager(): void
     {
-        $this->container->has('config')->willReturn(false);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+        $this->container->expects(self::atLeast(5))
+            ->method('has')
+            ->willReturnMap([
+                ['config', false],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+                [Helper\UrlHelper::class, true],
+                [Helper\ServerUrlHelper::class, true],
+            ]);
+
+        $this->container->expects(self::atLeast(2))
+            ->method('get')
+            ->willReturnMap([
+                [Helper\UrlHelper::class, $this->createMock(Helper\UrlHelper::class)],
+                [Helper\ServerUrlHelper::class, $this->createMock(Helper\ServerUrlHelper::class)],
+            ]);
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
         $this->assertInstanceOf(LaminasViewRenderer::class, $view);
 
         $renderer = $this->fetchPhpRenderer($view);
@@ -358,46 +395,99 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('serverurl'));
     }
 
-    public function testWillUseHelperManagerFromContainer(): HelperPluginManager
+    public function testWillUseHelperManagerFromContainer(): void
     {
-        $this->container->has('config')->willReturn(false);
-        $this->container->has(PhpRenderer::class)->willReturn(false);
-        $this->container->has('Zend\View\Renderer\PhpRenderer')->willReturn(false);
-        $this->injectBaseHelpers();
+        $this->container->expects(self::exactly(4))
+            ->method('has')
+            ->willReturnMap([
+                ['config', false],
+                [HelperPluginManager::class, true],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+            ]);
 
-        $helpers = new HelperPluginManager($this->container->reveal());
-        $this->container->has(HelperPluginManager::class)->willReturn(true);
-        $this->container->get(HelperPluginManager::class)->willReturn($helpers);
+        $helpers = new HelperPluginManager($this->container);
+
+        $this->container->expects(self::exactly(1))
+            ->method('get')
+            ->willReturnMap([
+                [HelperPluginManager::class, $helpers],
+            ]);
+
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
         $this->assertInstanceOf(LaminasViewRenderer::class, $view);
 
         $renderer = $this->fetchPhpRenderer($view);
         $this->assertSame($helpers, $renderer->getHelperPluginManager());
-        return $helpers;
     }
 
-    /**
-     * @depends testWillUseHelperManagerFromContainer
-     */
-    public function testInjectsCustomHelpersIntoHelperManagerFromContainer(HelperPluginManager $helpers): void
+    public function testUrlAndServerUrlHelpersAreRegisteredWithTheExpectedAliases(): void
     {
+        $this->container->expects(self::atLeast(6))
+            ->method('has')
+            ->willReturnMap([
+                ['config', false],
+                [HelperPluginManager::class, true],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, false],
+                ['Zend\View\Renderer\PhpRenderer', false],
+                [Helper\UrlHelper::class, true],
+                [Helper\ServerUrlHelper::class, true],
+            ]);
+
+        $helpers   = new HelperPluginManager($this->container);
+        $urlHelper = $this->createMock(Helper\UrlHelper::class);
+        $serverUrl = $this->createMock(Helper\ServerUrlHelper::class);
+
+        $this->container->expects(self::exactly(3))
+            ->method('get')
+            ->willReturnMap([
+                [HelperPluginManager::class, $helpers],
+                [Helper\UrlHelper::class, $urlHelper],
+                [Helper\ServerUrlHelper::class, $serverUrl],
+            ]);
+
+        $factory = new LaminasViewRendererFactory();
+        $factory($this->container);
+
         $this->assertTrue($helpers->has('url'));
-        $this->assertTrue($helpers->has('serverurl'));
         $this->assertInstanceOf(UrlHelper::class, $helpers->get('url'));
+
+        $this->assertTrue($helpers->has('Url'));
+        $this->assertInstanceOf(UrlHelper::class, $helpers->get('Url'));
+
+        $this->assertTrue($helpers->has('serverurl'));
         $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('serverurl'));
+
+        $this->assertTrue($helpers->has('ServerUrl'));
+        $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('ServerUrl'));
+
+        $this->assertTrue($helpers->has('serverUrl'));
+        $this->assertInstanceOf(ServerUrlHelper::class, $helpers->get('serverUrl'));
     }
 
     public function testWillUseRendererFromContainer(): void
     {
+        $this->container->expects(self::exactly(4))
+            ->method('has')
+            ->willReturnMap([
+                ['config', false],
+                [HelperPluginManager::class, false],
+                ['Zend\View\HelperPluginManager', false],
+                [PhpRenderer::class, true],
+            ]);
+
         $engine = new PhpRenderer();
-        $this->container->has('config')->willReturn(false);
-        $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $this->container->has('Zend\View\HelperPluginManager')->willReturn(false);
-        $this->injectContainerService(PhpRenderer::class, $engine);
+
+        $this->container->expects(self::atLeast(1))
+            ->method('get')
+            ->willReturnMap([
+                [PhpRenderer::class, $engine],
+            ]);
 
         $factory = new LaminasViewRendererFactory();
-        $view    = $factory($this->container->reveal());
+        $view    = $factory($this->container);
 
         $composed = $this->fetchPhpRenderer($view);
         $this->assertSame($engine, $composed);
