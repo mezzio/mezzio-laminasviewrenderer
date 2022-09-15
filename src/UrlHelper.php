@@ -15,8 +15,7 @@ class UrlHelper extends AbstractHelper
 {
     use DeprecatedAbstractHelperHierarchyTrait;
 
-    /** @var BaseHelper */
-    private $helper;
+    private BaseHelper $helper;
 
     public function __construct(BaseHelper $helper)
     {

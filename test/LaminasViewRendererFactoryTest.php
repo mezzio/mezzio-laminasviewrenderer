@@ -102,7 +102,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         array $paths,
         ?string $message = null
     ): void {
-        $message = $message ?: sprintf('Did not find path %s in namespace %s', $expected, $namespace ?: null);
+        $message = $message ?: sprintf('Did not find path %s in namespace %s', (string) $expected, $namespace ?: '');
 
         $found = [];
         foreach ($paths as $path) {
