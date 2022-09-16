@@ -126,14 +126,12 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testCallingFactoryWithNoConfigReturnsLaminasViewInstance(): LaminasViewRenderer
     {
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', false],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(never())
@@ -162,14 +160,12 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', true],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(self::once())
@@ -195,14 +191,12 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', true],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(self::once())
@@ -248,14 +242,12 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', true],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(self::once())
@@ -293,14 +285,12 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', true],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(self::once())
@@ -331,14 +321,12 @@ class LaminasViewRendererFactoryTest extends TestCase
             ],
         ];
 
-        $this->container->expects(self::exactly(5))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', true],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $this->container->expects(self::once())
@@ -363,14 +351,12 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testInjectsCustomHelpersIntoHelperManager(): void
     {
-        $this->container->expects(self::atLeast(5))
+        $this->container->expects(self::atLeast(3))
             ->method('has')
             ->willReturnMap([
                 ['config', false],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
                 [Helper\UrlHelper::class, true],
                 [Helper\ServerUrlHelper::class, true],
             ]);
@@ -397,13 +383,12 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testWillUseHelperManagerFromContainer(): void
     {
-        $this->container->expects(self::exactly(4))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', false],
                 [HelperPluginManager::class, true],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
             ]);
 
         $helpers = new HelperPluginManager($this->container);
@@ -424,14 +409,12 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testUrlAndServerUrlHelpersAreRegisteredWithTheExpectedAliases(): void
     {
-        $this->container->expects(self::atLeast(6))
+        $this->container->expects(self::atLeast(5))
             ->method('has')
             ->willReturnMap([
                 ['config', false],
                 [HelperPluginManager::class, true],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, false],
-                ['Zend\View\Renderer\PhpRenderer', false],
                 [Helper\UrlHelper::class, true],
                 [Helper\ServerUrlHelper::class, true],
             ]);
@@ -469,12 +452,11 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     public function testWillUseRendererFromContainer(): void
     {
-        $this->container->expects(self::exactly(4))
+        $this->container->expects(self::exactly(3))
             ->method('has')
             ->willReturnMap([
                 ['config', false],
                 [HelperPluginManager::class, false],
-                ['Zend\View\HelperPluginManager', false],
                 [PhpRenderer::class, true],
             ]);
 

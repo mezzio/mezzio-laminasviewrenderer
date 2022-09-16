@@ -27,11 +27,6 @@ class ConfigProvider
         return [
             'aliases'   => [
                 TemplateRendererInterface::class => LaminasViewRenderer::class,
-
-                // Legacy Zend Framework aliases
-                'Zend\Expressive\Template\TemplateRendererInterface' => TemplateRendererInterface::class,
-                'Zend\View\HelperPluginManager'                      => HelperPluginManager::class,
-                'Zend\Expressive\ZendView\ZendViewRenderer'          => LaminasViewRenderer::class,
             ],
             'factories' => [
                 HelperPluginManager::class => HelperPluginManagerFactory::class,

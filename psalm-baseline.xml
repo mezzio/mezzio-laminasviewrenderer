@@ -52,13 +52,12 @@
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/LaminasViewRendererFactory.php">
-    <MixedArgument occurrences="8">
+    <MixedArgument occurrences="5">
       <code>$config['layout'] ?? null</code>
       <code>$config['map'] ?? []</code>
       <code>$defaultSuffix</code>
       <code>$namespace</code>
       <code>$path</code>
-      <code>$renderer</code>
     </MixedArgument>
     <MixedArrayAccess occurrences="5">
       <code>$config['default_suffix']</code>
@@ -67,7 +66,7 @@
       <code>$config['map']</code>
       <code>$config['templates']</code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="9">
+    <MixedAssignment occurrences="8">
       <code>$allPaths</code>
       <code>$config</code>
       <code>$config</code>
@@ -76,15 +75,7 @@
       <code>$namespace</code>
       <code>$path</code>
       <code>$paths</code>
-      <code>$renderer</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>HelperPluginManager</code>
-    </MixedInferredReturnType>
-    <MixedMethodCall occurrences="1">
-      <code>setResolver</code>
-    </MixedMethodCall>
-    <MixedReturnStatement occurrences="1"/>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
     <ImplementedReturnTypeMismatch occurrences="2">
