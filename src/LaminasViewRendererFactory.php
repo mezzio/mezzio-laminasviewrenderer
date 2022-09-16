@@ -63,9 +63,7 @@ class LaminasViewRendererFactory
         // Create or retrieve the renderer from the container
         $renderer = $container->has(PhpRenderer::class)
             ? $container->get(PhpRenderer::class)
-            : ($container->has('Zend\View\Renderer\PhpRenderer')
-                ? $container->get('Zend\View\Renderer\PhpRenderer')
-                : new PhpRenderer());
+            : new PhpRenderer();
         $renderer->setResolver($resolver);
 
         // Inject helpers
@@ -103,40 +101,28 @@ class LaminasViewRendererFactory
         $helpers->setAlias('url', BaseUrlHelper::class);
         $helpers->setAlias('Url', BaseUrlHelper::class);
         $helpers->setFactory(BaseUrlHelper::class, function () use ($container) {
-            if (
-                ! $container->has(BaseUrlHelper::class)
-                && ! $container->has('Zend\Expressive\Helper\UrlHelper')
-            ) {
+            if (! $container->has(BaseUrlHelper::class)) {
                 throw new Exception\MissingHelperException(sprintf(
                     'An instance of %s is required in order to create the "url" view helper; not found',
                     BaseUrlHelper::class
                 ));
             }
-            return new UrlHelper(
-                $container->has(BaseUrlHelper::class)
-                    ? $container->get(BaseUrlHelper::class)
-                    : $container->get('Zend\Expressive\Helper\UrlHelper')
-            );
+
+            return new UrlHelper($container->get(BaseUrlHelper::class));
         });
 
         $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
         $helpers->setAlias('serverUrl', BaseServerUrlHelper::class);
         $helpers->setAlias('ServerUrl', BaseServerUrlHelper::class);
         $helpers->setFactory(BaseServerUrlHelper::class, function () use ($container) {
-            if (
-                ! $container->has(BaseServerUrlHelper::class)
-                && ! $container->has('Zend\Expressive\Helper\ServerUrlHelper')
-            ) {
+            if (! $container->has(BaseServerUrlHelper::class)) {
                 throw new Exception\MissingHelperException(sprintf(
                     'An instance of %s is required in order to create the "url" view helper; not found',
                     BaseServerUrlHelper::class
                 ));
             }
-            return new ServerUrlHelper(
-                $container->has(BaseServerUrlHelper::class)
-                    ? $container->get(BaseServerUrlHelper::class)
-                    : $container->get('Zend\Expressive\Helper\ServerUrlHelper')
-            );
+
+            return new ServerUrlHelper($container->get(BaseServerUrlHelper::class));
         });
 
         $renderer->setHelperPluginManager($helpers);
@@ -146,10 +132,6 @@ class LaminasViewRendererFactory
     {
         if ($container->has(HelperPluginManager::class)) {
             return $container->get(HelperPluginManager::class);
-        }
-
-        if ($container->has('Zend\View\HelperPluginManager')) {
-            return $container->get('Zend\View\HelperPluginManager');
         }
 
         return new HelperPluginManager($container);
