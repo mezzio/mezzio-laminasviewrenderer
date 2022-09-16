@@ -39,14 +39,9 @@ class LaminasViewRenderer implements TemplateRendererInterface
     use ArrayParametersTrait;
     use DefaultParamsTrait;
 
-    /** @var ModelInterface|null */
-    private $layout;
-
-    /** @var RendererInterface */
-    private $renderer;
-
-    /** @var NamespacedPathStackResolver */
-    private $resolver;
+    private ?ModelInterface $layout = null;
+    private RendererInterface $renderer;
+    private NamespacedPathStackResolver $resolver;
 
     /**
      * Constructor
@@ -264,13 +259,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
 
     private function hasNamespacedResolver(AggregateResolver $aggregate): bool
     {
-        foreach ($aggregate as $resolver) {
-            if ($resolver instanceof NamespacedPathStackResolver) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getNamespacedResolver($aggregate) !== null;
     }
 
     private function getNamespacedResolver(AggregateResolver $aggregate): ?NamespacedPathStackResolver
