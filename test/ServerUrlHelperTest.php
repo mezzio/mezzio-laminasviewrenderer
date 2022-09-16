@@ -14,10 +14,9 @@ use function PHPUnit\Framework\identicalTo;
 
 class ServerUrlHelperTest extends TestCase
 {
-    /** @var ServerUrlHelper */
-    private $helper;
+    private ServerUrlHelper $helper;
     /** @var BaseHelper&MockObject */
-    private $baseHelper;
+    private BaseHelper $baseHelper;
 
     protected function setUp(): void
     {

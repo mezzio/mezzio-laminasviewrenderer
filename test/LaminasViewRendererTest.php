@@ -28,17 +28,13 @@ use const PHP_EOL;
 
 class LaminasViewRendererTest extends TestCase
 {
-    /** @var TemplatePathStack */
-    private $resolver;
-
-    /** @var PhpRenderer */
-    private $render;
+    private PhpRenderer $render;
 
     protected function setUp(): void
     {
-        $this->resolver = new TemplatePathStack();
-        $this->render   = new PhpRenderer();
-        $this->render->setResolver($this->resolver);
+        $resolver     = new TemplatePathStack();
+        $this->render = new PhpRenderer();
+        $this->render->setResolver($resolver);
     }
 
     public function assertTemplatePath(string $path, TemplatePath $templatePath, ?string $message = null): void
@@ -113,6 +109,7 @@ class LaminasViewRendererTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Layout must be a string layout template name');
 
+        /** @psalm-suppress InvalidArgument */
         new LaminasViewRenderer(null, []);
     }
 
@@ -121,7 +118,6 @@ class LaminasViewRendererTest extends TestCase
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $paths = $renderer->getPaths();
-        $this->assertIsArray($paths);
         $this->assertCount(1, $paths);
         $this->assertTemplatePath(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
         $this->assertTemplatePathString(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
@@ -133,7 +129,6 @@ class LaminasViewRendererTest extends TestCase
         $renderer = new LaminasViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset', 'test');
         $paths = $renderer->getPaths();
-        $this->assertIsArray($paths);
         $this->assertCount(1, $paths);
         $this->assertTemplatePath(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
         $this->assertTemplatePathString(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);

@@ -12,9 +12,8 @@ use PHPUnit\Framework\TestCase;
 class UrlHelperTest extends TestCase
 {
     /** @var BaseHelper&MockObject */
-    private $baseHelper;
-    /** @var UrlHelper */
-    private $helper;
+    private BaseHelper $baseHelper;
+    private UrlHelper $helper;
 
     protected function setUp(): void
     {

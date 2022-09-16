@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
 
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
 use MezzioTest\LaminasView\TestAsset\TestHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 class HelperPluginManagerFactoryTest extends TestCase
 {
-    /** @var ServiceManager&MockObject */
-    private $container;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
     protected function setUp(): void
     {
-        $this->container = $this->createMock(ServiceManager::class);
+        $this->container = $this->createMock(ContainerInterface::class);
     }
 
     public function testCallingFactoryWithNoConfigReturnsHelperPluginManagerInstance(): HelperPluginManager

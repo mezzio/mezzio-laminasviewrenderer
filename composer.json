@@ -45,11 +45,9 @@
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "~2.4.0",
-        "phpspec/prophecy": "^1.14.0",
-        "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpunit/phpunit": "^9.5.10",
+        "phpunit/phpunit": "^9.5.24",
         "psalm/plugin-phpunit": "^0.17.0",
-        "vimeo/psalm": "^4.10"
+        "vimeo/psalm": "^4.27.0"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0",
