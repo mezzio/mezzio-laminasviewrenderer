@@ -15,7 +15,6 @@ use Traversable;
 use function array_key_exists;
 use function count;
 use function file_exists;
-use function get_class;
 use function gettype;
 use function in_array;
 use function ini_get;
@@ -154,7 +153,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         if (! is_array($paths)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid paths provided; must be an array or Traversable, received %s',
-                is_object($paths) ? get_class($paths) : gettype($paths)
+                is_object($paths) ? $paths::class : gettype($paths)
             ));
         }
 
