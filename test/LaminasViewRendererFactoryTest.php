@@ -93,11 +93,8 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->assertSame($expected, $count, $message);
     }
 
-    /**
-     * @param mixed $expected
-     */
     private function assertPathNamespaceContains(
-        $expected,
+        mixed $expected,
         ?string $namespace,
         array $paths,
         ?string $message = null

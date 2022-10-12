@@ -18,11 +18,8 @@ class ServerUrlHelper extends AbstractHelper
 {
     use DeprecatedAbstractHelperHierarchyTrait;
 
-    private BaseHelper $helper;
-
-    public function __construct(BaseHelper $helper)
+    public function __construct(private BaseHelper $helper)
     {
-        $this->helper = $helper;
     }
 
     /**

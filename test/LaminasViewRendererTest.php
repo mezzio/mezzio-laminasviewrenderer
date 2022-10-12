@@ -163,9 +163,8 @@ class LaminasViewRendererTest extends TestCase
 
     /**
      * @dataProvider invalidParameterValues
-     * @param mixed $params
      */
-    public function testRenderRaisesExceptionForInvalidParameterTypes($params): void
+    public function testRenderRaisesExceptionForInvalidParameterTypes(mixed $params): void
     {
         $renderer = new LaminasViewRenderer();
         $this->expectException(InvalidArgumentException::class);
