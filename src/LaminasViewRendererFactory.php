@@ -9,6 +9,8 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Mezzio\LaminasView\ServerUrlHelper;
+use Mezzio\LaminasView\UrlHelper;
 use Psr\Container\ContainerInterface;
 
 use function is_array;
@@ -102,7 +104,7 @@ class LaminasViewRendererFactory
         $helpers = $this->retrieveHelperManager($container);
         $helpers->setAlias('url', BaseUrlHelper::class);
         $helpers->setAlias('Url', BaseUrlHelper::class);
-        $helpers->setFactory(BaseUrlHelper::class, function () use ($container) {
+        $helpers->setFactory(BaseUrlHelper::class, static function () use ($container): UrlHelper {
             if (
                 ! $container->has(BaseUrlHelper::class)
                 && ! $container->has('Zend\Expressive\Helper\UrlHelper')
@@ -122,7 +124,7 @@ class LaminasViewRendererFactory
         $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
         $helpers->setAlias('serverUrl', BaseServerUrlHelper::class);
         $helpers->setAlias('ServerUrl', BaseServerUrlHelper::class);
-        $helpers->setFactory(BaseServerUrlHelper::class, function () use ($container) {
+        $helpers->setFactory(BaseServerUrlHelper::class, static function () use ($container): ServerUrlHelper {
             if (
                 ! $container->has(BaseServerUrlHelper::class)
                 && ! $container->has('Zend\Expressive\Helper\ServerUrlHelper')

@@ -170,10 +170,9 @@ class LaminasViewRenderer implements TemplateRendererInterface
      * Create a view model from the template and parameters.
      *
      * @param string $name
-     * @param mixed $params
      * @return ModelInterface
      */
-    private function createModel($name, $params)
+    private function createModel($name, mixed $params)
     {
         $params = $this->mergeParams($name, $this->normalizeParams($params));
         $model  = new ViewModel($params);
