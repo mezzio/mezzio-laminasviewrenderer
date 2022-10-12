@@ -25,9 +25,9 @@ use function iterator_to_array;
 use function pathinfo;
 use function preg_match;
 use function sprintf;
+use function str_starts_with;
 use function stream_get_wrappers;
 use function stream_wrapper_register;
-use function substr;
 
 use const PATHINFO_EXTENSION;
 
@@ -235,7 +235,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
             $file = new SplFileInfo($path . $template);
             if ($file->isReadable()) {
                 // Found! Return it.
-                if (($filePath = $file->getRealPath()) === false && substr($path, 0, 7) === 'phar://') {
+                if (($filePath = $file->getRealPath()) === false && str_starts_with($path, 'phar://')) {
                     // Do not try to expand phar paths (realpath + phars == fail)
                     $filePath = $path . $template;
                     if (! file_exists($filePath)) {
