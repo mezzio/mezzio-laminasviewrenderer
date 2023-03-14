@@ -6,23 +6,24 @@ namespace Mezzio\LaminasView;
 
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\DeprecatedAbstractHelperHierarchyTrait;
-use Mezzio\Helper\UrlHelper as BaseHelper;
+use Mezzio\Helper\UrlHelperInterface;
 
 /**
  * @final
- * @psalm-import-type UrlGeneratorOptions from BaseHelper
+ * @psalm-import-type UrlGeneratorOptions from UrlHelperInterface
  */
 class UrlHelper extends AbstractHelper
 {
     use DeprecatedAbstractHelperHierarchyTrait;
 
-    public function __construct(private BaseHelper $helper)
+    public function __construct(private UrlHelperInterface $helper)
     {
     }
 
     /**
      * Proxies to `Mezzio\Helper\UrlHelper::generate()`
      *
+     * @param non-empty-string|null $routeName
      * @param array<string, mixed> $routeParams
      * @param array<string, mixed> $queryParams
      * @param array<string, mixed> $options Can have the following keys:
