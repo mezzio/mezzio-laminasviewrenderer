@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.0.0@4e177bf0c9f03c17d2fbfd83b7cc9c47605274d8">
+<files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
   <file src="src/LaminasViewRenderer.php">
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction>
       <code>is_object($layout)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument>
       <code>$resolver</code>
     </InvalidArgument>
-    <MixedArgument occurrences="5">
+    <MixedArgument>
       <code>$capture</code>
       <code>$capture</code>
       <code>$child</code>
-      <code>$child-&gt;getTemplate()</code>
+      <code><![CDATA[$child->getTemplate()]]></code>
       <code>$resolver</code>
     </MixedArgument>
-    <MixedAssignment occurrences="7">
+    <MixedAssignment>
       <code>$capture</code>
       <code>$child</code>
       <code>$oldResult</code>
@@ -23,49 +23,48 @@
       <code>$resolver</code>
       <code>$viewModelHelper</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="4">
+    <MixedMethodCall>
       <code>captureTo</code>
       <code>getTemplate</code>
       <code>setRoot</code>
       <code>terminate</code>
     </MixedMethodCall>
-    <MixedOperand occurrences="1">
+    <MixedOperand>
       <code>$oldResult</code>
     </MixedOperand>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>$this-&gt;getNamespacedResolver($resolver)</code>
+    <PossiblyNullPropertyAssignmentValue>
+      <code><![CDATA[$this->getNamespacedResolver($resolver)]]></code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyNullReference occurrences="1">
+    <PossiblyNullReference>
       <code>setDefaultSuffix</code>
     </PossiblyNullReference>
-    <PropertyTypeCoercion occurrences="1">
+    <PropertyTypeCoercion>
       <code>$layout</code>
     </PropertyTypeCoercion>
-    <RedundantConditionGivenDocblockType occurrences="1">
+    <RedundantConditionGivenDocblockType>
       <code>gettype($layout)</code>
     </RedundantConditionGivenDocblockType>
-    <UndefinedInterfaceMethod occurrences="2">
+    <UndefinedInterfaceMethod>
       <code>plugin</code>
       <code>resolver</code>
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/LaminasViewRendererFactory.php">
-    <MixedArgument occurrences="8">
-      <code>$config['layout'] ?? null</code>
-      <code>$config['map'] ?? []</code>
+    <MixedArgument>
+      <code><![CDATA[$config['layout'] ?? null]]></code>
+      <code><![CDATA[$config['map'] ?? []]]></code>
       <code>$defaultSuffix</code>
       <code>$namespace</code>
       <code>$path</code>
-      <code>$renderer</code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="5">
-      <code>$config['default_suffix']</code>
-      <code>$config['extension']</code>
-      <code>$config['layout']</code>
-      <code>$config['map']</code>
-      <code>$config['templates']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$config['default_suffix']]]></code>
+      <code><![CDATA[$config['extension']]]></code>
+      <code><![CDATA[$config['layout']]]></code>
+      <code><![CDATA[$config['map']]]></code>
+      <code><![CDATA[$config['templates']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="9">
+    <MixedAssignment>
       <code>$allPaths</code>
       <code>$config</code>
       <code>$config</code>
@@ -74,44 +73,53 @@
       <code>$namespace</code>
       <code>$path</code>
       <code>$paths</code>
-      <code>$renderer</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
+    <MixedInferredReturnType>
       <code>HelperPluginManager</code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="1">
-      <code>setResolver</code>
-    </MixedMethodCall>
-    <MixedReturnStatement occurrences="1">
-      <code>$container-&gt;get('Zend\View\HelperPluginManager')</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$container->get('Zend\View\HelperPluginManager')]]></code>
     </MixedReturnStatement>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
-    <ImplementedReturnTypeMismatch occurrences="2">
+    <ImplementedReturnTypeMismatch>
       <code>?string</code>
       <code>void</code>
     </ImplementedReturnTypeMismatch>
   </file>
   <file src="src/NamespacedPathStackResolverFactory.php">
-    <MixedArgument occurrences="1">
-      <code>$config['default_suffix']</code>
+    <MixedArgument>
+      <code><![CDATA[$config['default_suffix']]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$config['templates']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$config['templates']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="2">
+    <MixedAssignment>
       <code>$config</code>
       <code>$config</code>
     </MixedAssignment>
+    <UnusedClass>
+      <code>NamespacedPathStackResolverFactory</code>
+    </UnusedClass>
+  </file>
+  <file src="test/ExceptionTest.php">
+    <PossiblyUnusedMethod>
+      <code>exception</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="test/LaminasViewRendererFactoryTest.php">
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$resolver</code>
     </MixedAssignment>
   </file>
   <file src="test/LaminasViewRendererTest.php">
-    <NullArgument occurrences="1">
+    <NullArgument>
       <code>null</code>
     </NullArgument>
+    <PossiblyUnusedMethod>
+      <code>invalidParameterValues</code>
+      <code>objectParameterValues</code>
+      <code>useArrayOrViewModel</code>
+    </PossiblyUnusedMethod>
   </file>
 </files>

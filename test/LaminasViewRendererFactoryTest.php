@@ -16,6 +16,7 @@ use Mezzio\LaminasView\NamespacedPathStackResolver;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Template\TemplatePath;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -113,8 +114,7 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     private function fetchPhpRenderer(LaminasViewRenderer $view): PhpRenderer
     {
-        $r = new ReflectionProperty($view, 'renderer');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'renderer');
         $renderer = $r->getValue($view);
         assert($renderer instanceof PhpRenderer);
 
@@ -142,9 +142,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         return $view;
     }
 
-    /**
-     * @depends testCallingFactoryWithNoConfigReturnsLaminasViewInstance
-     */
+    #[Depends('testCallingFactoryWithNoConfigReturnsLaminasViewInstance')]
     public function testUnConfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view): void
     {
         $paths = $view->getPaths();
@@ -177,8 +175,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'layout');
-        $r->setAccessible(true);
+        $r      = new ReflectionProperty($view, 'layout');
         $layout = $r->getValue($view);
         $this->assertInstanceOf(ModelInterface::class, $layout);
         $this->assertSame($config['templates']['layout'], $layout->getTemplate());
@@ -263,8 +260,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'renderer');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'renderer');
         $renderer = $r->getValue($view);
         assert($renderer instanceof PhpRenderer);
         $aggregate = $renderer->resolver();
@@ -308,8 +304,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'resolver');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'resolver');
         $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(
@@ -346,8 +341,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'resolver');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'resolver');
         $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(

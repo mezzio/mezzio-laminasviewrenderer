@@ -12,6 +12,8 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Template\Exception\InvalidArgumentException;
 use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
@@ -65,24 +67,9 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEmpty($templatePath->getNamespace(), $message);
     }
 
-    public function assertEqualTemplatePath(
-        TemplatePath $expected,
-        TemplatePath $received,
-        ?string $message = null
-    ): void {
-        $message = $message ?: 'Failed to assert TemplatePaths are equal';
-        if (
-            $expected->getPath() !== $received->getPath()
-            || $expected->getNamespace() !== $received->getNamespace()
-        ) {
-            $this->fail($message);
-        }
-    }
-
     private function retrieveRenderer(LaminasViewRenderer $laminasViewRenderer): PhpRenderer
     {
         $property = new ReflectionProperty(LaminasViewRenderer::class, 'renderer');
-        $property->setAccessible(true);
 
         $renderer = $property->getValue($laminasViewRenderer);
         assert($renderer instanceof PhpRenderer);
@@ -148,7 +135,7 @@ class LaminasViewRendererTest extends TestCase
     }
 
     /** @return array<array-key, array<array-key, mixed>> */
-    public function invalidParameterValues(): array
+    public static function invalidParameterValues(): array
     {
         return [
             'true'       => [true],
@@ -161,9 +148,7 @@ class LaminasViewRendererTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidParameterValues
-     */
+    #[DataProvider('invalidParameterValues')]
     public function testRenderRaisesExceptionForInvalidParameterTypes(mixed $params): void
     {
         $renderer = new LaminasViewRenderer();
@@ -183,7 +168,7 @@ class LaminasViewRendererTest extends TestCase
     }
 
     /** @return array<string, array{0: object, 1: string}> */
-    public function objectParameterValues(): array
+    public static function objectParameterValues(): array
     {
         $names = [
             'stdClass'    => uniqid('', false),
@@ -196,9 +181,7 @@ class LaminasViewRendererTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider objectParameterValues
-     */
+    #[DataProvider('objectParameterValues')]
     public function testCanRenderWithParameterObjects(object $params, string $search): void
     {
         $renderer = new LaminasViewRenderer();
@@ -210,9 +193,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testWillRenderContentInLayoutPassedToConstructor(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
@@ -337,9 +318,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testWillRenderContentInLayoutPassedDuringRendering(): void
     {
         $renderer = new LaminasViewRenderer(null);
@@ -354,9 +333,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString('<title>Layout Page</title>', $result);
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor(): void
     {
         $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
@@ -371,9 +348,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString('<title>ALTERNATE LAYOUT PAGE</title>', $result);
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testCanPassViewModelForLayoutToConstructor(): void
     {
         $layout = new ViewModel();
@@ -390,9 +365,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testCanPassViewModelForLayoutParameterWhenRendering(): void
     {
         $layout = new ViewModel();
@@ -409,9 +382,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString('<title>ALTERNATE LAYOUT PAGE</title>', $result);
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testDisableLayoutOnRender(): void
     {
         $layout = new ViewModel();
@@ -432,9 +403,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($rendered, $expected);
     }
 
-    /**
-     * @group layout
-     */
+    #[Group('layout')]
     public function testDisableLayoutViaDefaultParameter(): void
     {
         $layout = new ViewModel();
@@ -453,9 +422,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEquals($rendered, $expected);
     }
 
-    /**
-     * @group namespacing
-     */
+    #[Group('namespacing')]
     public function testProperlyResolvesNamespacedTemplate(): void
     {
         $renderer = new LaminasViewRenderer();
@@ -519,7 +486,7 @@ class LaminasViewRendererTest extends TestCase
     /**
      * @psalm-return array<string, bool[]>
      */
-    public function useArrayOrViewModel(): array
+    public static function useArrayOrViewModel(): array
     {
         return [
             'array'      => [false],
@@ -527,9 +494,7 @@ class LaminasViewRendererTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider useArrayOrViewModel
-     */
+    #[DataProvider('useArrayOrViewModel')]
     public function testOverrideSharedParametersAtRender(bool $viewAsModel): void
     {
         $renderer = new LaminasViewRenderer();
