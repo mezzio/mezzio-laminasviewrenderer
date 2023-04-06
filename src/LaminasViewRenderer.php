@@ -146,7 +146,6 @@ class LaminasViewRenderer implements TemplateRendererInterface
 
         /**
          * @var array<array-key, SplStack<string>> $pathStack
-         * @psalm-suppress DocblockTypeContradiction
          */
         $pathStack = $this->resolver->getPaths();
         foreach ($pathStack as $namespace => $namespacedPaths) {

@@ -9,8 +9,6 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
-use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\LaminasView\UrlHelper;
 use Psr\Container\ContainerInterface;
 
 use function is_array;
