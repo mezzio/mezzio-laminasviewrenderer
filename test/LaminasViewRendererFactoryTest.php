@@ -113,8 +113,7 @@ class LaminasViewRendererFactoryTest extends TestCase
 
     private function fetchPhpRenderer(LaminasViewRenderer $view): PhpRenderer
     {
-        $r = new ReflectionProperty($view, 'renderer');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'renderer');
         $renderer = $r->getValue($view);
         assert($renderer instanceof PhpRenderer);
 
@@ -177,8 +176,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'layout');
-        $r->setAccessible(true);
+        $r      = new ReflectionProperty($view, 'layout');
         $layout = $r->getValue($view);
         $this->assertInstanceOf(ModelInterface::class, $layout);
         $this->assertSame($config['templates']['layout'], $layout->getTemplate());
@@ -263,8 +261,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'renderer');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'renderer');
         $renderer = $r->getValue($view);
         assert($renderer instanceof PhpRenderer);
         $aggregate = $renderer->resolver();
@@ -308,8 +305,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'resolver');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'resolver');
         $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(
@@ -346,8 +342,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $factory = new LaminasViewRendererFactory();
         $view    = $factory($this->container);
 
-        $r = new ReflectionProperty($view, 'resolver');
-        $r->setAccessible(true);
+        $r        = new ReflectionProperty($view, 'resolver');
         $resolver = $r->getValue($view);
 
         $this->assertInstanceOf(

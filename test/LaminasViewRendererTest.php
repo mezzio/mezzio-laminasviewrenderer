@@ -65,24 +65,9 @@ class LaminasViewRendererTest extends TestCase
         $this->assertEmpty($templatePath->getNamespace(), $message);
     }
 
-    public function assertEqualTemplatePath(
-        TemplatePath $expected,
-        TemplatePath $received,
-        ?string $message = null
-    ): void {
-        $message = $message ?: 'Failed to assert TemplatePaths are equal';
-        if (
-            $expected->getPath() !== $received->getPath()
-            || $expected->getNamespace() !== $received->getNamespace()
-        ) {
-            $this->fail($message);
-        }
-    }
-
     private function retrieveRenderer(LaminasViewRenderer $laminasViewRenderer): PhpRenderer
     {
         $property = new ReflectionProperty(LaminasViewRenderer::class, 'renderer');
-        $property->setAccessible(true);
 
         $renderer = $property->getValue($laminasViewRenderer);
         assert($renderer instanceof PhpRenderer);
