@@ -11,7 +11,6 @@ use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Psr\Container\ContainerInterface;
 
-use function assert;
 use function is_array;
 use function is_numeric;
 use function sprintf;
