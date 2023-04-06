@@ -102,6 +102,11 @@
       <code>NamespacedPathStackResolverFactory</code>
     </UnusedClass>
   </file>
+  <file src="test/ExceptionTest.php">
+    <PossiblyUnusedMethod>
+      <code>exception</code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="test/LaminasViewRendererFactoryTest.php">
     <MixedAssignment>
       <code>$resolver</code>
@@ -111,5 +116,10 @@
     <NullArgument>
       <code>null</code>
     </NullArgument>
+    <PossiblyUnusedMethod>
+      <code>invalidParameterValues</code>
+      <code>objectParameterValues</code>
+      <code>useArrayOrViewModel</code>
+    </PossiblyUnusedMethod>
   </file>
 </files>

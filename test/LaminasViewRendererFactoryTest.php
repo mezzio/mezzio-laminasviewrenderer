@@ -16,6 +16,7 @@ use Mezzio\LaminasView\NamespacedPathStackResolver;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Template\TemplatePath;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -141,9 +142,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         return $view;
     }
 
-    /**
-     * @depends testCallingFactoryWithNoConfigReturnsLaminasViewInstance
-     */
+    #[Depends('testCallingFactoryWithNoConfigReturnsLaminasViewInstance')]
     public function testUnConfiguredLaminasViewInstanceContainsNoPaths(LaminasViewRenderer $view): void
     {
         $paths = $view->getPaths();
