@@ -38,9 +38,6 @@
     <PossiblyNullReference>
       <code>setDefaultSuffix</code>
     </PossiblyNullReference>
-    <PropertyTypeCoercion>
-      <code>$layout</code>
-    </PropertyTypeCoercion>
     <RedundantConditionGivenDocblockType>
       <code>gettype($layout)</code>
     </RedundantConditionGivenDocblockType>
@@ -74,12 +71,6 @@
       <code>$path</code>
       <code>$paths</code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code>HelperPluginManager</code>
-    </MixedInferredReturnType>
-    <MixedReturnStatement>
-      <code><![CDATA[$container->get('Zend\View\HelperPluginManager')]]></code>
-    </MixedReturnStatement>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
     <ImplementedReturnTypeMismatch>
