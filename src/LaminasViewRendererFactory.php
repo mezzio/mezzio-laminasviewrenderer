@@ -9,6 +9,7 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Mezzio\Helper\UrlHelperInterface;
 use Psr\Container\ContainerInterface;
 
 use function assert;
@@ -119,7 +120,7 @@ class LaminasViewRendererFactory
                 ? $container->get(BaseUrlHelper::class)
                 : $container->get('Zend\Expressive\Helper\UrlHelper');
 
-            assert($helper instanceof BaseUrlHelper);
+            assert($helper instanceof UrlHelperInterface);
 
             return new UrlHelper($helper);
         });
