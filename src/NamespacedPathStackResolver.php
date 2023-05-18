@@ -7,7 +7,6 @@ namespace Mezzio\LaminasView;
 use Laminas\View\Exception as ViewException;
 use Laminas\View\Renderer\RendererInterface;
 use Laminas\View\Resolver\TemplatePathStack;
-use Laminas\View\Stream;
 use SplFileInfo;
 use SplStack;
 use Traversable;
@@ -16,8 +15,6 @@ use function array_key_exists;
 use function count;
 use function file_exists;
 use function gettype;
-use function in_array;
-use function ini_get;
 use function is_array;
 use function is_object;
 use function is_string;
@@ -26,8 +23,6 @@ use function pathinfo;
 use function preg_match;
 use function sprintf;
 use function str_starts_with;
-use function stream_get_wrappers;
-use function stream_wrapper_register;
 
 use const PATHINFO_EXTENSION;
 
@@ -67,13 +62,6 @@ class NamespacedPathStackResolver extends TemplatePathStack
      */
     public function __construct(?iterable $options = null)
     {
-        $this->useViewStream = (bool) ini_get('short_open_tag');
-        if ($this->useViewStream) {
-            if (! in_array('laminas.view', stream_get_wrappers())) {
-                stream_wrapper_register('laminas.view', Stream::class);
-            }
-        }
-
         if (null !== $options) {
             $this->setOptions($options);
         }
@@ -243,10 +231,6 @@ class NamespacedPathStackResolver extends TemplatePathStack
                     }
                 }
 
-                if ($this->useStreamWrapper()) {
-                    // If using a stream wrapper, prepend the spec to the path
-                    $filePath = 'laminas.view://' . $filePath;
-                }
                 return $filePath;
             }
         }
