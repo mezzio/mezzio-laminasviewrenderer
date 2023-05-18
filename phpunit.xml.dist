@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         bootstrap="./vendor/autoload.php" colors="true"
+         colors="true"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          cacheDirectory=".phpunit.cache"
          displayDetailsOnIncompleteTests="true"
@@ -10,14 +10,14 @@
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
 >
-    <coverage>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </coverage>
-    <testsuites>
-        <testsuite name="Mezzio laminas-view PhpRenderer Tests">
-            <directory>./test</directory>
-        </testsuite>
-    </testsuites>
+  <testsuites>
+    <testsuite name="Mezzio laminas-view PhpRenderer Tests">
+      <directory>./test</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
 </phpunit>

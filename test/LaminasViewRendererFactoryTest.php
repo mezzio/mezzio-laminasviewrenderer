@@ -355,7 +355,7 @@ class LaminasViewRendererFactoryTest extends TestCase
         $this->container->expects(self::atLeast(2))
             ->method('get')
             ->willReturnMap([
-                [Helper\UrlHelper::class, $this->createMock(Helper\UrlHelper::class)],
+                [Helper\UrlHelper::class, $this->createMock(Helper\UrlHelperInterface::class)],
                 [Helper\ServerUrlHelper::class, $this->createMock(Helper\ServerUrlHelper::class)],
             ]);
 
