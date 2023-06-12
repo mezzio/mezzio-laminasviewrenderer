@@ -7,6 +7,7 @@ namespace MezzioTest\LaminasView;
 use Generator;
 use Mezzio\LaminasView\Exception\ExceptionInterface;
 use Mezzio\Template\Exception\ExceptionInterface as TemplateExceptionInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function basename;
@@ -22,7 +23,7 @@ class ExceptionTest extends TestCase
     }
 
     /** @return Generator<string, array{0: string}> */
-    public function exception(): Generator
+    public static function exception(): Generator
     {
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
         foreach ($exceptions as $exception) {
@@ -32,9 +33,7 @@ class ExceptionTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider exception
-     */
+    #[DataProvider('exception')]
     public function testExceptionIsInstanceOfExceptionInterface(string $exception): void
     {
         $this->assertStringContainsString('Exception', $exception);

@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
 
-use Mezzio\Helper\UrlHelper as BaseHelper;
+use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\LaminasView\UrlHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UrlHelperTest extends TestCase
 {
-    /** @var BaseHelper&MockObject */
-    private BaseHelper $baseHelper;
+    /** @var UrlHelperInterface&MockObject */
+    private UrlHelperInterface $baseHelper;
     private UrlHelper $helper;
 
     protected function setUp(): void
     {
-        $this->baseHelper = $this->createMock(BaseHelper::class);
+        $this->baseHelper = $this->createMock(UrlHelperInterface::class);
         $this->helper     = new UrlHelper($this->baseHelper);
     }
 

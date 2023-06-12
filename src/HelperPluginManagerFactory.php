@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use ArrayAccess;
-use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\ConfigInterface;
 use Laminas\View\HelperPluginManager;
 use Psr\Container\ContainerInterface;
@@ -26,7 +25,7 @@ class HelperPluginManagerFactory
         $helperConfig = $config['view_helpers'] ?? [];
 
         if (! empty($helperConfig)) {
-            (new Config($helperConfig))->configureServiceManager($manager);
+            $manager->configure($helperConfig);
         }
 
         return $manager;

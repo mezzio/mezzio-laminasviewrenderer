@@ -9,10 +9,10 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
-use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\LaminasView\UrlHelper;
+use Mezzio\Helper\UrlHelperInterface;
 use Psr\Container\ContainerInterface;
 
+use function assert;
 use function is_array;
 use function is_numeric;
 use function sprintf;
@@ -68,6 +68,8 @@ class LaminasViewRendererFactory
             : ($container->has('Zend\View\Renderer\PhpRenderer')
                 ? $container->get('Zend\View\Renderer\PhpRenderer')
                 : new PhpRenderer());
+        assert($renderer instanceof PhpRenderer);
+
         $renderer->setResolver($resolver);
 
         // Inject helpers
@@ -114,11 +116,13 @@ class LaminasViewRendererFactory
                     BaseUrlHelper::class
                 ));
             }
-            return new UrlHelper(
-                $container->has(BaseUrlHelper::class)
-                    ? $container->get(BaseUrlHelper::class)
-                    : $container->get('Zend\Expressive\Helper\UrlHelper')
-            );
+            $helper = $container->has(BaseUrlHelper::class)
+                ? $container->get(BaseUrlHelper::class)
+                : $container->get('Zend\Expressive\Helper\UrlHelper');
+
+            assert($helper instanceof UrlHelperInterface);
+
+            return new UrlHelper($helper);
         });
 
         $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
@@ -134,11 +138,13 @@ class LaminasViewRendererFactory
                     BaseServerUrlHelper::class
                 ));
             }
-            return new ServerUrlHelper(
-                $container->has(BaseServerUrlHelper::class)
-                    ? $container->get(BaseServerUrlHelper::class)
-                    : $container->get('Zend\Expressive\Helper\ServerUrlHelper')
-            );
+
+            $helper = $container->has(BaseServerUrlHelper::class)
+                ? $container->get(BaseServerUrlHelper::class)
+                : $container->get('Zend\Expressive\Helper\ServerUrlHelper');
+            assert($helper instanceof BaseServerUrlHelper);
+
+            return new ServerUrlHelper($helper);
         });
 
         $renderer->setHelperPluginManager($helpers);
