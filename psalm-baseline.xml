@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
+<files psalm-version="5.15.0@5c774aca4746caf3d239d9c8cadb9f882ca29352">
   <file src="src/LaminasViewRenderer.php">
     <DocblockTypeContradiction>
       <code>is_object($layout)</code>
@@ -8,26 +8,16 @@
       <code>$resolver</code>
     </InvalidArgument>
     <MixedArgument>
-      <code>$capture</code>
-      <code>$capture</code>
-      <code>$child</code>
-      <code><![CDATA[$child->getTemplate()]]></code>
       <code>$resolver</code>
     </MixedArgument>
     <MixedAssignment>
-      <code>$capture</code>
-      <code>$child</code>
       <code>$oldResult</code>
       <code>$providedLayout</code>
-      <code>$resolver</code>
       <code>$resolver</code>
       <code>$viewModelHelper</code>
     </MixedAssignment>
     <MixedMethodCall>
-      <code>captureTo</code>
-      <code>getTemplate</code>
       <code>setRoot</code>
-      <code>terminate</code>
     </MixedMethodCall>
     <MixedOperand>
       <code>$oldResult</code>
@@ -82,10 +72,45 @@
     </MixedReturnStatement>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
+    <ConstructorSignatureMismatch>
+      <code>$options</code>
+    </ConstructorSignatureMismatch>
+    <DeprecatedClass>
+      <code>Stream::class</code>
+    </DeprecatedClass>
+    <DeprecatedConstant>
+      <code>TemplatePathStack::FAILURE_NOT_FOUND</code>
+      <code>TemplatePathStack::FAILURE_NO_PATHS</code>
+    </DeprecatedConstant>
+    <DeprecatedMethod>
+      <code>useStreamWrapper</code>
+    </DeprecatedMethod>
+    <DeprecatedProperty>
+      <code><![CDATA[$this->lastLookupFailure]]></code>
+      <code><![CDATA[$this->lastLookupFailure]]></code>
+      <code><![CDATA[$this->lastLookupFailure]]></code>
+      <code><![CDATA[$this->useViewStream]]></code>
+      <code><![CDATA[$this->useViewStream]]></code>
+    </DeprecatedProperty>
     <ImplementedReturnTypeMismatch>
+      <code>?string</code>
       <code>?string</code>
       <code>void</code>
     </ImplementedReturnTypeMismatch>
+    <InvalidArgument>
+      <code>$options</code>
+    </InvalidArgument>
+    <InvalidExtendClass>
+      <code>TemplatePathStack</code>
+    </InvalidExtendClass>
+    <MethodSignatureMismatch>
+      <code>public function __construct(?iterable $options = null)</code>
+      <code>public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE): void</code>
+      <code>public function addPaths(array $paths): void</code>
+      <code>public function clearPaths(): void</code>
+      <code>public function resolve($name, ?RendererInterface $renderer = null): ?string</code>
+      <code>public function setPaths($paths): void</code>
+    </MethodSignatureMismatch>
   </file>
   <file src="src/NamespacedPathStackResolverFactory.php">
     <MixedArgument>
@@ -106,11 +131,6 @@
     <PossiblyUnusedMethod>
       <code>exception</code>
     </PossiblyUnusedMethod>
-  </file>
-  <file src="test/LaminasViewRendererFactoryTest.php">
-    <MixedAssignment>
-      <code>$resolver</code>
-    </MixedAssignment>
   </file>
   <file src="test/LaminasViewRendererTest.php">
     <NullArgument>
