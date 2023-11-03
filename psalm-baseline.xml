@@ -66,22 +66,14 @@
     <ConstructorSignatureMismatch>
       <code>$options</code>
     </ConstructorSignatureMismatch>
-    <DeprecatedClass>
-      <code>Stream::class</code>
-    </DeprecatedClass>
     <DeprecatedConstant>
       <code>TemplatePathStack::FAILURE_NOT_FOUND</code>
       <code>TemplatePathStack::FAILURE_NO_PATHS</code>
     </DeprecatedConstant>
-    <DeprecatedMethod>
-      <code>useStreamWrapper</code>
-    </DeprecatedMethod>
     <DeprecatedProperty>
       <code><![CDATA[$this->lastLookupFailure]]></code>
       <code><![CDATA[$this->lastLookupFailure]]></code>
       <code><![CDATA[$this->lastLookupFailure]]></code>
-      <code><![CDATA[$this->useViewStream]]></code>
-      <code><![CDATA[$this->useViewStream]]></code>
     </DeprecatedProperty>
     <ImplementedReturnTypeMismatch>
       <code>?string</code>
