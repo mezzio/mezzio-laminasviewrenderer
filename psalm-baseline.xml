@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.15.0@5c774aca4746caf3d239d9c8cadb9f882ca29352">
+<files psalm-version="5.17.0@c620f6e80d0abfca532b00bda366062aaedf6e5d">
   <file src="src/LaminasViewRenderer.php">
-    <DocblockTypeContradiction>
-      <code>is_object($layout)</code>
-    </DocblockTypeContradiction>
     <InvalidArgument>
       <code>$resolver</code>
     </InvalidArgument>
@@ -31,9 +28,6 @@
     <PropertyTypeCoercion>
       <code>$layout</code>
     </PropertyTypeCoercion>
-    <RedundantConditionGivenDocblockType>
-      <code>gettype($layout)</code>
-    </RedundantConditionGivenDocblockType>
     <UndefinedInterfaceMethod>
       <code>plugin</code>
       <code>resolver</code>

@@ -17,9 +17,8 @@ use Mezzio\Template\Exception;
 use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
 
-use function gettype;
+use function get_debug_type;
 use function is_int;
-use function is_object;
 use function is_string;
 use function sprintf;
 
@@ -87,7 +86,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Layout must be a string layout template name or a %s instance; received %s',
                 ModelInterface::class,
-                is_object($layout) ? $layout::class : gettype($layout)
+                get_debug_type($layout),
             ));
         }
 
