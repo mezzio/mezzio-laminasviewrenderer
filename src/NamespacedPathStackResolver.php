@@ -15,11 +15,11 @@ use Traversable;
 use function array_key_exists;
 use function count;
 use function file_exists;
+use function get_debug_type;
 use function gettype;
 use function in_array;
 use function ini_get;
 use function is_array;
-use function is_object;
 use function is_string;
 use function iterator_to_array;
 use function pathinfo;
@@ -152,7 +152,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         if (! is_array($paths)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid paths provided; must be an array or Traversable, received %s',
-                is_object($paths) ? $paths::class : gettype($paths)
+                get_debug_type($paths),
             ));
         }
 
