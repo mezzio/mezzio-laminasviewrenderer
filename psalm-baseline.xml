@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.17.0@c620f6e80d0abfca532b00bda366062aaedf6e5d">
+<files psalm-version="5.18.0@b113f3ed0259fd6e212d87c3df80eec95a6abf19">
   <file src="src/LaminasViewRenderer.php">
     <InvalidArgument>
       <code>$resolver</code>
@@ -7,6 +7,10 @@
     <MixedArgument>
       <code>$resolver</code>
     </MixedArgument>
+    <MixedArgumentTypeCoercion>
+      <code>$params</code>
+      <code><![CDATA[$this->mergeParams($layout->getTemplate(), (array) $layout->getVariables())]]></code>
+    </MixedArgumentTypeCoercion>
     <MixedAssignment>
       <code>$oldResult</code>
       <code>$providedLayout</code>
@@ -19,6 +23,9 @@
     <MixedOperand>
       <code>$oldResult</code>
     </MixedOperand>
+    <PossiblyInvalidArgument>
+      <code>$params</code>
+    </PossiblyInvalidArgument>
     <PossiblyNullPropertyAssignmentValue>
       <code><![CDATA[$this->getNamespacedResolver($resolver)]]></code>
     </PossiblyNullPropertyAssignmentValue>
