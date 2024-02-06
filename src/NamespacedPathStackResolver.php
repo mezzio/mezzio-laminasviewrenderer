@@ -204,14 +204,14 @@ class NamespacedPathStackResolver extends TemplatePathStack
             $template .= '.' . $defaultSuffix;
         }
 
-        $path = false;
+        $path = null;
         if ($namespace !== self::DEFAULT_NAMESPACE) {
             $path = $this->getPathFromNamespace($template, $namespace);
         }
 
-        $path = $path ?: $this->getPathFromNamespace($template, self::DEFAULT_NAMESPACE);
+        $path ??= $this->getPathFromNamespace($template, self::DEFAULT_NAMESPACE);
 
-        if ($path) {
+        if ($path !== null) {
             return $path;
         }
 

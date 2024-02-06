@@ -76,7 +76,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
             }
         }
 
-        if ($layout && is_string($layout)) {
+        if (is_string($layout) && $layout !== '') {
             $model = new ViewModel();
             $model->setTemplate($layout);
             $layout = $model;
