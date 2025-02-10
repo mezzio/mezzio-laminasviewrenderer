@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.18.0@b113f3ed0259fd6e212d87c3df80eec95a6abf19">
+<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
   <file src="src/LaminasViewRenderer.php">
     <InvalidArgument>
-      <code>$resolver</code>
+      <code><![CDATA[$resolver]]></code>
     </InvalidArgument>
     <MixedArgument>
-      <code>$resolver</code>
+      <code><![CDATA[$resolver]]></code>
     </MixedArgument>
     <MixedArgumentTypeCoercion>
-      <code>$params</code>
+      <code><![CDATA[$params]]></code>
       <code><![CDATA[$this->mergeParams($layout->getTemplate(), (array) $layout->getVariables())]]></code>
     </MixedArgumentTypeCoercion>
     <MixedAssignment>
-      <code>$oldResult</code>
-      <code>$providedLayout</code>
-      <code>$resolver</code>
-      <code>$viewModelHelper</code>
+      <code><![CDATA[$oldResult]]></code>
+      <code><![CDATA[$providedLayout]]></code>
+      <code><![CDATA[$resolver]]></code>
+      <code><![CDATA[$viewModelHelper]]></code>
     </MixedAssignment>
     <MixedMethodCall>
-      <code>setRoot</code>
+      <code><![CDATA[setRoot]]></code>
     </MixedMethodCall>
     <MixedOperand>
-      <code>$oldResult</code>
+      <code><![CDATA[$oldResult]]></code>
     </MixedOperand>
     <PossiblyInvalidArgument>
-      <code>$params</code>
+      <code><![CDATA[$params]]></code>
     </PossiblyInvalidArgument>
     <PossiblyNullPropertyAssignmentValue>
       <code><![CDATA[$this->getNamespacedResolver($resolver)]]></code>
     </PossiblyNullPropertyAssignmentValue>
     <PossiblyNullReference>
-      <code>setDefaultSuffix</code>
+      <code><![CDATA[setDefaultSuffix]]></code>
     </PossiblyNullReference>
     <PropertyTypeCoercion>
-      <code>$layout</code>
+      <code><![CDATA[$layout]]></code>
     </PropertyTypeCoercion>
     <UndefinedInterfaceMethod>
-      <code>plugin</code>
-      <code>resolver</code>
+      <code><![CDATA[plugin]]></code>
+      <code><![CDATA[resolver]]></code>
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/LaminasViewRendererFactory.php">
     <MixedArgument>
       <code><![CDATA[$config['layout'] ?? null]]></code>
       <code><![CDATA[$config['map'] ?? []]]></code>
-      <code>$defaultSuffix</code>
-      <code>$namespace</code>
-      <code>$path</code>
+      <code><![CDATA[$defaultSuffix]]></code>
+      <code><![CDATA[$namespace]]></code>
+      <code><![CDATA[$path]]></code>
     </MixedArgument>
     <MixedArrayAccess>
       <code><![CDATA[$config['default_suffix']]]></code>
@@ -56,35 +56,29 @@
       <code><![CDATA[$config['templates']]]></code>
     </MixedArrayAccess>
     <MixedAssignment>
-      <code>$allPaths</code>
-      <code>$config</code>
-      <code>$config</code>
-      <code>$defaultSuffix</code>
-      <code>$namespace</code>
-      <code>$namespace</code>
-      <code>$path</code>
-      <code>$paths</code>
+      <code><![CDATA[$allPaths]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$defaultSuffix]]></code>
+      <code><![CDATA[$namespace]]></code>
+      <code><![CDATA[$namespace]]></code>
+      <code><![CDATA[$path]]></code>
+      <code><![CDATA[$paths]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code>HelperPluginManager</code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$container->get('Zend\View\HelperPluginManager')]]></code>
     </MixedReturnStatement>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
-    <ConstructorSignatureMismatch>
-      <code>$options</code>
-    </ConstructorSignatureMismatch>
     <DeprecatedClass>
-      <code>Stream::class</code>
+      <code><![CDATA[Stream::class]]></code>
     </DeprecatedClass>
     <DeprecatedConstant>
-      <code>TemplatePathStack::FAILURE_NOT_FOUND</code>
-      <code>TemplatePathStack::FAILURE_NO_PATHS</code>
+      <code><![CDATA[TemplatePathStack::FAILURE_NOT_FOUND]]></code>
+      <code><![CDATA[TemplatePathStack::FAILURE_NO_PATHS]]></code>
     </DeprecatedConstant>
     <DeprecatedMethod>
-      <code>useStreamWrapper</code>
+      <code><![CDATA[useStreamWrapper]]></code>
     </DeprecatedMethod>
     <DeprecatedProperty>
       <code><![CDATA[$this->lastLookupFailure]]></code>
@@ -94,23 +88,23 @@
       <code><![CDATA[$this->useViewStream]]></code>
     </DeprecatedProperty>
     <ImplementedReturnTypeMismatch>
-      <code>?string</code>
-      <code>?string</code>
-      <code>void</code>
+      <code><![CDATA[?string]]></code>
+      <code><![CDATA[?string]]></code>
+      <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
     <InvalidArgument>
-      <code>$options</code>
+      <code><![CDATA[$options]]></code>
     </InvalidArgument>
     <InvalidExtendClass>
-      <code>TemplatePathStack</code>
+      <code><![CDATA[TemplatePathStack]]></code>
     </InvalidExtendClass>
     <MethodSignatureMismatch>
-      <code>public function __construct(?iterable $options = null)</code>
-      <code>public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE): void</code>
-      <code>public function addPaths(array $paths): void</code>
-      <code>public function clearPaths(): void</code>
-      <code>public function resolve($name, ?RendererInterface $renderer = null): ?string</code>
-      <code>public function setPaths($paths): void</code>
+      <code><![CDATA[public function __construct(?iterable $options = null)]]></code>
+      <code><![CDATA[public function addPath($path, ?string $namespace = self::DEFAULT_NAMESPACE): void]]></code>
+      <code><![CDATA[public function addPaths(array $paths): void]]></code>
+      <code><![CDATA[public function clearPaths(): void]]></code>
+      <code><![CDATA[public function resolve($name, ?RendererInterface $renderer = null): ?string]]></code>
+      <code><![CDATA[public function setPaths($paths): void]]></code>
     </MethodSignatureMismatch>
   </file>
   <file src="src/NamespacedPathStackResolverFactory.php">
@@ -121,26 +115,26 @@
       <code><![CDATA[$config['templates']]]></code>
     </MixedArrayAccess>
     <MixedAssignment>
-      <code>$config</code>
-      <code>$config</code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
     </MixedAssignment>
     <UnusedClass>
-      <code>NamespacedPathStackResolverFactory</code>
+      <code><![CDATA[NamespacedPathStackResolverFactory]]></code>
     </UnusedClass>
   </file>
   <file src="test/ExceptionTest.php">
     <PossiblyUnusedMethod>
-      <code>exception</code>
+      <code><![CDATA[exception]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/LaminasViewRendererTest.php">
     <NullArgument>
-      <code>null</code>
+      <code><![CDATA[null]]></code>
     </NullArgument>
     <PossiblyUnusedMethod>
-      <code>invalidParameterValues</code>
-      <code>objectParameterValues</code>
-      <code>useArrayOrViewModel</code>
+      <code><![CDATA[invalidParameterValues]]></code>
+      <code><![CDATA[objectParameterValues]]></code>
+      <code><![CDATA[useArrayOrViewModel]]></code>
     </PossiblyUnusedMethod>
   </file>
 </files>
