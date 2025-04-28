@@ -29,7 +29,7 @@ use function var_export;
 
 use const DIRECTORY_SEPARATOR;
 
-class LaminasViewRendererFactoryTest extends TestCase
+final class LaminasViewRendererFactoryTest extends TestCase
 {
     /** @var ContainerInterface&MockObject */
     private ContainerInterface $container;

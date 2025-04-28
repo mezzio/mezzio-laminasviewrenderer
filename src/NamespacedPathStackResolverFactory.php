@@ -6,6 +6,7 @@ namespace Mezzio\LaminasView;
 
 use Psr\Container\ContainerInterface;
 
+/** @final */
 class NamespacedPathStackResolverFactory
 {
     public function __invoke(ContainerInterface $container): NamespacedPathStackResolver

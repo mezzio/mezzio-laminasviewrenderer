@@ -10,6 +10,8 @@ use RuntimeException;
  * @deprecated do not use - this exception is no longer in use, and will be removed in the next major release
  *
  * @psalm-suppress UnusedClass
+ *
+ * @final
  */
 class InvalidContainerException extends RuntimeException implements ExceptionInterface
 {

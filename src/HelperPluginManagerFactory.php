@@ -12,7 +12,10 @@ use Psr\Container\ContainerInterface;
 use function assert;
 use function is_array;
 
-/** @psalm-import-type ServiceManagerConfigurationType from ConfigInterface */
+/**
+ * @psalm-import-type ServiceManagerConfigurationType from ConfigInterface
+ * @final
+ */
 class HelperPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container): HelperPluginManager
