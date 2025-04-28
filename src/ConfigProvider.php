@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
-use Laminas\ServiceManager\ConfigInterface;
+use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager;
 use Mezzio\Template\TemplateRendererInterface;
 
-/**
- * @psalm-import-type ServiceManagerConfigurationType from ConfigInterface
- * @final
- */
-class ConfigProvider
+/** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
+final class ConfigProvider
 {
+    /**
+     * @return array{
+     *     dependencies: ServiceManagerConfiguration,
+     *     templates: array<string, mixed>,
+     * }
+     */
     public function __invoke(): array
     {
         return [
@@ -22,7 +25,7 @@ class ConfigProvider
         ];
     }
 
-    /** @return ServiceManagerConfigurationType */
+    /** @return ServiceManagerConfiguration */
     public function getDependencies(): array
     {
         return [
@@ -36,6 +39,7 @@ class ConfigProvider
         ];
     }
 
+    /** @return array<string, mixed> */
     public function getTemplates(): array
     {
         return [

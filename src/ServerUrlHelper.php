@@ -11,10 +11,8 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Alternate ServerUrl helper for use in Mezzio.
- *
- * @final
  */
-class ServerUrlHelper extends AbstractHelper
+final class ServerUrlHelper extends AbstractHelper
 {
     use DeprecatedAbstractHelperHierarchyTrait;
 

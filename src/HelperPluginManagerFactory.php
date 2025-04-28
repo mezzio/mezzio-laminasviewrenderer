@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use ArrayAccess;
-use Laminas\ServiceManager\ConfigInterface;
+use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager;
 use Psr\Container\ContainerInterface;
 
 use function assert;
 use function is_array;
 
-/**
- * @psalm-import-type ServiceManagerConfigurationType from ConfigInterface
- * @final
- */
-class HelperPluginManagerFactory
+/** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
+final class HelperPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container): HelperPluginManager
     {
@@ -24,7 +21,7 @@ class HelperPluginManagerFactory
 
         $config = $container->has('config') ? $container->get('config') : [];
         assert(is_array($config) || $config instanceof ArrayAccess);
-        /** @psalm-var ServiceManagerConfigurationType $helperConfig */
+        /** @psalm-var ServiceManagerConfiguration $helperConfig */
         $helperConfig = $config['view_helpers'] ?? [];
 
         if (! empty($helperConfig)) {
