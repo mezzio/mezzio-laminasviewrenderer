@@ -9,7 +9,7 @@ use Mezzio\LaminasView\UrlHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class UrlHelperTest extends TestCase
+final class UrlHelperTest extends TestCase
 {
     /** @var UrlHelperInterface&MockObject */
     private UrlHelperInterface $baseHelper;

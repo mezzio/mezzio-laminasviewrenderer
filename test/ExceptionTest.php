@@ -15,7 +15,7 @@ use function glob;
 use function is_a;
 use function substr;
 
-class ExceptionTest extends TestCase
+final class ExceptionTest extends TestCase
 {
     public function testExceptionInterfaceExtendsTemplateExceptionInterface(): void
     {
@@ -26,6 +26,7 @@ class ExceptionTest extends TestCase
     public static function exception(): Generator
     {
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
+        self::assertIsArray($exceptions);
         foreach ($exceptions as $exception) {
             $class = substr(basename($exception), 0, -4);
 

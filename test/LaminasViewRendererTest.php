@@ -28,7 +28,7 @@ use function var_export;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
-class LaminasViewRendererTest extends TestCase
+final class LaminasViewRendererTest extends TestCase
 {
     private PhpRenderer $render;
 
@@ -41,13 +41,13 @@ class LaminasViewRendererTest extends TestCase
 
     public function assertTemplatePath(string $path, TemplatePath $templatePath, ?string $message = null): void
     {
-        $message = $message ?: sprintf('Failed to assert TemplatePath contained path %s', $path);
+        $message ??= sprintf('Failed to assert TemplatePath contained path %s', $path);
         $this->assertEquals($path, $templatePath->getPath(), $message);
     }
 
     public function assertTemplatePathString(string $path, TemplatePath $templatePath, ?string $message = null): void
     {
-        $message = $message ?: sprintf('Failed to assert TemplatePath casts to string path %s', $path);
+        $message ??= sprintf('Failed to assert TemplatePath casts to string path %s', $path);
         $this->assertEquals($path, (string) $templatePath, $message);
     }
 
@@ -56,14 +56,13 @@ class LaminasViewRendererTest extends TestCase
         TemplatePath $templatePath,
         ?string $message = null
     ): void {
-        $message = $message
-            ?: sprintf('Failed to assert TemplatePath namespace matched %s', var_export($namespace, true));
+        $message ??= sprintf('Failed to assert TemplatePath namespace matched %s', var_export($namespace, true));
         $this->assertEquals($namespace, $templatePath->getNamespace(), $message);
     }
 
     public function assertEmptyTemplatePathNamespace(TemplatePath $templatePath, ?string $message = null): void
     {
-        $message = $message ?: 'Failed to assert TemplatePath namespace was empty';
+        $message ??= 'Failed to assert TemplatePath namespace was empty';
         $this->assertEmpty($templatePath->getNamespace(), $message);
     }
 
@@ -130,6 +129,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name]);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
     }
@@ -164,6 +164,7 @@ class LaminasViewRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $result  = $renderer->render('laminasview-null', null);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-null.phtml');
+        self::assertIsString($content);
         $this->assertEquals($content, $result);
     }
 
@@ -189,6 +190,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', $params);
         $this->assertStringContainsString($search, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $search, $content);
         $this->assertEquals($content, $result);
     }
@@ -202,6 +204,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name]);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
         $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
@@ -220,6 +223,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($title, $result);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
         $expected = sprintf('<title>Layout Page: %s</title>', $title);
@@ -239,6 +243,7 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringNotContainsString($title, $result);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
         $expected = sprintf('<title>Layout Page: %s</title>', '');
@@ -257,10 +262,12 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($name, $result);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        $layout  = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout  = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
+        self::assertIsString($layout);
+        $layout = str_replace('<?= $this->title ?>', $title, $layout);
+        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
         $this->assertStringContainsString($layout, $result);
 
         $expected = sprintf('<title>Layout Page: %s</title>', $title);
@@ -283,10 +290,12 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($name, $result);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        $layout  = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout  = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
+        self::assertIsString($layout);
+        $layout = str_replace('<?= $this->title ?>', $title, $layout);
+        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
         $this->assertStringContainsString($layout, $result);
 
         $expected = sprintf('<title>Layout Page: %s</title>', $title);
@@ -308,10 +317,12 @@ class LaminasViewRendererTest extends TestCase
         $this->assertStringContainsString($name, $result);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        $layout  = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout  = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
+        self::assertIsString($layout);
+        $layout = str_replace('<?= $this->title ?>', $title, $layout);
+        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
         $this->assertStringContainsString($layout, $result);
 
         $expected = sprintf('<title>Layout Page: %s</title>', $title);
@@ -327,6 +338,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name, 'layout' => 'laminasview-layout']);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
 
@@ -342,6 +354,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name, 'layout' => 'laminasview-layout2']);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
 
@@ -360,6 +373,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name]);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
         $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
@@ -377,6 +391,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', ['name' => $name, 'layout' => $layout]);
         $this->assertStringContainsString($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertStringContainsString($content, $result);
         $this->assertStringContainsString('<title>ALTERNATE LAYOUT PAGE</title>', $result);
@@ -398,6 +413,7 @@ class LaminasViewRendererTest extends TestCase
         ]);
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($expected);
         $expected = str_replace('<?php echo $name ?>', $name, $expected);
 
         $this->assertEquals($rendered, $expected);
@@ -417,6 +433,7 @@ class LaminasViewRendererTest extends TestCase
         $rendered = $renderer->render('laminasview', ['name' => $name]);
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($expected);
         $expected = str_replace('<?php echo $name ?>', $name, $expected);
 
         $this->assertEquals($rendered, $expected);
@@ -429,7 +446,8 @@ class LaminasViewRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset/test', 'test');
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.phtml');
-        $test     = $renderer->render('test::test');
+        self::assertIsString($expected);
+        $test = $renderer->render('test::test');
 
         $this->assertSame($expected, $test);
     }
@@ -443,6 +461,7 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview');
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
     }
@@ -455,11 +474,13 @@ class LaminasViewRendererTest extends TestCase
         $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
         $result  = $renderer->render('laminasview');
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
 
         $result  = $renderer->render('laminasview-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
     }
@@ -474,11 +495,13 @@ class LaminasViewRendererTest extends TestCase
         $renderer->addDefaultParam('laminasview-2', 'name', $name2);
         $result  = $renderer->render('laminasview');
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
 
         $result  = $renderer->render('laminasview-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name2, $content);
         $this->assertEquals($content, $result);
     }
@@ -508,6 +531,7 @@ class LaminasViewRendererTest extends TestCase
 
         $result  = $renderer->render('laminasview', $viewModel);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name2, $content);
         $this->assertEquals($content, $result);
     }
@@ -521,6 +545,7 @@ class LaminasViewRendererTest extends TestCase
         $result    = $renderer->render('laminasview', $viewModel);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', 'Laminas', $content);
         $this->assertEquals($content, $result);
     }
@@ -542,9 +567,12 @@ class LaminasViewRendererTest extends TestCase
 
         $result = $renderer->render('laminasview', $viewModelParent);
 
-        $content             = file_get_contents(sprintf('%s/laminasview-null.phtml', $path));
-        $contentParent       = file_get_contents(sprintf('%s/laminasview.phtml', $path));
+        $content = file_get_contents(sprintf('%s/laminasview-null.phtml', $path));
+        self::assertIsString($content);
+        $contentParent = file_get_contents(sprintf('%s/laminasview.phtml', $path));
+        self::assertIsString($contentParent);
         $contentParentLayout = file_get_contents(sprintf('%s/laminasview-layout.phtml', $path));
+        self::assertIsString($contentParentLayout);
 
         // trim is used here, because rendering engine is trimming content too
         $content = trim(str_replace('<?php echo $name ?>', $content, $contentParent));
@@ -570,9 +598,11 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview', $viewModelParent);
 
         $contentChild = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
+        self::assertIsString($contentChild);
         $contentChild = str_replace('<?php echo $name ?>', $name2, $contentChild);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $contentChild, $content);
 
         static::assertEquals($content, $result);
@@ -586,6 +616,7 @@ class LaminasViewRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $result  = $renderer->render('laminasview-custom-suffix', ['name' => $name]);
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-custom-suffix.' . $suffix);
+        self::assertIsString($content);
         $content = str_replace('<?php echo $name ?>', $name, $content);
         $this->assertEquals($content, $result);
     }
@@ -598,9 +629,11 @@ class LaminasViewRendererTest extends TestCase
         $result = $renderer->render('laminasview-change-layout', ['layout' => 'laminasview-layout']);
 
         $contentChild = file_get_contents(__DIR__ . '/TestAsset/laminasview-change-layout.phtml');
+        self::assertIsString($contentChild);
         $contentChild = str_replace("<?php \$this->layout('laminasview-layout2'); ?>\n", '', $contentChild);
 
         $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout2.phtml');
+        self::assertIsString($content);
         $content = str_replace("<?= \$this->content ?>\n", $contentChild, $content);
 
         static::assertEquals($content, $result);

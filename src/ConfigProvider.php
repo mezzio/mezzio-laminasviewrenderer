@@ -10,6 +10,7 @@ use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * @psalm-import-type ServiceManagerConfigurationType from ConfigInterface
+ * @final
  */
 class ConfigProvider
 {

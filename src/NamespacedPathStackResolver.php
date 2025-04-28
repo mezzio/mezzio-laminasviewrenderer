@@ -14,9 +14,9 @@ use Traversable;
 use function array_key_exists;
 use function count;
 use function file_exists;
+use function get_debug_type;
 use function gettype;
 use function is_array;
-use function is_object;
 use function is_string;
 use function iterator_to_array;
 use function pathinfo;
@@ -40,6 +40,7 @@ use const PATHINFO_EXTENSION;
  * Stream wrappers are deprecated and will be removed in 3.0
  *
  * @psalm-import-type PathStack from TemplatePathStack
+ * @final
  */
 class NamespacedPathStackResolver extends TemplatePathStack
 {
@@ -140,7 +141,7 @@ class NamespacedPathStackResolver extends TemplatePathStack
         if (! is_array($paths)) {
             throw new ViewException\InvalidArgumentException(sprintf(
                 'Invalid paths provided; must be an array or Traversable, received %s',
-                is_object($paths) ? $paths::class : gettype($paths)
+                get_debug_type($paths),
             ));
         }
 
@@ -192,14 +193,14 @@ class NamespacedPathStackResolver extends TemplatePathStack
             $template .= '.' . $defaultSuffix;
         }
 
-        $path = false;
+        $path = null;
         if ($namespace !== self::DEFAULT_NAMESPACE) {
             $path = $this->getPathFromNamespace($template, $namespace);
         }
 
-        $path = $path ?: $this->getPathFromNamespace($template, self::DEFAULT_NAMESPACE);
+        $path ??= $this->getPathFromNamespace($template, self::DEFAULT_NAMESPACE);
 
-        if ($path) {
+        if ($path !== null) {
             return $path;
         }
 

@@ -45,6 +45,8 @@ use function sprintf;
  *
  * Injects the HelperPluginManager used by the PhpRenderer with mezzio
  * overrides of the url and serverurl helpers.
+ *
+ * @final
  */
 class LaminasViewRendererFactory
 {

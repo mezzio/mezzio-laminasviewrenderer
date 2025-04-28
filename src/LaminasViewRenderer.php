@@ -17,9 +17,8 @@ use Mezzio\Template\Exception;
 use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
 
-use function gettype;
+use function get_debug_type;
 use function is_int;
-use function is_object;
 use function is_string;
 use function sprintf;
 
@@ -32,6 +31,8 @@ use function sprintf;
  * non-Aggregate into a new AggregateResolver instance. Additionally, it always
  * registers a NamespacedPathStackResolver at priority 0 (lower than
  * default) in the Aggregate to ensure we can add and resolve namespaced paths.
+ *
+ * @final
  */
 class LaminasViewRenderer implements TemplateRendererInterface
 {
@@ -77,7 +78,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
             }
         }
 
-        if ($layout && is_string($layout)) {
+        if (is_string($layout) && $layout !== '') {
             $model = new ViewModel();
             $model->setTemplate($layout);
             $layout = $model;
@@ -87,7 +88,7 @@ class LaminasViewRenderer implements TemplateRendererInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Layout must be a string layout template name or a %s instance; received %s',
                 ModelInterface::class,
-                is_object($layout) ? $layout::class : gettype($layout)
+                get_debug_type($layout),
             ));
         }
 

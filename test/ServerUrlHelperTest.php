@@ -12,7 +12,7 @@ use Psr\Http\Message\UriInterface;
 
 use function PHPUnit\Framework\identicalTo;
 
-class ServerUrlHelperTest extends TestCase
+final class ServerUrlHelperTest extends TestCase
 {
     private ServerUrlHelper $helper;
     /** @var BaseHelper&MockObject */
