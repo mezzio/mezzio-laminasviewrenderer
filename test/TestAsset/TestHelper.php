@@ -6,6 +6,6 @@ namespace MezzioTest\LaminasView\TestAsset;
 
 use Laminas\View\Helper\AbstractHelper;
 
-class TestHelper extends AbstractHelper
+final class TestHelper extends AbstractHelper
 {
 }

@@ -28,7 +28,7 @@ use function var_export;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
-class LaminasViewRendererTest extends TestCase
+final class LaminasViewRendererTest extends TestCase
 {
     private PhpRenderer $render;
 

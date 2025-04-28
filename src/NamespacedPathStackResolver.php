@@ -45,6 +45,7 @@ use const PATHINFO_EXTENSION;
  * Stream wrappers are deprecated and will be removed in 3.0
  *
  * @psalm-import-type PathStack from TemplatePathStack
+ * @final
  */
 class NamespacedPathStackResolver extends TemplatePathStack
 {

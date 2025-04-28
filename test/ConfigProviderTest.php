@@ -7,7 +7,7 @@ namespace MezzioTest\LaminasView;
 use Mezzio\LaminasView\ConfigProvider;
 use PHPUnit\Framework\TestCase;
 
-class ConfigProviderTest extends TestCase
+final class ConfigProviderTest extends TestCase
 {
     public function testReturnedArrayContainsDependencies(): void
     {
