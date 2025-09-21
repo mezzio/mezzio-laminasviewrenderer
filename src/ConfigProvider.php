@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use Laminas\ServiceManager\ServiceManager;
-use Laminas\View\HelperPluginManager;
 use Mezzio\Template\TemplateRendererInterface;
 
 /** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
@@ -33,7 +32,6 @@ final class ConfigProvider
                 TemplateRendererInterface::class => LaminasViewRenderer::class,
             ],
             'factories' => [
-                HelperPluginManager::class => HelperPluginManagerFactory::class,
                 LaminasViewRenderer::class => LaminasViewRendererFactory::class,
             ],
         ];
