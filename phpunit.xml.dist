@@ -4,10 +4,12 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          cacheDirectory=".phpunit.cache"
          displayDetailsOnAllIssues="true"
+         failOnIncomplete="true"
          failOnDeprecation="true"
          failOnNotice="true"
          failOnWarning="true"
          failOnPhpunitDeprecation="true"
+         failOnPhpunitWarning="true"
 >
   <testsuites>
     <testsuite name="Mezzio laminas-view PhpRenderer Tests">
