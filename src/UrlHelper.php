@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
-use Laminas\View\Helper\AbstractHelper;
-use Laminas\View\Helper\DeprecatedAbstractHelperHierarchyTrait;
 use Mezzio\Helper\UrlHelperInterface;
 
 /** @psalm-import-type UrlGeneratorOptions from UrlHelperInterface */
-final class UrlHelper extends AbstractHelper
+final class UrlHelper
 {
-    use DeprecatedAbstractHelperHierarchyTrait;
-
     public function __construct(private readonly UrlHelperInterface $helper)
     {
     }
