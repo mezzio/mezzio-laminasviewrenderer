@@ -35,11 +35,11 @@
     },
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-        "laminas/laminas-servicemanager": "^3.21.0",
-        "laminas/laminas-view": "^2.27.0",
+        "laminas/laminas-servicemanager": "^4.4.0",
+        "laminas/laminas-view": "^3.0.x-dev",
         "mezzio/mezzio-helpers": "^5.15.0",
         "mezzio/mezzio-router": "^3.16.1 || ^4.0.0",
-        "mezzio/mezzio-template": "^2.8.0",
+        "mezzio/mezzio-template": "^2.11.0",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1 || ^2.0.0"
     },
