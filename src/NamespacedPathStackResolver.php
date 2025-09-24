@@ -62,8 +62,10 @@ final class NamespacedPathStackResolver implements ResolverInterface
      * @throws ViewException\InvalidArgumentException For an invalid path.
      * @throws ViewException\InvalidArgumentException For an invalid namespace.
      */
-    public function addPath(string $path, string $namespace = self::DEFAULT_NAMESPACE): void
+    public function addPath(string $path, string|null $namespace = self::DEFAULT_NAMESPACE): void
     {
+        $namespace ??= self::DEFAULT_NAMESPACE;
+
         if ($namespace === '') {
             throw new ViewException\InvalidArgumentException(
                 'Invalid namespace provided; must be a non-empty string',

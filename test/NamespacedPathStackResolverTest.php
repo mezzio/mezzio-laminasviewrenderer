@@ -102,6 +102,16 @@ final class NamespacedPathStackResolverTest extends TestCase
         self::assertFalse($resolver->resolve('c'));
     }
 
+    public function testPathsAddedWithANullNamespaceCanStillBeResolvedUsingTheDefaultNS(): void
+    {
+        $resolver = new NamespacedPathStackResolver([]);
+        $resolver->addPath(__DIR__ . '/TestAsset/templates/namespaced/fred', null);
+
+        self::assertNotFalse($resolver->resolve('a'));
+        self::assertNotFalse($resolver->resolve('b'));
+        self::assertFalse($resolver->resolve('c'));
+    }
+
     public function testPathRetrieval(): void
     {
         $resolver = new NamespacedPathStackResolver([
