@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 use function array_find;
 
+/** @psalm-import-type Options from NamespacedPathStackResolver */
 final class NamespacedPathStackResolverTest extends TestCase
 {
     public function testTemplatePathsGivenViaTheConstructorWillYieldResolvingTemplates(): void
@@ -170,5 +171,94 @@ final class NamespacedPathStackResolverTest extends TestCase
 
         self::assertNotFalse($resolver->resolve('ns::fred'));
         self::assertNotFalse($resolver->resolve('ns::wilma'));
+    }
+
+    /** @return array<string, array{0: Options, 1: array<non-empty-string, bool>}> */
+    public static function constructorPathOptionsTest(): array
+    {
+        return [
+            'Map ns to path'      => [
+                [
+                    'script_paths' => [
+                        'foo' => __DIR__ . '/TestAsset/templates/namespaced/fred',
+                    ],
+                ],
+                [
+                    'foo::a'   => true,
+                    'foo::z'   => false,
+                    'a'        => false,
+                    'foo:fred' => true,
+                ],
+            ],
+            'Map ns to path list' => [
+                [
+                    'script_paths' => [
+                        'foo' => [
+                            __DIR__ . '/TestAsset/templates/namespaced/fred',
+                            __DIR__ . '/TestAsset/templates/namespaced/wilma',
+                        ],
+                    ],
+                ],
+                [
+                    'foo::a'    => true,
+                    'foo::z'    => false,
+                    'a'         => false,
+                    'foo:fred'  => true,
+                    'foo:wilma' => true,
+                ],
+            ],
+            'List paths'          => [
+                [
+                    'script_paths' => [
+                        __DIR__ . '/TestAsset/templates/namespaced/fred',
+                        __DIR__ . '/TestAsset/templates/namespaced/wilma',
+                    ],
+                ],
+                [
+                    'foo::a' => false,
+                    'a'      => true,
+                    'fred'   => true,
+                    'wilma'  => true,
+                ],
+            ],
+            'List of lists'       => [
+                [
+                    'script_paths' => [
+                        [
+                            __DIR__ . '/TestAsset/templates/namespaced/fred',
+                            __DIR__ . '/TestAsset/templates/namespaced/wilma',
+                        ],
+                    ],
+                ],
+                [
+                    'foo::a' => false,
+                    'a'      => true,
+                    'fred'   => true,
+                    'wilma'  => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param Options $options
+     * @param array<non-empty-string, bool> $templatesToTest
+     */
+    #[DataProvider('constructorPathOptionsTest')]
+    public function testScriptPathsConstructorOption(
+        array $options,
+        array $templatesToTest,
+    ): void {
+        $resolver = new NamespacedPathStackResolver($options);
+
+        foreach ($templatesToTest as $template => $expect) {
+            if ($expect) {
+                self::assertNotFalse($resolver->resolve($template));
+
+                return;
+            }
+
+            self::assertFalse($resolver->resolve($template));
+        }
     }
 }

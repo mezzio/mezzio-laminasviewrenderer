@@ -10,6 +10,7 @@ use Laminas\View\Resolver\TemplatePathStack;
 use Mezzio\Template\TemplatePath;
 use Override;
 
+use function is_string;
 use function iterator_to_array;
 use function preg_match;
 
@@ -26,7 +27,7 @@ use function preg_match;
  *
  * @psalm-type Options = array{
  *     lfi_protection?: bool,
- *     script_paths?: array<string, string>,
+ *     script_paths?: array<array-key, string|list<string>>,
  *     default_suffix?: non-empty-string,
  * }
  * @psalm-import-type Options from TemplatePathStack as StackOptions
@@ -62,8 +63,16 @@ final class NamespacedPathStackResolver implements ResolverInterface
 
         /** @psalm-var StackOptions $options - Psalm cannot infer this is the correct type now script_paths is unset */
         $this->resolverOptions = $options;
-        if ($paths !== null) {
-            $this->addPaths($paths);
+
+        if ($paths === null) {
+            return;
+        }
+
+        foreach ($paths as $ns => $listOrString) {
+            $ns = is_string($ns) ? $ns : null;
+            foreach ((array) $listOrString as $path) {
+                $this->addPath($path, $ns);
+            }
         }
     }
 
