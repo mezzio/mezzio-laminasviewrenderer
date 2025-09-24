@@ -160,4 +160,15 @@ final class NamespacedPathStackResolverTest extends TestCase
         self::assertNotFalse($resolver->resolve('FRED::fred'));
         self::assertFalse($resolver->resolve('fred::fred'));
     }
+
+    public function testThereCanBeMultiplePathsPerNamespace(): void
+    {
+        $resolver = new NamespacedPathStackResolver([]);
+
+        $resolver->addPath(__DIR__ . '/TestAsset/templates/namespaced/fred', 'ns');
+        $resolver->addPath(__DIR__ . '/TestAsset/templates/namespaced/wilma', 'ns');
+
+        self::assertNotFalse($resolver->resolve('ns::fred'));
+        self::assertNotFalse($resolver->resolve('ns::wilma'));
+    }
 }
