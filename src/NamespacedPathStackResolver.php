@@ -35,9 +35,20 @@ final class NamespacedPathStackResolver implements ResolverInterface
 {
     private const DEFAULT_NAMESPACE = '__DEFAULT__';
 
-    /** @var array<string, TemplatePathStack> */
+    /**
+     * A map of TemplatePathStack instances where the key is a namespace
+     *
+     * @var array<string, TemplatePathStack>
+     */
     private array $resolvers = [];
-    /** @var StackOptions */
+
+    /**
+     * Options passed to `TemplatePathStack` resolvers when they are instantiated
+     *
+     * @see TemplatePathStack::__construct()
+     *
+     * @var StackOptions
+     */
     private array $resolverOptions;
 
     /** @param Options $options */

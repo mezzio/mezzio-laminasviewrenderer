@@ -141,4 +141,23 @@ final class NamespacedPathStackResolverTest extends TestCase
         self::assertInstanceOf(TemplatePath::class, $default);
         self::assertSame(__DIR__ . '/TestAsset/templates/', $default->getPath());
     }
+
+    public function testNamespacesAreCaseSensitive(): void
+    {
+        $resolver = new NamespacedPathStackResolver([
+            'script_paths' => [
+                'FRED' => __DIR__ . '/TestAsset/templates/namespaced/fred',
+                'fred' => __DIR__ . '/TestAsset/templates/namespaced/wilma',
+            ],
+        ]);
+
+        self::assertNotFalse($resolver->resolve('FRED::a'));
+        self::assertNotFalse($resolver->resolve('fred::a'));
+        self::assertNotSame(
+            $resolver->resolve('FRED::a'),
+            $resolver->resolve('fred::a'),
+        );
+        self::assertNotFalse($resolver->resolve('FRED::fred'));
+        self::assertFalse($resolver->resolve('fred::fred'));
+    }
 }
