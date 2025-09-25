@@ -2,3 +2,4 @@
 /.phpunit.cache
 /phpunit.xml
 /vendor/
+.markdownlint.json
