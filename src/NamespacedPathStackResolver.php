@@ -7,11 +7,9 @@ namespace Mezzio\LaminasView;
 use Laminas\View\Exception as ViewException;
 use Laminas\View\Resolver\ResolverInterface;
 use Laminas\View\Resolver\TemplatePathStack;
-use Mezzio\Template\TemplatePath;
 use Override;
 
 use function is_string;
-use function iterator_to_array;
 use function preg_match;
 
 /**
@@ -164,27 +162,5 @@ final class NamespacedPathStackResolver implements ResolverInterface
         $resolver = $this->getNamespace($namespace);
 
         return $resolver->resolve($template);
-    }
-
-    /**
-     * Returns the configured namespaced paths in the correct format for `TemplateRendererInterface`
-     *
-     * This method is internal and may be dropped at any time.
-     *
-     * @return list<TemplatePath>
-     * @psalm-internal Mezzio\LaminasView
-     * @psalm-internal MezzioTest\LaminasView
-     */
-    public function getPathsForMezzioTemplateRenderer(): array
-    {
-        $paths = [];
-        foreach ($this->resolvers as $namespace => $resolver) {
-            $ns = $namespace === self::DEFAULT_NAMESPACE ? null : $namespace;
-            foreach (iterator_to_array($resolver->getPaths(), false) as $path) {
-                $paths[] = new TemplatePath($path, $ns);
-            }
-        }
-
-        return $paths;
     }
 }

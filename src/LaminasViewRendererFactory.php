@@ -52,7 +52,6 @@ final class LaminasViewRendererFactory
         assert(is_string($layout) || $layout === null);
 
         return new LaminasViewRenderer(
-            $container->get(NamespacedPathStackResolver::class),
             $container->get(View::class),
             $layout,
         );

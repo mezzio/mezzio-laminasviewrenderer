@@ -6,11 +6,8 @@ namespace MezzioTest\LaminasView;
 
 use Laminas\View\Exception\InvalidArgumentException;
 use Mezzio\LaminasView\NamespacedPathStackResolver;
-use Mezzio\Template\TemplatePath;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-
-use function array_find;
 
 /** @psalm-import-type Options from NamespacedPathStackResolver */
 final class NamespacedPathStackResolverTest extends TestCase
@@ -111,36 +108,6 @@ final class NamespacedPathStackResolverTest extends TestCase
         self::assertNotFalse($resolver->resolve('a'));
         self::assertNotFalse($resolver->resolve('b'));
         self::assertFalse($resolver->resolve('c'));
-    }
-
-    public function testPathRetrieval(): void
-    {
-        $resolver = new NamespacedPathStackResolver([
-            'script_paths' => [
-                'fred'  => __DIR__ . '/TestAsset/templates/namespaced/fred',
-                'wilma' => __DIR__ . '/TestAsset/templates/namespaced/wilma',
-            ],
-        ]);
-
-        $resolver->addPath(__DIR__ . '/TestAsset/templates');
-
-        $paths = $resolver->getPathsForMezzioTemplateRenderer();
-        self::assertCount(3, $paths);
-
-        $findByNs = static function (TemplatePath $path, string|null $ns): bool {
-            return $path->getNamespace() === $ns;
-        };
-
-        $fred    = array_find($paths, static fn (TemplatePath $path): bool => $findByNs($path, 'fred'));
-        $wilma   = array_find($paths, static fn (TemplatePath $path): bool => $findByNs($path, 'wilma'));
-        $default = array_find($paths, static fn (TemplatePath $path): bool => $findByNs($path, null));
-
-        self::assertInstanceOf(TemplatePath::class, $fred);
-        self::assertSame(__DIR__ . '/TestAsset/templates/namespaced/fred/', $fred->getPath());
-        self::assertInstanceOf(TemplatePath::class, $wilma);
-        self::assertSame(__DIR__ . '/TestAsset/templates/namespaced/wilma/', $wilma->getPath());
-        self::assertInstanceOf(TemplatePath::class, $default);
-        self::assertSame(__DIR__ . '/TestAsset/templates/', $default->getPath());
     }
 
     public function testNamespacesAreCaseSensitive(): void

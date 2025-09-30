@@ -11,20 +11,14 @@ use Laminas\View\Model\ViewModel;
 use Laminas\View\View;
 use Mezzio\LaminasView\ConfigProvider;
 use Mezzio\LaminasView\LaminasViewRenderer;
-use Mezzio\LaminasView\NamespacedPathStackResolver;
 use Mezzio\Template\Exception\InvalidArgumentException;
-use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 use function array_replace_recursive;
-use function sprintf;
 use function uniqid;
-use function var_export;
-
-use const DIRECTORY_SEPARATOR;
 
 /** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
 final class LaminasViewRendererTest extends TestCase
@@ -60,7 +54,6 @@ final class LaminasViewRendererTest extends TestCase
         $this->expectExceptionMessage('Layout must be a non-empty-string');
 
         new LaminasViewRenderer(
-            $container->get(NamespacedPathStackResolver::class),
             $container->get(View::class),
             '',
         );
@@ -108,57 +101,6 @@ final class LaminasViewRendererTest extends TestCase
         self::assertStringContainsString('<h1>Fred A</h1>', $markup);
     }
 
-    public function assertTemplatePath(string $path, TemplatePath $templatePath, ?string $message = null): void
-    {
-        $message ??= sprintf('Failed to assert TemplatePath contained path %s', $path);
-        $this->assertEquals($path, $templatePath->getPath(), $message);
-    }
-
-    public function assertTemplatePathString(string $path, TemplatePath $templatePath, ?string $message = null): void
-    {
-        $message ??= sprintf('Failed to assert TemplatePath casts to string path %s', $path);
-        $this->assertEquals($path, (string) $templatePath, $message);
-    }
-
-    public function assertTemplatePathNamespace(
-        string $namespace,
-        TemplatePath $templatePath,
-        ?string $message = null,
-    ): void {
-        $message ??= sprintf('Failed to assert TemplatePath namespace matched %s', var_export($namespace, true));
-        $this->assertEquals($namespace, $templatePath->getNamespace(), $message);
-    }
-
-    public function assertEmptyTemplatePathNamespace(TemplatePath $templatePath, ?string $message = null): void
-    {
-        $message ??= 'Failed to assert TemplatePath namespace was empty';
-        $this->assertEmpty($templatePath->getNamespace(), $message);
-    }
-
-    public function testCanAddPathWithEmptyNamespace(): void
-    {
-        $renderer = $this->rendererWithConfig();
-        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
-        $renderer->addPath($path);
-        $paths = $renderer->getPaths();
-        $this->assertCount(1, $paths);
-        $this->assertTemplatePath($path . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertTemplatePathString($path . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertEmptyTemplatePathNamespace($paths[0]);
-    }
-
-    public function testCanAddPathWithNamespace(): void
-    {
-        $renderer = $this->rendererWithConfig();
-        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
-        $renderer->addPath($path, 'test');
-        $paths = $renderer->getPaths();
-        $this->assertCount(1, $paths);
-        $this->assertTemplatePath($path . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertTemplatePathString($path . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertTemplatePathNamespace('test', $paths[0]);
-    }
-
     /** @return array<array-key, array<array-key, mixed>> */
     public static function invalidParameterValues(): array
     {
@@ -185,9 +127,14 @@ final class LaminasViewRendererTest extends TestCase
 
     public function testCanRenderWithNullParams(): void
     {
-        $renderer = $this->rendererWithConfig();
-        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
-        $renderer->addPath($path, 'test');
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'map' => [
+                    'test::a' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
+
         $result = $renderer->render('test::a', null);
         $expect = <<<HTML
             <h1>Fred A</h1>
@@ -213,9 +160,14 @@ final class LaminasViewRendererTest extends TestCase
     #[DataProvider('objectParameterValues')]
     public function testCanRenderWithParameterObjects(object $params, string $search): void
     {
-        $renderer = $this->rendererWithConfig();
-        $renderer->addPath(__DIR__ . '/TestAsset/templates');
-        $result = $renderer->render('object-name', $params);
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'paths' => [
+                    __DIR__ . '/TestAsset/templates',
+                ],
+            ],
+        ]);
+        $result   = $renderer->render('object-name', $params);
         $this->assertStringContainsString($search, $result);
     }
 
@@ -332,7 +284,6 @@ final class LaminasViewRendererTest extends TestCase
         $layout = new ViewModel([], 'layout');
 
         $renderer = new LaminasViewRenderer(
-            $container->get(NamespacedPathStackResolver::class),
             $container->get(View::class),
             $layout,
         );

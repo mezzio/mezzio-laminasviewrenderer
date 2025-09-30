@@ -11,7 +11,6 @@ use Laminas\View\View;
 use Mezzio\Template\ArrayParametersTrait;
 use Mezzio\Template\DefaultParamsTrait;
 use Mezzio\Template\Exception\InvalidArgumentException;
-use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
 
 use function is_string;
@@ -38,7 +37,6 @@ final class LaminasViewRenderer implements TemplateRendererInterface
      * @throws InvalidArgumentException When $layout is an empty string.
      */
     public function __construct(
-        private readonly NamespacedPathStackResolver $resolver,
         private readonly View $view,
         string|ModelInterface|null $layout,
     ) {
@@ -86,7 +84,7 @@ final class LaminasViewRenderer implements TemplateRendererInterface
     {
         $viewModel = $params instanceof ModelInterface
             ? $params
-            : new ViewModel($this->normalizeParams($params), $name);
+            : new ViewModel($this->normalizeParamsAsMap($params), $name);
 
         $viewModel = $this->mergeViewModel($name, $viewModel);
 
@@ -95,24 +93,6 @@ final class LaminasViewRenderer implements TemplateRendererInterface
         }
 
         return $this->view->renderLayout($viewModel);
-    }
-
-    /**
-     * Add a path for templates.
-     */
-    public function addPath(string $path, ?string $namespace = null): void
-    {
-        $this->resolver->addPath($path, $namespace);
-    }
-
-    /**
-     * Get the template directories
-     *
-     * @return TemplatePath[]
-     */
-    public function getPaths(): array
-    {
-        return $this->resolver->getPathsForMezzioTemplateRenderer();
     }
 
     /**
