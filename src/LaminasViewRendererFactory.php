@@ -4,136 +4,57 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
-use Laminas\View\HelperPluginManager;
-use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\Resolver;
-use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Laminas\View\View;
 use Psr\Container\ContainerInterface;
 
+use function array_filter;
+use function assert;
 use function is_array;
-use function is_numeric;
-use function sprintf;
+use function is_string;
+use function reset;
 
 /**
  * Create and return a LaminasView template instance.
  *
- * Requires the Mezzio\Router\RouterInterface service (for creating
- * the UrlHelper instance).
+ * This factory works on the basis that laminas-view is correctly configured, and we can retrieve
+ * Laminas\View\View from the container along with our own namespaced path stack resolver.
  *
- * Optionally requires the Laminas\View\HelperPluginManager service; if present,
- * will use the service to inject the PhpRenderer instance.
+ * A configuration array is expected with the key `config`, the structure of which is
+ * documented in {@link ConfigProvider}.
  *
- * Optionally uses the service 'config', which should return an array. This
- * factory consumes the following structure:
- *
- * <code>
- * 'templates' => [
- *     'extension' => 'default template file extension',
- *     'layout' => 'name of layout view to use, if any',
- *     'map'    => [
- *         // template => filename pairs
- *     ],
- *     'paths'  => [
- *         // namespace / path pairs
- *         //
- *         // Numeric namespaces imply the default/main namespace. Paths may be
- *         // strings or arrays of string paths to associate with the namespace.
- *     ],
- * ]
- * </code>
- *
- * Injects the HelperPluginManager used by the PhpRenderer with mezzio
- * overrides of the url and serverurl helpers.
+ * @psalm-internal Mezzio\LaminasView
+ * @psalm-internal MezzioTest\LaminasView
  */
 final class LaminasViewRendererFactory
 {
     public function __invoke(ContainerInterface $container): LaminasViewRenderer
     {
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = $config['templates'] ?? [];
+        assert(is_array($config));
 
-        // Configuration
-        $resolver = new Resolver\AggregateResolver();
-        $resolver->attach(
-            new Resolver\TemplateMapResolver($config['map'] ?? []),
-            100
+        /**
+         * Fetch the default layout from configuration
+         *
+         * Several locations have evolved for fetching the default layout template name:
+         *
+         * templates.layout
+         * templates.default_layout
+         * view_manager.default_layout
+         */
+        $layouts = array_filter([
+            $config['templates']['layout'] ?? null,
+            $config['templates']['default_layout'] ?? null,
+            $config['view_manager']['default_layout'] ?? null,
+        ], static fn (mixed $value): bool => is_string($value) && $value !== '');
+
+        $layout = reset($layouts);
+        $layout = $layout !== false ? $layout : null;
+        assert(is_string($layout) || $layout === null);
+
+        return new LaminasViewRenderer(
+            $container->get(NamespacedPathStackResolver::class),
+            $container->get(View::class),
+            $layout,
         );
-
-        // Create or retrieve the renderer from the container
-        $renderer = $container->has(PhpRenderer::class)
-            ? $container->get(PhpRenderer::class)
-            : new PhpRenderer();
-        $renderer->setResolver($resolver);
-
-        // Inject helpers
-        $this->injectHelpers($renderer, $container);
-
-        $defaultSuffix = $config['extension'] ?? $config['default_suffix'] ?? null;
-        // Inject renderer
-        $view = new LaminasViewRenderer($renderer, $config['layout'] ?? null, $defaultSuffix);
-
-        // Add template paths
-        $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];
-        foreach ($allPaths as $namespace => $paths) {
-            $namespace = is_numeric($namespace) ? null : $namespace;
-            foreach ((array) $paths as $path) {
-                $view->addPath($path, $namespace);
-            }
-        }
-
-        return $view;
-    }
-
-    /**
-     * Inject helpers into the PhpRenderer instance.
-     *
-     * If a HelperPluginManager instance is present in the container, uses that;
-     * otherwise, instantiates one.
-     *
-     * In each case, injects with the custom url/serverurl implementations.
-     *
-     * @throws Exception\MissingHelperException
-     */
-    private function injectHelpers(PhpRenderer $renderer, ContainerInterface $container): void
-    {
-        $helpers = $this->retrieveHelperManager($container);
-        $helpers->setAlias('url', BaseUrlHelper::class);
-        $helpers->setAlias('Url', BaseUrlHelper::class);
-        $helpers->setFactory(BaseUrlHelper::class, static function () use ($container): UrlHelper {
-            if (! $container->has(BaseUrlHelper::class)) {
-                throw new Exception\MissingHelperException(sprintf(
-                    'An instance of %s is required in order to create the "url" view helper; not found',
-                    BaseUrlHelper::class
-                ));
-            }
-
-            return new UrlHelper($container->get(BaseUrlHelper::class));
-        });
-
-        $helpers->setAlias('serverurl', BaseServerUrlHelper::class);
-        $helpers->setAlias('serverUrl', BaseServerUrlHelper::class);
-        $helpers->setAlias('ServerUrl', BaseServerUrlHelper::class);
-        $helpers->setFactory(BaseServerUrlHelper::class, static function () use ($container): ServerUrlHelper {
-            if (! $container->has(BaseServerUrlHelper::class)) {
-                throw new Exception\MissingHelperException(sprintf(
-                    'An instance of %s is required in order to create the "url" view helper; not found',
-                    BaseServerUrlHelper::class
-                ));
-            }
-
-            return new ServerUrlHelper($container->get(BaseServerUrlHelper::class));
-        });
-
-        $renderer->setHelperPluginManager($helpers);
-    }
-
-    private function retrieveHelperManager(ContainerInterface $container): HelperPluginManager
-    {
-        if ($container->has(HelperPluginManager::class)) {
-            return $container->get(HelperPluginManager::class);
-        }
-
-        return new HelperPluginManager($container);
     }
 }

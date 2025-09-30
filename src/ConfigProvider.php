@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\Resolver\AggregateResolver;
 use Mezzio\Template\TemplateRendererInterface;
 
 /** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
@@ -70,7 +71,9 @@ final class ConfigProvider
                 TemplateRendererInterface::class => LaminasViewRenderer::class,
             ],
             'factories' => [
-                LaminasViewRenderer::class => LaminasViewRendererFactory::class,
+                LaminasViewRenderer::class         => LaminasViewRendererFactory::class,
+                NamespacedPathStackResolver::class => NamespacedPathStackResolverFactory::class,
+                AggregateResolver::class           => TemplateResolverFactory::class,
             ],
         ];
     }

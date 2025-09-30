@@ -5,38 +5,107 @@ declare(strict_types=1);
 namespace MezzioTest\LaminasView;
 
 use ArrayObject;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\ConfigProvider as ViewConfigProvider;
 use Laminas\View\Model\ViewModel;
-use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\Resolver\TemplatePathStack;
+use Laminas\View\View;
+use Mezzio\LaminasView\ConfigProvider;
 use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\LaminasView\NamespacedPathStackResolver;
 use Mezzio\Template\Exception\InvalidArgumentException;
 use Mezzio\Template\TemplatePath;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
+use Psr\Container\ContainerInterface;
 
-use function assert;
-use function file_get_contents;
+use function array_replace_recursive;
 use function sprintf;
-use function str_replace;
-use function trim;
 use function uniqid;
 use function var_export;
 
 use const DIRECTORY_SEPARATOR;
-use const PHP_EOL;
 
+/** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
 final class LaminasViewRendererTest extends TestCase
 {
-    private PhpRenderer $render;
-
-    protected function setUp(): void
+    private static function getContainer(array $config = []): ContainerInterface
     {
-        $resolver     = new TemplatePathStack();
-        $this->render = new PhpRenderer();
-        $this->render->setResolver($resolver);
+        $serviceConfig = array_replace_recursive(
+            (new ViewConfigProvider())->__invoke(),
+            (new ConfigProvider())->__invoke(),
+            $config,
+        );
+
+        /** @psalm-var array{dependencies: ServiceManagerConfiguration} $serviceConfig */
+        $serviceConfig['dependencies']['services'] ??= [];
+
+        $serviceConfig['dependencies']['services']['config'] = $serviceConfig;
+        /** @psalm-var ServiceManagerConfiguration $deps */
+        $deps = $serviceConfig['dependencies'] ?? [];
+
+        return new ServiceManager($deps);
+    }
+
+    private static function rendererWithConfig(array $config = []): LaminasViewRenderer
+    {
+        return self::getContainer($config)->get(LaminasViewRenderer::class);
+    }
+
+    public function testLayoutCannotBeAnEmptyString(): void
+    {
+        $container = self::getContainer();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Layout must be a non-empty-string');
+
+        new LaminasViewRenderer(
+            $container->get(NamespacedPathStackResolver::class),
+            $container->get(View::class),
+            '',
+        );
+    }
+
+    public function testRenderTemplateWithDefaultLayout(): void
+    {
+        $renderer = self::rendererWithConfig([
+            'templates' => [
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                ],
+                'paths'  => [
+                    'foo' => __DIR__ . '/TestAsset/templates/namespaced/fred',
+                ],
+                'layout' => 'layout',
+            ],
+        ]);
+
+        $markup = $renderer->render('foo::a');
+
+        self::assertStringContainsString('<layout>', $markup);
+        self::assertStringContainsString('</layout>', $markup);
+        self::assertStringContainsString('<h1>Fred A</h1>', $markup);
+    }
+
+    public function testLayoutIsSkippedWhenLayoutIsFalse(): void
+    {
+        $renderer = self::rendererWithConfig([
+            'templates' => [
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                ],
+                'paths'  => [
+                    'foo' => __DIR__ . '/TestAsset/templates/namespaced/fred',
+                ],
+                'layout' => 'layout',
+            ],
+        ]);
+
+        $markup = $renderer->render('foo::a', ['layout' => false]);
+
+        self::assertStringNotContainsString('<layout>', $markup);
+        self::assertStringNotContainsString('</layout>', $markup);
+        self::assertStringContainsString('<h1>Fred A</h1>', $markup);
     }
 
     public function assertTemplatePath(string $path, TemplatePath $templatePath, ?string $message = null): void
@@ -54,7 +123,7 @@ final class LaminasViewRendererTest extends TestCase
     public function assertTemplatePathNamespace(
         string $namespace,
         TemplatePath $templatePath,
-        ?string $message = null
+        ?string $message = null,
     ): void {
         $message ??= sprintf('Failed to assert TemplatePath namespace matched %s', var_export($namespace, true));
         $this->assertEquals($namespace, $templatePath->getNamespace(), $message);
@@ -66,72 +135,28 @@ final class LaminasViewRendererTest extends TestCase
         $this->assertEmpty($templatePath->getNamespace(), $message);
     }
 
-    private function retrieveRenderer(LaminasViewRenderer $laminasViewRenderer): PhpRenderer
-    {
-        $property = new ReflectionProperty(LaminasViewRenderer::class, 'renderer');
-
-        $renderer = $property->getValue($laminasViewRenderer);
-        assert($renderer instanceof PhpRenderer);
-
-        return $renderer;
-    }
-
-    public function testCanPassRendererToConstructor(): void
-    {
-        $renderer = new LaminasViewRenderer($this->render);
-        $this->assertInstanceOf(LaminasViewRenderer::class, $renderer);
-        $this->assertSame($this->render, $this->retrieveRenderer($renderer));
-    }
-
-    public function testInstantiatingWithoutEngineLazyLoadsOne(): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $this->assertInstanceOf(LaminasViewRenderer::class, $renderer);
-        $this->assertInstanceOf(PhpRenderer::class, $this->retrieveRenderer($renderer));
-    }
-
-    public function testInstantiatingWithInvalidLayout(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Layout must be a string layout template name');
-
-        /** @psalm-suppress InvalidArgument */
-        new LaminasViewRenderer(null, []);
-    }
-
     public function testCanAddPathWithEmptyNamespace(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
+        $renderer = $this->rendererWithConfig();
+        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
+        $renderer->addPath($path);
         $paths = $renderer->getPaths();
         $this->assertCount(1, $paths);
-        $this->assertTemplatePath(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertTemplatePathString(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
+        $this->assertTemplatePath($path . DIRECTORY_SEPARATOR, $paths[0]);
+        $this->assertTemplatePathString($path . DIRECTORY_SEPARATOR, $paths[0]);
         $this->assertEmptyTemplatePathNamespace($paths[0]);
     }
 
     public function testCanAddPathWithNamespace(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset', 'test');
+        $renderer = $this->rendererWithConfig();
+        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
+        $renderer->addPath($path, 'test');
         $paths = $renderer->getPaths();
         $this->assertCount(1, $paths);
-        $this->assertTemplatePath(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
-        $this->assertTemplatePathString(__DIR__ . '/TestAsset' . DIRECTORY_SEPARATOR, $paths[0]);
+        $this->assertTemplatePath($path . DIRECTORY_SEPARATOR, $paths[0]);
+        $this->assertTemplatePathString($path . DIRECTORY_SEPARATOR, $paths[0]);
         $this->assertTemplatePathNamespace('test', $paths[0]);
-    }
-
-    public function testDelegatesRenderingToUnderlyingImplementation(): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name]);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
     }
 
     /** @return array<array-key, array<array-key, mixed>> */
@@ -151,7 +176,7 @@ final class LaminasViewRendererTest extends TestCase
     #[DataProvider('invalidParameterValues')]
     public function testRenderRaisesExceptionForInvalidParameterTypes(mixed $params): void
     {
-        $renderer = new LaminasViewRenderer();
+        $renderer = $this->rendererWithConfig();
         $this->expectException(InvalidArgumentException::class);
 
         /** @psalm-suppress MixedArgument */
@@ -160,12 +185,15 @@ final class LaminasViewRendererTest extends TestCase
 
     public function testCanRenderWithNullParams(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $result  = $renderer->render('laminasview-null', null);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-null.phtml');
-        self::assertIsString($content);
-        $this->assertEquals($content, $result);
+        $renderer = $this->rendererWithConfig();
+        $path     = __DIR__ . '/TestAsset/templates/namespaced/fred';
+        $renderer->addPath($path, 'test');
+        $result = $renderer->render('test::a', null);
+        $expect = <<<HTML
+            <h1>Fred A</h1>
+
+            HTML;
+        $this->assertSame($expect, $result);
     }
 
     /** @return array<string, array{0: object, 1: string}> */
@@ -185,457 +213,275 @@ final class LaminasViewRendererTest extends TestCase
     #[DataProvider('objectParameterValues')]
     public function testCanRenderWithParameterObjects(object $params, string $search): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $result = $renderer->render('laminasview', $params);
+        $renderer = $this->rendererWithConfig();
+        $renderer->addPath(__DIR__ . '/TestAsset/templates');
+        $result = $renderer->render('object-name', $params);
         $this->assertStringContainsString($search, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $search, $content);
-        $this->assertEquals($content, $result);
     }
 
-    #[Group('layout')]
-    public function testWillRenderContentInLayoutPassedToConstructor(): void
+    public function testSharedDefaultParameterIsAvailableInLayout(): void
     {
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name]);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-        $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
-    }
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/global-param.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
 
-    public function testSharedParameterIsAvailableInLayout(): void
-    {
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $title = uniqid('LaminasViewTitle', true);
-        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'title', $title);
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'global', 'GLOBAL PARAM');
+        $result = $renderer->render('content');
 
-        $name   = uniqid('LaminasViewName', true);
-        $result = $renderer->render('laminasview', ['name' => $name]);
-
-        $this->assertStringContainsString($title, $result);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-        $expected = sprintf('<title>Layout Page: %s</title>', $title);
-        $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
+        $this->assertStringContainsString('GLOBAL PARAM', $result);
     }
 
     public function testTemplateDefaultParameterIsNotAvailableInLayout(): void
     {
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $title = uniqid('LaminasViewTitle', true);
-        $renderer->addDefaultParam('laminasview', 'title', $title);
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/global-param.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/default-param.phtml',
+                ],
+            ],
+        ]);
 
-        $name   = uniqid('LaminasViewName', true);
-        $result = $renderer->render('laminasview', ['name' => $name]);
+        $renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'global', 'FOZZY BEAR');
+        $renderer->addDefaultParam('content', 'global', 'KERMIT');
 
-        $this->assertStringNotContainsString($title, $result);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-        $expected = sprintf('<title>Layout Page: %s</title>', '');
-        $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
+        $result = $renderer->render('content');
+
+        self::assertStringContainsString('<h1>FOZZY BEAR</h1>', $result);
+        self::assertStringContainsString('<content>KERMIT</content>', $result);
     }
 
     public function testLayoutTemplateDefaultParameterIsAvailableInLayout(): void
     {
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout-variable');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $title = uniqid('LaminasViewTitle', true);
-        $name  = uniqid('LaminasViewName', true);
-        $renderer->addDefaultParam('laminasview-layout-variable', 'title', $title);
-        $result = $renderer->render('laminasview', ['name' => $name]);
-        $this->assertStringContainsString($title, $result);
-        $this->assertStringContainsString($name, $result);
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/global-param.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
 
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        self::assertIsString($layout);
-        $layout = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
-        $this->assertStringContainsString($layout, $result);
+        $renderer->addDefaultParam('layout', 'global', 'MISS PIGGY');
 
-        $expected = sprintf('<title>Layout Page: %s</title>', $title);
-        $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
+        $result = $renderer->render('content');
+
+        self::assertStringContainsString('<h1>MISS PIGGY</h1>', $result);
+        self::assertStringContainsString('<h1>Fred A</h1>', $result);
     }
 
     public function testVariableInProvidedLayoutViewModelOverridesTemplateDefaultParameter(): void
     {
-        $renderer = new LaminasViewRenderer(null);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $titleToBeOverriden = uniqid('LaminasViewTitleToBeOverriden', true);
-        $title              = uniqid('LaminasViewTitle', true);
-        $name               = uniqid('LaminasViewName', true);
-        $renderer->addDefaultParam('laminasview-layout-variable', 'title', $titleToBeOverriden);
-
-        $layout = new ViewModel(['title' => $title]);
-        $layout->setTemplate('laminasview-layout-variable');
-        $result = $renderer->render('laminasview', ['name' => $name, 'layout' => $layout]);
-        $this->assertStringContainsString($title, $result);
-        $this->assertStringContainsString($name, $result);
-
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        self::assertIsString($layout);
-        $layout = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
-        $this->assertStringContainsString($layout, $result);
-
-        $expected = sprintf('<title>Layout Page: %s</title>', $title);
-        $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
-    }
-
-    public function testTemplateDefaultParameterIsAvailableInLayoutProvidedWithViewModel(): void
-    {
-        $renderer = new LaminasViewRenderer(null);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $title = uniqid('LaminasViewTitle', true);
-        $name  = uniqid('LaminasViewName', true);
-        $renderer->addDefaultParam('laminasview-layout-variable', 'title', $title);
-
-        $layout = new ViewModel();
-        $layout->setTemplate('laminasview-layout-variable');
-        $result = $renderer->render('laminasview', ['name' => $name, 'layout' => $layout]);
-        $this->assertStringContainsString($title, $result);
-        $this->assertStringContainsString($name, $result);
-
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $layout  = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout-variable.phtml');
-        self::assertIsString($layout);
-        $layout = str_replace('<?= $this->title ?>', $title, $layout);
-        $layout = str_replace('<?= $this->content ?>' . PHP_EOL, $content, $layout);
-        $this->assertStringContainsString($layout, $result);
-
-        $expected = sprintf('<title>Layout Page: %s</title>', $title);
-        $this->assertStringContainsString($expected, $result, sprintf('Received %s', $result));
-    }
-
-    #[Group('layout')]
-    public function testWillRenderContentInLayoutPassedDuringRendering(): void
-    {
-        $renderer = new LaminasViewRenderer(null);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name, 'layout' => 'laminasview-layout']);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-
-        $this->assertStringContainsString('<title>Layout Page</title>', $result);
-    }
-
-    #[Group('layout')]
-    public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor(): void
-    {
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name, 'layout' => 'laminasview-layout2']);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-
-        $this->assertStringContainsString('<title>ALTERNATE LAYOUT PAGE</title>', $result);
-    }
-
-    #[Group('layout')]
-    public function testCanPassViewModelForLayoutToConstructor(): void
-    {
-        $layout = new ViewModel();
-        $layout->setTemplate('laminasview-layout');
-
-        $renderer = new LaminasViewRenderer(null, $layout);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name]);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-        $this->assertStringContainsString('<title>Layout Page</title>', $result, sprintf('Received %s', $result));
-    }
-
-    #[Group('layout')]
-    public function testCanPassViewModelForLayoutParameterWhenRendering(): void
-    {
-        $layout = new ViewModel();
-        $layout->setTemplate('laminasview-layout2');
-
-        $renderer = new LaminasViewRenderer(null, 'laminasview-layout');
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name   = 'laminasview';
-        $result = $renderer->render('laminasview', ['name' => $name, 'layout' => $layout]);
-        $this->assertStringContainsString($name, $result);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertStringContainsString($content, $result);
-        $this->assertStringContainsString('<title>ALTERNATE LAYOUT PAGE</title>', $result);
-    }
-
-    #[Group('layout')]
-    public function testDisableLayoutOnRender(): void
-    {
-        $layout = new ViewModel();
-        $layout->setTemplate('laminasview-layout');
-
-        $renderer = new LaminasViewRenderer(null, $layout);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-
-        $name     = 'laminasview';
-        $rendered = $renderer->render('laminasview', [
-            'layout' => false,
-            'name'   => $name,
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/global-param.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/default-param.phtml',
+                ],
+            ],
         ]);
 
-        $expected = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($expected);
-        $expected = str_replace('<?php echo $name ?>', $name, $expected);
+        $renderer->addDefaultParam('layout', 'global', 'GLOBAL DEFAULT');
+        $layout = new ViewModel(['global' => 'LAYOUT SPECIFIC'], 'layout');
 
-        $this->assertEquals($rendered, $expected);
+        $result = $renderer->render('content', ['global' => 'CONTENT SPECIFIC', 'layout' => $layout]);
+
+        $this->assertStringNotContainsString('GLOBAL DEFAULT', $result);
+        $this->assertStringContainsString('<h1>LAYOUT SPECIFIC</h1>', $result);
+        $this->assertStringContainsString('<content>CONTENT SPECIFIC</content>', $result);
     }
 
-    #[Group('layout')]
+    public function testLayoutCanBeChangedViaLayoutVariable(): void
+    {
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout1',
+                'map'    => [
+                    'layout1' => __DIR__ . '/TestAsset/templates/layout/global-param.phtml',
+                    'layout2' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
+
+        $result = $renderer->render('content', ['layout' => 'layout2']);
+
+        self::assertStringContainsString('<layout><h1>Fred A</h1>', $result);
+    }
+
+    public function testCanPassViewModelForLayoutToConstructor(): void
+    {
+        $container = self::getContainer([
+            'templates' => [
+                'map' => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
+
+        $layout = new ViewModel([], 'layout');
+
+        $renderer = new LaminasViewRenderer(
+            $container->get(NamespacedPathStackResolver::class),
+            $container->get(View::class),
+            $layout,
+        );
+
+        $result = $renderer->render('content');
+
+        self::assertStringContainsString('<layout><h1>Fred A</h1>', $result);
+    }
+
     public function testDisableLayoutViaDefaultParameter(): void
     {
-        $layout = new ViewModel();
-        $layout->setTemplate('laminasview-layout');
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/namespaced/fred/a.phtml',
+                ],
+            ],
+        ]);
 
-        $renderer = new LaminasViewRenderer(null, $layout);
-        $renderer->addPath(__DIR__ . '/TestAsset');
         $renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'layout', false);
 
-        $name     = 'laminasview';
-        $rendered = $renderer->render('laminasview', ['name' => $name]);
+        $result = $renderer->render('content');
 
-        $expected = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($expected);
-        $expected = str_replace('<?php echo $name ?>', $name, $expected);
-
-        $this->assertEquals($rendered, $expected);
+        self::assertStringNotContainsString('<layout>', $result);
+        self::assertStringContainsString('<h1>Fred A</h1>', $result);
     }
 
-    #[Group('namespacing')]
     public function testProperlyResolvesNamespacedTemplate(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset/test', 'test');
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                ],
+                'paths'  => [
+                    'ns' => __DIR__ . '/TestAsset/templates/namespaced/fred',
+                ],
+            ],
+        ]);
 
-        $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.phtml');
-        self::assertIsString($expected);
-        $test = $renderer->render('test::test');
-
-        $this->assertSame($expected, $test);
-    }
-
-    public function testAddParameterToOneTemplate(): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'LaminasView';
-        $renderer->addDefaultParam('laminasview', 'name', $name);
-        $result = $renderer->render('laminasview');
-
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
-    }
-
-    public function testAddSharedParameters(): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'LaminasView';
-        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
-        $result  = $renderer->render('laminasview');
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
-
-        $result  = $renderer->render('laminasview-2');
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
-    }
-
-    public function testOverrideSharedParametersPerTemplate(): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name  = 'Laminas';
-        $name2 = 'View';
-        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
-        $renderer->addDefaultParam('laminasview-2', 'name', $name2);
-        $result  = $renderer->render('laminasview');
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
-
-        $result  = $renderer->render('laminasview-2');
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name2, $content);
-        $this->assertEquals($content, $result);
-    }
-
-    /**
-     * @psalm-return array<string, bool[]>
-     */
-    public static function useArrayOrViewModel(): array
-    {
-        return [
-            'array'      => [false],
-            'view-model' => [true],
-        ];
-    }
-
-    #[DataProvider('useArrayOrViewModel')]
-    public function testOverrideSharedParametersAtRender(bool $viewAsModel): void
-    {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $name  = 'Laminas';
-        $name2 = 'View';
-        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
-
-        $viewModel = ['name' => $name2];
-        $viewModel = $viewAsModel ? new ViewModel($viewModel) : $viewModel;
-
-        $result  = $renderer->render('laminasview', $viewModel);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name2, $content);
-        $this->assertEquals($content, $result);
+        $result = $renderer->render('ns::a');
+        self::assertStringContainsString('<h1>Fred A</h1>', $result);
     }
 
     public function testWillRenderAViewModel(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/default-param.phtml',
+                ],
+            ],
+        ]);
 
-        $viewModel = new ViewModel(['name' => 'Laminas']);
-        $result    = $renderer->render('laminasview', $viewModel);
+        $viewModel = new ViewModel(['global' => 'Laminas'], 'content');
+        $result    = $renderer->render('content', $viewModel);
 
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', 'Laminas', $content);
-        $this->assertEquals($content, $result);
+        self::assertStringContainsString('<content>Laminas</content>', $result);
     }
 
-    public function testCanRenderWithChildViewModel(): void
+    public function testCanRenderNestedViewModels(): void
     {
-        $path     = __DIR__ . '/TestAsset';
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath($path);
-
-        $viewModelChild = new ViewModel();
-        $viewModelChild->setTemplate('laminasview-null');
-
-        $viewModelParent = new ViewModel();
-        $viewModelParent->setVariables([
-            'layout' => 'laminasview-layout',
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/nested/parent.phtml',
+                    'child'   => __DIR__ . '/TestAsset/templates/nested/child.phtml',
+                ],
+            ],
         ]);
-        $viewModelParent->addChild($viewModelChild, 'name');
 
-        $result = $renderer->render('laminasview', $viewModelParent);
+        $child  = new ViewModel([], 'child');
+        $parent = new ViewModel([], 'content', ['child' => $child]);
 
-        $content = file_get_contents(sprintf('%s/laminasview-null.phtml', $path));
-        self::assertIsString($content);
-        $contentParent = file_get_contents(sprintf('%s/laminasview.phtml', $path));
-        self::assertIsString($contentParent);
-        $contentParentLayout = file_get_contents(sprintf('%s/laminasview-layout.phtml', $path));
-        self::assertIsString($contentParentLayout);
+        $result = $renderer->render('content', $parent);
 
-        // trim is used here, because rendering engine is trimming content too
-        $content = trim(str_replace('<?php echo $name ?>', $content, $contentParent));
-        $content = str_replace('<?= $this->content ?>', $content, $contentParentLayout);
-
-        $this->assertEquals($content, $result);
+        self::assertStringContainsString('<layout>', $result);
+        self::assertStringContainsString('<parent>', $result);
+        self::assertStringContainsString('<child>Foo</child>', $result);
     }
 
     public function testRenderChildWithDefaultParameter(): void
     {
-        $name2 = 'Foo';
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'  => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'content' => __DIR__ . '/TestAsset/templates/nested/parent.phtml',
+                    'child'   => __DIR__ . '/TestAsset/templates/nested/child-with-param.phtml',
+                ],
+            ],
+        ]);
 
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $renderer->addDefaultParam('laminasview-2', 'name', $name2);
+        $renderer->addDefaultParam('child', 'global', 'CHILD DEFAULT');
 
-        $viewModelChild = new ViewModel();
-        $viewModelChild->setTemplate('laminasview-2');
+        $viewModel = new ViewModel([], 'content', [
+            'child' => new ViewModel([], 'child'),
+        ]);
 
-        $viewModelParent = new ViewModel();
-        $viewModelParent->addChild($viewModelChild, 'name');
+        $result = $renderer->render('content', $viewModel);
 
-        $result = $renderer->render('laminasview', $viewModelParent);
-
-        $contentChild = file_get_contents(__DIR__ . '/TestAsset/laminasview-2.phtml');
-        self::assertIsString($contentChild);
-        $contentChild = str_replace('<?php echo $name ?>', $name2, $contentChild);
-
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview.phtml');
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $contentChild, $content);
-
-        static::assertEquals($content, $result);
+        self::assertStringContainsString('<child>CHILD DEFAULT</child>', $result);
     }
 
     public function testCanRenderWithCustomDefaultSuffix(): void
     {
-        $name     = 'laminas-custom-suffix';
-        $suffix   = 'pht';
-        $renderer = new LaminasViewRenderer(null, null, $suffix);
-        $renderer->addPath(__DIR__ . '/TestAsset');
-        $result  = $renderer->render('laminasview-custom-suffix', ['name' => $name]);
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-custom-suffix.' . $suffix);
-        self::assertIsString($content);
-        $content = str_replace('<?php echo $name ?>', $name, $content);
-        $this->assertEquals($content, $result);
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout'    => 'layout',
+                'extension' => 'muppet',
+                'map'       => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                ],
+                'paths'     => [
+                    'ns' => __DIR__ . '/TestAsset/templates/suffix',
+                ],
+            ],
+        ]);
+
+        $result = $renderer->render('ns::kermit');
+
+        self::assertStringContainsString('<h1>Kermit</h1>', $result);
     }
 
-    public function testChangeLayoutInTemplate(): void
+    public function testChangeLayoutInTemplateViaLayoutPlugin(): void
     {
-        $renderer = new LaminasViewRenderer();
-        $renderer->addPath(__DIR__ . '/TestAsset');
+        $renderer = $this->rendererWithConfig([
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'      => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'alternative' => __DIR__ . '/TestAsset/templates/layout/alternative.phtml',
+                    'content'     => __DIR__ . '/TestAsset/templates/change-layout.phtml',
+                ],
+            ],
+        ]);
 
-        $result = $renderer->render('laminasview-change-layout', ['layout' => 'laminasview-layout']);
+        $result = $renderer->render('content');
 
-        $contentChild = file_get_contents(__DIR__ . '/TestAsset/laminasview-change-layout.phtml');
-        self::assertIsString($contentChild);
-        $contentChild = str_replace("<?php \$this->layout('laminasview-layout2'); ?>\n", '', $contentChild);
-
-        $content = file_get_contents(__DIR__ . '/TestAsset/laminasview-layout2.phtml');
-        self::assertIsString($content);
-        $content = str_replace("<?= \$this->content ?>\n", $contentChild, $content);
-
-        static::assertEquals($content, $result);
+        self::assertStringContainsString('<alt-layout>', $result);
+        self::assertStringContainsString('</alt-layout>', $result);
+        self::assertStringContainsString('<h1>Some Content</h1>', $result);
     }
 }
