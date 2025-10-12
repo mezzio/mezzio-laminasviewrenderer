@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.10.1@f9fd6bc117e9ce1e854c2ed6777e7135aaa4966b">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="src/LaminasViewRenderer.php">
+    <DeprecatedClass>
+      <code><![CDATA[TemplatePath[]]]></code>
+      <code><![CDATA[new TemplatePath($path, $namespace)]]></code>
+    </DeprecatedClass>
+    <DeprecatedMethod>
+      <code><![CDATA[resolver]]></code>
+      <code><![CDATA[setDefaultSuffix]]></code>
+      <code><![CDATA[setResolver]]></code>
+    </DeprecatedMethod>
     <InvalidArgument>
       <code><![CDATA[$resolver]]></code>
     </InvalidArgument>
@@ -38,6 +47,10 @@
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/LaminasViewRendererFactory.php">
+    <DeprecatedMethod>
+      <code><![CDATA[setHelperPluginManager]]></code>
+      <code><![CDATA[setResolver]]></code>
+    </DeprecatedMethod>
     <MixedArgument>
       <code><![CDATA[$config['layout'] ?? null]]></code>
       <code><![CDATA[$config['map'] ?? []]]></code>
@@ -68,6 +81,12 @@
       <code><![CDATA[TemplatePathStack::FAILURE_NOT_FOUND]]></code>
       <code><![CDATA[TemplatePathStack::FAILURE_NO_PATHS]]></code>
     </DeprecatedConstant>
+    <DeprecatedMethod>
+      <code><![CDATA[getDefaultSuffix]]></code>
+      <code><![CDATA[isLfiProtectionOn]]></code>
+      <code><![CDATA[setOptions]]></code>
+      <code><![CDATA[static::normalizePath($path)]]></code>
+    </DeprecatedMethod>
     <DeprecatedProperty>
       <code><![CDATA[$this->lastLookupFailure]]></code>
       <code><![CDATA[$this->lastLookupFailure]]></code>
@@ -78,9 +97,6 @@
       <code><![CDATA[?string]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
-    <InvalidArgument>
-      <code><![CDATA[$options]]></code>
-    </InvalidArgument>
     <InvalidExtendClass>
       <code><![CDATA[TemplatePathStack]]></code>
     </InvalidExtendClass>
@@ -94,6 +110,9 @@
     </MethodSignatureMismatch>
   </file>
   <file src="src/NamespacedPathStackResolverFactory.php">
+    <DeprecatedMethod>
+      <code><![CDATA[setDefaultSuffix]]></code>
+    </DeprecatedMethod>
     <MixedArgument>
       <code><![CDATA[$config['default_suffix']]]></code>
     </MixedArgument>
@@ -108,9 +127,47 @@
       <code><![CDATA[NamespacedPathStackResolverFactory]]></code>
     </UnusedClass>
   </file>
+  <file src="src/ServerUrlHelper.php">
+    <DeprecatedClass>
+      <code><![CDATA[AbstractHelper]]></code>
+    </DeprecatedClass>
+  </file>
+  <file src="src/UrlHelper.php">
+    <DeprecatedClass>
+      <code><![CDATA[AbstractHelper]]></code>
+    </DeprecatedClass>
+  </file>
+  <file src="test/LaminasViewRendererFactoryTest.php">
+    <DeprecatedClass>
+      <code><![CDATA[TemplatePath::class]]></code>
+      <code><![CDATA[TemplatePath::class]]></code>
+      <code><![CDATA[TemplatePath::class]]></code>
+    </DeprecatedClass>
+    <DeprecatedMethod>
+      <code><![CDATA[getDefaultSuffix]]></code>
+      <code><![CDATA[getDefaultSuffix]]></code>
+      <code><![CDATA[getHelperPluginManager]]></code>
+      <code><![CDATA[getHelperPluginManager]]></code>
+      <code><![CDATA[resolver]]></code>
+    </DeprecatedMethod>
+  </file>
   <file src="test/LaminasViewRendererTest.php">
+    <DeprecatedClass>
+      <code><![CDATA[TemplatePath]]></code>
+      <code><![CDATA[TemplatePath]]></code>
+      <code><![CDATA[TemplatePath]]></code>
+      <code><![CDATA[TemplatePath]]></code>
+    </DeprecatedClass>
+    <DeprecatedMethod>
+      <code><![CDATA[setResolver]]></code>
+    </DeprecatedMethod>
     <NullArgument>
       <code><![CDATA[null]]></code>
     </NullArgument>
+  </file>
+  <file src="test/TestAsset/TestHelper.php">
+    <DeprecatedClass>
+      <code><![CDATA[AbstractHelper]]></code>
+    </DeprecatedClass>
   </file>
 </files>
