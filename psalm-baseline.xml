@@ -41,9 +41,6 @@
     <PossiblyNullReference>
       <code><![CDATA[setDefaultSuffix]]></code>
     </PossiblyNullReference>
-    <PropertyTypeCoercion>
-      <code><![CDATA[$layout]]></code>
-    </PropertyTypeCoercion>
     <UndefinedInterfaceMethod>
       <code><![CDATA[plugin]]></code>
       <code><![CDATA[resolver]]></code>
@@ -78,14 +75,8 @@
       <code><![CDATA[$path]]></code>
       <code><![CDATA[$paths]]></code>
     </MixedAssignment>
-    <MixedReturnStatement>
-      <code><![CDATA[$container->get('Zend\View\HelperPluginManager')]]></code>
-    </MixedReturnStatement>
   </file>
   <file src="src/NamespacedPathStackResolver.php">
-    <DeprecatedClass>
-      <code><![CDATA[Stream::class]]></code>
-    </DeprecatedClass>
     <DeprecatedConstant>
       <code><![CDATA[TemplatePathStack::FAILURE_NOT_FOUND]]></code>
       <code><![CDATA[TemplatePathStack::FAILURE_NO_PATHS]]></code>
@@ -95,14 +86,11 @@
       <code><![CDATA[isLfiProtectionOn]]></code>
       <code><![CDATA[setOptions]]></code>
       <code><![CDATA[static::normalizePath($path)]]></code>
-      <code><![CDATA[useStreamWrapper]]></code>
     </DeprecatedMethod>
     <DeprecatedProperty>
       <code><![CDATA[$this->lastLookupFailure]]></code>
       <code><![CDATA[$this->lastLookupFailure]]></code>
       <code><![CDATA[$this->lastLookupFailure]]></code>
-      <code><![CDATA[$this->useViewStream]]></code>
-      <code><![CDATA[$this->useViewStream]]></code>
     </DeprecatedProperty>
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[?string]]></code>
