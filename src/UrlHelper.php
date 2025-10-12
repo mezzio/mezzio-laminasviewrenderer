@@ -8,15 +8,12 @@ use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\DeprecatedAbstractHelperHierarchyTrait;
 use Mezzio\Helper\UrlHelperInterface;
 
-/**
- * @final
- * @psalm-import-type UrlGeneratorOptions from UrlHelperInterface
- */
-class UrlHelper extends AbstractHelper
+/** @psalm-import-type UrlGeneratorOptions from UrlHelperInterface */
+final class UrlHelper extends AbstractHelper
 {
     use DeprecatedAbstractHelperHierarchyTrait;
 
-    public function __construct(private UrlHelperInterface $helper)
+    public function __construct(private readonly UrlHelperInterface $helper)
     {
     }
 

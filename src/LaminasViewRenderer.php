@@ -31,15 +31,13 @@ use function sprintf;
  * non-Aggregate into a new AggregateResolver instance. Additionally, it always
  * registers a NamespacedPathStackResolver at priority 0 (lower than
  * default) in the Aggregate to ensure we can add and resolve namespaced paths.
- *
- * @final
  */
-class LaminasViewRenderer implements TemplateRendererInterface
+final class LaminasViewRenderer implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
     use DefaultParamsTrait;
 
-    private ?ViewModel $layout = null;
+    private ?ModelInterface $layout = null;
     private RendererInterface $renderer;
     private NamespacedPathStackResolver $resolver;
 
