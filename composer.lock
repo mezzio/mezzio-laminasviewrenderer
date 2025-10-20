@@ -64,32 +64,32 @@
         },
         {
             "name": "laminas/laminas-escaper",
-            "version": "2.17.0",
+            "version": "2.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-escaper.git",
-                "reference": "df1ef9503299a8e3920079a16263b578eaf7c3ba"
+                "reference": "06f211dfffff18d91844c1f55250d5d13c007e18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/df1ef9503299a8e3920079a16263b578eaf7c3ba",
-                "reference": "df1ef9503299a8e3920079a16263b578eaf7c3ba",
+                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/06f211dfffff18d91844c1f55250d5d13c007e18",
+                "reference": "06f211dfffff18d91844c1f55250d5d13c007e18",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
                 "ext-mbstring": "*",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
                 "zendframework/zend-escaper": "*"
             },
             "require-dev": {
-                "infection/infection": "^0.29.8",
-                "laminas/laminas-coding-standard": "~3.0.1",
-                "phpunit/phpunit": "^10.5.45",
-                "psalm/plugin-phpunit": "^0.19.2",
-                "vimeo/psalm": "^6.6.2"
+                "infection/infection": "^0.31.0",
+                "laminas/laminas-coding-standard": "~3.1.0",
+                "phpunit/phpunit": "^11.5.42",
+                "psalm/plugin-phpunit": "^0.19.5",
+                "vimeo/psalm": "^6.13.1"
             },
             "type": "library",
             "autoload": {
@@ -121,7 +121,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-05-06T19:29:36+00:00"
+            "time": "2025-10-14T18:31:13+00:00"
         },
         {
             "name": "laminas/laminas-eventmanager",
@@ -255,21 +255,21 @@
         },
         {
             "name": "laminas/laminas-servicemanager",
-            "version": "3.23.1",
+            "version": "3.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-servicemanager.git",
-                "reference": "06594db3a644447521eace9b5efdb12dc8446a33"
+                "reference": "b172a0df568bf37ebdfb3658263156eefe3c1e8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/06594db3a644447521eace9b5efdb12dc8446a33",
-                "reference": "06594db3a644447521eace9b5efdb12dc8446a33",
+                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/b172a0df568bf37ebdfb3658263156eefe3c1e8c",
+                "reference": "b172a0df568bf37ebdfb3658263156eefe3c1e8c",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-stdlib": "^3.19",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/container": "^1.0"
             },
             "conflict": {
@@ -292,7 +292,7 @@
                 "laminas/laminas-container-config-test": "^0.8",
                 "mikey179/vfsstream": "^1.6.12",
                 "phpbench/phpbench": "^1.4.1",
-                "phpunit/phpunit": "^10.5.51",
+                "phpunit/phpunit": "^10.5.58",
                 "psalm/plugin-phpunit": "^0.18.4",
                 "vimeo/psalm": "^5.26.1"
             },
@@ -341,7 +341,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-08-12T08:44:02+00:00"
+            "time": "2025-10-14T09:03:51+00:00"
         },
         {
             "name": "laminas/laminas-stdlib",
@@ -404,16 +404,16 @@
         },
         {
             "name": "laminas/laminas-view",
-            "version": "2.42.0",
+            "version": "2.43.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-view.git",
-                "reference": "535128105bd0e703fba6f60800bbac0252819730"
+                "reference": "5f60f0f781e6888eb1fa131bf123c401013225a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-view/zipball/535128105bd0e703fba6f60800bbac0252819730",
-                "reference": "535128105bd0e703fba6f60800bbac0252819730",
+                "url": "https://api.github.com/repos/laminas/laminas-view/zipball/5f60f0f781e6888eb1fa131bf123c401013225a0",
+                "reference": "5f60f0f781e6888eb1fa131bf123c401013225a0",
                 "shasum": ""
             },
             "require": {
@@ -425,7 +425,7 @@
                 "laminas/laminas-json": "^3.3",
                 "laminas/laminas-servicemanager": "^3.21.0",
                 "laminas/laminas-stdlib": "^3.10.1",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/container": "^1 || ^2"
             },
             "conflict": {
@@ -452,7 +452,7 @@
                 "laminas/laminas-permissions-acl": "^2.17",
                 "laminas/laminas-router": "^3.14.0",
                 "laminas/laminas-uri": "^2.13",
-                "phpunit/phpunit": "^10.5.53",
+                "phpunit/phpunit": "^10.5.58",
                 "psalm/plugin-phpunit": "^0.19.5",
                 "vimeo/psalm": "^6.13.1"
             },
@@ -502,7 +502,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-09-23T11:38:01+00:00"
+            "time": "2025-10-13T13:07:56+00:00"
         },
         {
             "name": "mezzio/mezzio-helpers",
