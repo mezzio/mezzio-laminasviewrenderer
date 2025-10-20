@@ -39,7 +39,7 @@
         "laminas/laminas-view": "^2.27.0",
         "mezzio/mezzio-helpers": "^5.15.0",
         "mezzio/mezzio-router": "^3.16.1 || ^4.0.0",
-        "mezzio/mezzio-template": "^2.8.0",
+        "mezzio/mezzio-template": "^2.8.0 || ^3.0.0",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1 || ^2.0.0"
     },
