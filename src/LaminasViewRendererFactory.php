@@ -22,6 +22,8 @@ use function reset;
  * A configuration array is expected with the key `config`, the structure of which is
  * documented in {@link ConfigProvider}.
  *
+ * @internal
+ *
  * @psalm-internal Mezzio\LaminasView
  * @psalm-internal MezzioTest\LaminasView
  */

@@ -8,6 +8,8 @@ use Mezzio\Helper\ServerUrlHelper as MezzioServerUrlHelper;
 use Psr\Container\ContainerInterface;
 
 /**
+ * @internal
+ *
  * @psalm-internal Mezzio\LaminasView
  * @psalm-internal MezzioTest\LaminasView
  */
