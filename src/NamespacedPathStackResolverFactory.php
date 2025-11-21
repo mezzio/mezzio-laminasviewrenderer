@@ -12,6 +12,8 @@ use function is_string;
 use function reset;
 
 /**
+ * @internal
+ *
  * @psalm-internal Mezzio\LaminasView
  * @psalm-internal MezzioTest\LaminasView
  */

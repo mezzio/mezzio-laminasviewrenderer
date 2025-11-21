@@ -10,6 +10,8 @@ use Laminas\View\Resolver\TemplateMapResolver;
 use Psr\Container\ContainerInterface;
 
 /**
+ * @internal
+ *
  * @psalm-internal Mezzio\LaminasView
  * @psalm-internal MezzioTest\LaminasView
  */
