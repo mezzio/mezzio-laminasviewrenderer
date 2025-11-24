@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Mezzio\LaminasView;
 
 use Laminas\View\Exception\RenderingFailedException;
+use Laminas\View\HelperPluginManagerInterface;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
-use Laminas\View\View;
+use Laminas\View\Renderer\RendererInterface;
 use Mezzio\Template\ArrayParametersTrait;
 use Mezzio\Template\DefaultParamsTrait;
 use Mezzio\Template\Exception\InvalidArgumentException;
 use Mezzio\Template\TemplateRendererInterface;
 
+use function array_merge;
 use function is_string;
 use function sprintf;
 
@@ -37,7 +39,8 @@ final class LaminasViewRenderer implements TemplateRendererInterface
      * @throws InvalidArgumentException When $layout is an empty string.
      */
     public function __construct(
-        private readonly View $view,
+        private readonly RendererInterface $renderer,
+        private readonly HelperPluginManagerInterface $helpers,
         string|ModelInterface|null $layout,
     ) {
         if ($layout === '') {
@@ -54,15 +57,19 @@ final class LaminasViewRenderer implements TemplateRendererInterface
         }
 
         $this->layout = $layout;
+    }
 
-        $this->view->registerPreRenderHandler(function (ModelInterface $model): ModelInterface {
-            $template = $model->getTemplate();
-            if ($template === '') {
-                throw RenderingFailedException::becauseATemplateWasNotSpecified();
-            }
+    /**
+     * Before rendering a model, merge in any default view variables
+     */
+    private function beforeRender(ModelInterface $model): ModelInterface
+    {
+        $template = $model->getTemplate();
+        if ($template === '') {
+            throw RenderingFailedException::becauseATemplateWasNotSpecified();
+        }
 
-            return $this->mergeViewModel($template, $model);
-        });
+        return $this->mergeViewModel($template, $model);
     }
 
     /**
@@ -88,11 +95,18 @@ final class LaminasViewRenderer implements TemplateRendererInterface
 
         $viewModel = $this->mergeViewModel($name, $viewModel);
 
-        if ($viewModel->getVariable('layout') !== false) {
-            $viewModel = $this->prepareLayout($viewModel);
+        $content = $this->renderRecursively($viewModel);
+        $layout  = $this->prepareLayout($viewModel);
+
+        if ($layout !== false) {
+            $layout = $this->beforeRender($layout);
+            $layout->setVariable('content', $content);
+            $content = $this->renderer->render($layout);
         }
 
-        return $this->view->renderLayout($viewModel);
+        $this->helpers->resetState();
+
+        return $content;
     }
 
     /**
@@ -130,27 +144,73 @@ final class LaminasViewRenderer implements TemplateRendererInterface
      * otherwise, a view model representing the layout, with the provided
      * view model as a child, is returned.
      */
-    private function prepareLayout(ModelInterface $viewModel): ModelInterface
+    private function prepareLayout(ModelInterface $viewModel): ModelInterface|false
     {
         /** @psalm-var mixed $providedLayout */
         $providedLayout = $viewModel->getVariable('layout', null);
-        if (is_string($providedLayout) && ! empty($providedLayout)) {
-            $layout = new ViewModel();
-            $layout->setTemplate($providedLayout);
-            $viewModel->setVariable('layout', null);
-        } elseif ($providedLayout instanceof ModelInterface) {
-            $layout = $providedLayout;
-            $viewModel->setVariable('layout', null);
-        } else {
-            $layout = $this->layout ? clone $this->layout : null;
+
+        /**
+         * When the layout is explicitly given as false in the top-level view model, then layout will be disabled.
+         */
+        if ($providedLayout === false) {
+            return false;
         }
 
-        if ($layout instanceof ModelInterface) {
-            $layout->addChild($viewModel);
+        /**
+         * In all other situations, layout is defined in the following order:
+         *
+         * - Layout defined by the layout view helper
+         * - layout defined in the params of the given view model ($providedLayout)
+         * - The default layout defined in $this->layout
+         * - no layout
+         */
 
-            return $layout;
+        $helperLayout = $this->helpers->get(LayoutHelper::class)->__invoke();
+        if ($helperLayout->getTemplate() !== '') {
+            return $helperLayout;
         }
 
-        return $viewModel;
+        $variables = $helperLayout->getVariables();
+
+        if (is_string($providedLayout) && $providedLayout !== '') {
+            return new ViewModel($variables, $providedLayout);
+        }
+
+        if ($providedLayout instanceof ModelInterface && $providedLayout->getTemplate() !== '') {
+            return new ViewModel(array_merge(
+                $providedLayout->getVariables(),
+                $variables,
+            ), $providedLayout->getTemplate());
+        }
+
+        if ($this->layout instanceof ModelInterface) {
+            return new ViewModel(array_merge(
+                $this->layout->getVariables(),
+                $variables,
+            ), $this->layout->getTemplate());
+        }
+
+        return false;
+    }
+
+    /** @throws RenderingFailedException When any exception occurs during render. */
+    private function renderRecursively(ModelInterface $model): string
+    {
+        foreach ($model->getChildren() as $child) {
+            $content = $this->renderRecursively($child);
+            if ($child->isAppend()) {
+                /** @psalm-var mixed $existingContent */
+                $existingContent = $model->getVariable($child->captureTo(), '');
+                $existingContent = is_string($existingContent)
+                    ? $existingContent
+                    : '';
+
+                $content = $existingContent . $content;
+            }
+
+            $model->setVariable($child->captureTo(), $content);
+        }
+
+        return $this->renderer->render($this->beforeRender($model));
     }
 }

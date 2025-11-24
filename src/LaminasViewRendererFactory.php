@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
-use Laminas\View\View;
+use Laminas\View\HelperPluginManagerInterface;
+use Laminas\View\Renderer\RendererInterface;
 use Psr\Container\ContainerInterface;
 
 use function array_filter;
@@ -56,7 +57,8 @@ final class LaminasViewRendererFactory
         assert(is_string($layout) || $layout === null);
 
         return new LaminasViewRenderer(
-            $container->get(View::class),
+            $container->get(RendererInterface::class),
+            $container->get(HelperPluginManagerInterface::class),
             $layout,
         );
     }

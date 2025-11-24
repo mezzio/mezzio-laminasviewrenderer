@@ -7,8 +7,10 @@ namespace MezzioTest\LaminasView;
 use ArrayObject;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\ConfigProvider as ViewConfigProvider;
+use Laminas\View\Exception\RenderingFailedException;
+use Laminas\View\HelperPluginManagerInterface;
 use Laminas\View\Model\ViewModel;
-use Laminas\View\View;
+use Laminas\View\Renderer\RendererInterface;
 use Mezzio\LaminasView\ConfigProvider;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Template\Exception\InvalidArgumentException;
@@ -54,7 +56,8 @@ final class LaminasViewRendererTest extends TestCase
         $this->expectExceptionMessage('Layout must be a non-empty-string');
 
         new LaminasViewRenderer(
-            $container->get(View::class),
+            $container->get(RendererInterface::class),
+            $container->get(HelperPluginManagerInterface::class),
             '',
         );
     }
@@ -284,7 +287,8 @@ final class LaminasViewRendererTest extends TestCase
         $layout = new ViewModel([], 'layout');
 
         $renderer = new LaminasViewRenderer(
-            $container->get(View::class),
+            $container->get(RendererInterface::class),
+            $container->get(HelperPluginManagerInterface::class),
             $layout,
         );
 
@@ -434,5 +438,209 @@ final class LaminasViewRendererTest extends TestCase
         self::assertStringContainsString('<alt-layout>', $result);
         self::assertStringContainsString('</alt-layout>', $result);
         self::assertStringContainsString('<h1>Some Content</h1>', $result);
+    }
+
+    public function testLayoutChangeFromNestedTemplateIsRendered(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'      => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'alternative' => __DIR__ . '/TestAsset/templates/layout/alternative.phtml',
+                    'main'        => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                    'child'       => __DIR__ . '/TestAsset/templates/layout/child.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $model = new ViewModel([], 'main', [
+            'content' => new ViewModel([], 'child'),
+        ]);
+
+        $view   = $container->get(LaminasViewRenderer::class);
+        $markup = $view->render('main', $model);
+
+        self::assertStringContainsString('<alt-layout>', $markup);
+        self::assertStringNotContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<child>', $markup);
+    }
+
+    public function testLayoutChangeFromNestedTemplateIsIgnoredWhenLayoutParamIsFalse(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout'      => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'alternative' => __DIR__ . '/TestAsset/templates/layout/alternative.phtml',
+                    'main'        => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                    'child'       => __DIR__ . '/TestAsset/templates/layout/child.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $model = new ViewModel(['layout' => false], 'main', [
+            'content' => new ViewModel([], 'child'),
+        ]);
+
+        $view   = $container->get(LaminasViewRenderer::class);
+        $markup = $view->render('main', $model);
+
+        self::assertStringNotContainsString('<alt-layout>', $markup);
+        self::assertStringNotContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<child>', $markup);
+    }
+
+    public function testLayoutVariablesCanBeManipulatedViaTheLayoutHelper(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout-with-variable.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                    'child'  => __DIR__ . '/TestAsset/templates/layout/child-changes-layout-variables.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $model = new ViewModel([], 'main', [
+            'content' => new ViewModel([], 'child'),
+        ]);
+
+        $view   = $container->get(LaminasViewRenderer::class);
+        $markup = $view->render('main', $model);
+
+        self::assertStringContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<child>', $markup);
+        self::assertStringContainsString('<var>expect</var>', $markup);
+    }
+
+    public function testLayoutVariablesCanBeSetViaConstructor(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout-with-variable.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/layout/empty-main.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $view = new LaminasViewRenderer(
+            $container->get(RendererInterface::class),
+            $container->get(HelperPluginManagerInterface::class),
+            new ViewModel(['layoutVariable' => 'Kermit'], 'layout'),
+        );
+
+        $markup = $view->render('main', []);
+
+        self::assertStringContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<var>Kermit</var>', $markup);
+    }
+
+    public function testDefaultLayoutVariablesAreOverriddenByTheLayoutHelper(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout-with-variable.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                    'child'  => __DIR__ . '/TestAsset/templates/layout/child-changes-layout-variables.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $view = new LaminasViewRenderer(
+            $container->get(RendererInterface::class),
+            $container->get(HelperPluginManagerInterface::class),
+            new ViewModel(['layoutVariable' => 'Kermit'], 'layout'),
+        );
+
+        $model = new ViewModel([], 'main', [
+            'content' => new ViewModel([], 'child'),
+        ]);
+
+        $markup = $view->render('main', $model);
+
+        self::assertStringContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<var>expect</var>', $markup);
+    }
+
+    public function testAnExceptionIsThrownWhenChildModelsDoNotSpecifyATemplate(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $view = $container->get(LaminasViewRenderer::class);
+
+        $model = new ViewModel([], 'main', [
+            'content' => new ViewModel([]),
+        ]);
+
+        $this->expectException(RenderingFailedException::class);
+        $this->expectExceptionMessage('A template must be specified during rendering');
+        $view->render('main', $model);
+    }
+
+    public function testModelsCanBeAppended(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/layout/layout.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/layout/main.phtml',
+                    'child1' => __DIR__ . '/TestAsset/templates/layout/child-append1.phtml',
+                    'child2' => __DIR__ . '/TestAsset/templates/layout/child-append2.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+
+        $view = $container->get(LaminasViewRenderer::class);
+
+        $model  = new ViewModel([], 'main');
+        $child1 = new ViewModel([], 'child1');
+        $child1->setAppend(true);
+        $child2 = new ViewModel([], 'child2');
+        $child2->setAppend(true);
+        $model->addChild($child1, 'content');
+        $model->addChild($child2, 'content');
+
+        $markup = $view->render('main', $model);
+
+        self::assertStringContainsString('<layout>', $markup);
+        self::assertStringContainsString('<main>', $markup);
+        self::assertStringContainsString('<child1>', $markup);
+        self::assertStringContainsString('<child2>', $markup);
     }
 }
