@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mezzio\LaminasView;
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Resolver\AggregateResolver;
 use Mezzio\Template\TemplateRendererInterface;
@@ -83,10 +84,12 @@ final class ConfigProvider
     {
         return [
             'factories' => [
+                LayoutHelper::class    => InvokableFactory::class,
                 ServerUrlHelper::class => ServerUrlHelperFactory::class,
                 UrlHelper::class       => UrlHelperFactory::class,
             ],
             'aliases'   => [
+                'layout'    => LayoutHelper::class,
                 'serverUrl' => ServerUrlHelper::class,
                 'url'       => UrlHelper::class,
             ],
