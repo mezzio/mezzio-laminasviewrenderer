@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7c12ef8ad00b92e43a4cd39907ef796",
+    "content-hash": "5c0cedd0cae0b2e9a6e09f75e38c7378",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -371,16 +371,16 @@
         },
         {
             "name": "laminas/laminas-view",
-            "version": "3.0.0",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-view.git",
-                "reference": "7984e8967d019b663e4710f34067573a52daa58f"
+                "reference": "c7f8af6e20a46306fe577cf730474a337ce4d1fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-view/zipball/7984e8967d019b663e4710f34067573a52daa58f",
-                "reference": "7984e8967d019b663e4710f34067573a52daa58f",
+                "url": "https://api.github.com/repos/laminas/laminas-view/zipball/c7f8af6e20a46306fe577cf730474a337ce4d1fd",
+                "reference": "c7f8af6e20a46306fe577cf730474a337ce4d1fd",
                 "shasum": ""
             },
             "require": {
@@ -449,7 +449,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-11-20T15:21:18+00:00"
+            "time": "2025-11-22T14:55:13+00:00"
         },
         {
             "name": "mezzio/mezzio-helpers",
@@ -3260,16 +3260,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.11.0",
+            "version": "1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "8cbe6100e8971efbf8e2e7da3a202ba83eafd5a3"
+                "reference": "f626740b38009078de0dc8b2b9dc4e7f749c6eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/8cbe6100e8971efbf8e2e7da3a202ba83eafd5a3",
-                "reference": "8cbe6100e8971efbf8e2e7da3a202ba83eafd5a3",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/f626740b38009078de0dc8b2b9dc4e7f749c6eba",
+                "reference": "f626740b38009078de0dc8b2b9dc4e7f749c6eba",
                 "shasum": ""
             },
             "require": {
@@ -3312,9 +3312,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.11.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.11.1"
             },
-            "time": "2025-11-19T20:28:58+00:00"
+            "time": "2025-11-21T11:31:57+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",

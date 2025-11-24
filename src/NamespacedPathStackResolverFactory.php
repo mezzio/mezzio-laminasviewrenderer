@@ -7,8 +7,9 @@ namespace Mezzio\LaminasView;
 use Psr\Container\ContainerInterface;
 
 use function array_filter;
-use function is_array;
+use function is_iterable;
 use function is_string;
+use function iterator_to_array;
 use function reset;
 
 /**
@@ -23,7 +24,7 @@ final class NamespacedPathStackResolverFactory
     {
         /** @psalm-var mixed $config */
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = is_array($config) ? $config : [];
+        $config = is_iterable($config) ? iterator_to_array($config) : [];
 
         /**
          * There is some historic ambiguity around which key is used to set the default template suffix.

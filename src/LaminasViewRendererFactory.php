@@ -9,8 +9,9 @@ use Psr\Container\ContainerInterface;
 
 use function array_filter;
 use function assert;
-use function is_array;
+use function is_iterable;
 use function is_string;
+use function iterator_to_array;
 use function reset;
 
 /**
@@ -31,8 +32,9 @@ final class LaminasViewRendererFactory
 {
     public function __invoke(ContainerInterface $container): LaminasViewRenderer
     {
+        /** @psalm-var mixed $config */
         $config = $container->has('config') ? $container->get('config') : [];
-        assert(is_array($config));
+        $config = is_iterable($config) ? iterator_to_array($config) : [];
 
         /**
          * Fetch the default layout from configuration
