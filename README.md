@@ -19,8 +19,7 @@
 >
 > You trust us enough to use our software. We ask that you trust us to say the truth on this. We need your help. Go out and protest this unnecessary war. Stop the bloodshed. Say "stop the war!"
 
-[laminas-view PhpRenderer](https://github.com/laminas/laminas-view) integration
-for [Mezzio](https://github.com/mezzio/mezzio).
+[laminas-view](https://github.com/laminas/laminas-view) integration for [Mezzio](https://github.com/mezzio/mezzio).
 
 ## Installation
 
@@ -35,10 +34,6 @@ dependency injection container. We can recommend the following implementations:
 
 - [laminas-servicemanager](https://github.com/laminas/laminas-servicemanager):
   `composer require laminas/laminas-servicemanager`
-- [Pimple](https://github.com/silexphp/Pimple):
-  `composer require laminas/laminas-pimple-config`
-- [Aura.Di](https://github.com/auraphp/Aura.Di):
-  `composer require laminas/laminas-auradi-config`
 
 ## View Helpers
 
