@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MezzioTest\LaminasView;
 
+use ArrayObject;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\ConfigProvider as ViewConfigProvider;
 use Mezzio\LaminasView\ConfigProvider;
@@ -13,22 +14,26 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 use function array_replace_recursive;
+use function is_object;
+use function iterator_to_array;
 
 /** @psalm-import-type ServiceManagerConfiguration from ServiceManager */
 final class LaminasViewRendererFactoryTest extends TestCase
 {
-    private static function getContainer(array $config = []): ContainerInterface
+    private static function getContainer(iterable $config = []): ContainerInterface
     {
         $serviceConfig = array_replace_recursive(
             (new ViewConfigProvider())->__invoke(),
             (new ConfigProvider())->__invoke(),
-            $config,
+            iterator_to_array($config),
         );
+
+        $configService = is_object($config) ? new ArrayObject($serviceConfig) : $serviceConfig;
 
         /** @psalm-var array{dependencies: ServiceManagerConfiguration} $serviceConfig */
         $serviceConfig['dependencies']['services'] ??= [];
 
-        $serviceConfig['dependencies']['services']['config'] = $serviceConfig;
+        $serviceConfig['dependencies']['services']['config'] = $configService;
         /** @psalm-var ServiceManagerConfiguration $deps */
         $deps = $serviceConfig['dependencies'] ?? [];
 
@@ -92,8 +97,17 @@ final class LaminasViewRendererFactoryTest extends TestCase
         ];
     }
 
+    /** @return iterable<string, array{0: ArrayObject}> */
+    public static function arrayObjectConfigProvider(): iterable
+    {
+        foreach (self::configDataProvider() as $key => $args) {
+            yield $key . ' (ArrayObject)' => [new ArrayObject($args[0])];
+        }
+    }
+
     #[DataProvider('configDataProvider')]
-    public function testLayoutCanBeSetInMultiplePositions(array $config): void
+    #[DataProvider('arrayObjectConfigProvider')]
+    public function testLayoutCanBeSetInMultiplePositions(iterable $config): void
     {
         $container = self::getContainer($config);
 

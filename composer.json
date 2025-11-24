@@ -36,7 +36,7 @@
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "laminas/laminas-servicemanager": "^4.4.0",
-        "laminas/laminas-view": "^3.0",
+        "laminas/laminas-view": "^3.0.1",
         "mezzio/mezzio-helpers": "^5.15.0",
         "mezzio/mezzio-router": "^3.16.1 || ^4.0.0",
         "mezzio/mezzio-template": "^3.0",
