@@ -8,6 +8,7 @@ use ArrayObject;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\ConfigProvider as ViewConfigProvider;
 use Laminas\View\Exception\RenderingFailedException;
+use Laminas\View\Helper\HeadTitle;
 use Laminas\View\HelperPluginManagerInterface;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\RendererInterface;
@@ -642,5 +643,34 @@ final class LaminasViewRendererTest extends TestCase
         self::assertStringContainsString('<main>', $markup);
         self::assertStringContainsString('<child1>', $markup);
         self::assertStringContainsString('<child2>', $markup);
+    }
+
+    public function testStatefulPluginsAreResetAfterRender(): void
+    {
+        $config = [
+            'templates' => [
+                'layout' => 'layout',
+                'map'    => [
+                    'layout' => __DIR__ . '/TestAsset/templates/plugin-state/layout.phtml',
+                    'main'   => __DIR__ . '/TestAsset/templates/plugin-state/main.phtml',
+                    'child'  => __DIR__ . '/TestAsset/templates/plugin-state/child.phtml',
+                ],
+            ],
+        ];
+
+        $container = self::getContainer($config);
+        $helpers   = $container->get(HelperPluginManagerInterface::class);
+        $helper    = $helpers->get(HeadTitle::class);
+        self::assertSame('', $helper->renderTitle());
+        $model  = new ViewModel([], 'main', [
+            'content' => new ViewModel([], 'child'),
+        ]);
+        $view   = $container->get(LaminasViewRenderer::class);
+        $markup = $view->render('main', $model);
+        self::assertStringContainsString(
+            '<title>Child-Parent-Layout</title>',
+            $markup,
+        );
+        self::assertSame('', $helper->renderTitle());
     }
 }
