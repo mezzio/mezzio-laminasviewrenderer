@@ -3,3 +3,8 @@
 /phpunit.xml
 /vendor/
 .markdownlint.json
+/docs/html/
+/doc/html/
+/laminas-mkdoc-theme.tgz
+/laminas-mkdoc-theme/
+/documentation-theme/
